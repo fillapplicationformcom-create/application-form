@@ -1,6 +1,6 @@
 {
   "name": "application-form",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Application Form submission portal",
   "main": "server.js",
   "scripts": {
