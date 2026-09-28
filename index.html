@@ -10,6 +10,27 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#1769e0">
+  <link rel="manifest" href="./manifest.json">
+
+<meta
+  name="theme-color"
+  content="#2563eb">
+
+<meta
+  name="mobile-web-app-capable"
+  content="yes">
+
+<meta
+  name="apple-mobile-web-app-capable"
+  content="yes">
+
+<meta
+  name="apple-mobile-web-app-status-bar-style"
+  content="default">
+
+<link
+  rel="apple-touch-icon"
+  href="./icon-192.png">
 
 <title>Basic Information Form</title>
 
@@ -1924,6 +1945,38 @@ if ("serviceWorker" in navigator) {
         console.error("Service worker registration failed:", error)
       );
   });
+}
+<script>
+"use strict";
+
+if ("serviceWorker" in navigator) {
+
+  window.addEventListener(
+    "load",
+    () => {
+
+      navigator.serviceWorker
+        .register("./service-worker.js")
+        .then(
+          registration => {
+            console.log(
+              "Application app service worker registered:",
+              registration.scope
+            );
+          }
+        )
+        .catch(
+          error => {
+            console.error(
+              "Service worker registration failed:",
+              error
+            );
+          }
+        );
+
+    }
+  );
+
 }
 </script>
 
