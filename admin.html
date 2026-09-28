@@ -1,987 +1,402 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
 <meta charset="UTF-8">
-
-<meta
-  name="viewport"
-  content="width=device-width,initial-scale=1.0"
->
-
-<meta
-  name="theme-color"
-  content="#173b8f"
->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Application Admin</title>
 
 <style>
-
-* {
-  box-sizing: border-box;
+*{
+  box-sizing:border-box;
 }
 
-html,
-body {
-  margin: 0;
-  padding: 0;
-  font-family:
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    Roboto,
-    Arial,
-    sans-serif;
-
-  background: #eef3f8;
-  color: #172033;
+html{
+  scroll-behavior:smooth;
 }
 
-body {
-  min-height: 100vh;
+body{
+  margin:0;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+  background:#eef3f8;
+  color:#172033;
 }
 
-/* =========================================================
-   HEADER
-========================================================= */
-
-header {
-
-  background:
-    linear-gradient(
-      135deg,
-      #173b8f,
-      #2563eb
-    );
-
-  color: #ffffff;
-
-  padding: 22px 18px;
-
-  box-shadow:
-    0 4px 18px
-    rgba(20,40,80,.15);
+header{
+  background:linear-gradient(135deg,#173b8f,#2563eb);
+  color:#fff;
+  padding:22px 18px;
+  box-shadow:0 4px 20px rgba(15,35,80,.15);
 }
 
-.header-inner {
-
-  width:
-    min(1200px,94%);
-
-  margin:
-    auto;
+header h1{
+  margin:0 0 5px;
+  font-size:22px;
 }
 
-header h1 {
-
-  margin:
-    0 0 5px;
-
-  font-size: 22px;
-
-  font-weight: 800;
+header p{
+  margin:0;
+  font-size:12px;
+  opacity:.9;
 }
 
-header p {
-
-  margin: 0;
-
-  font-size: 12px;
-
-  opacity: .9;
+.container{
+  width:min(1200px,94%);
+  margin:20px auto 50px;
 }
 
-/* =========================================================
-   CONTAINER
-========================================================= */
-
-.container {
-
-  width:
-    min(1200px,94%);
-
-  margin:
-    20px auto 50px;
+.toolbar{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-bottom:15px;
 }
 
-/* =========================================================
-   TOOLBAR
-========================================================= */
-
-.toolbar {
-
-  display: flex;
-
-  gap: 8px;
-
-  flex-wrap: wrap;
-
-  margin-bottom: 15px;
+button{
+  border:0;
+  border-radius:9px;
+  padding:10px 14px;
+  cursor:pointer;
+  font-weight:700;
+  color:#fff;
+  background:#2563eb;
+  font-family:inherit;
 }
 
-button {
-
-  border: 0;
-
-  border-radius: 9px;
-
-  padding:
-    10px 14px;
-
-  cursor: pointer;
-
-  font-family: inherit;
-
-  font-weight: 700;
-
-  color: #ffffff;
-
-  background: #2563eb;
-
-  transition:
-    opacity .15s,
-    transform .1s;
+button:hover{
+  opacity:.9;
 }
 
-button:hover {
-
-  opacity: .9;
+button:disabled{
+  opacity:.55;
+  cursor:not-allowed;
 }
 
-button:active {
-
-  transform:
-    translateY(1px);
+button.danger{
+  background:#dc2626;
 }
 
-button:disabled {
-
-  opacity: .55;
-
-  cursor:
-    not-allowed;
+button.dark{
+  background:#25334a;
 }
 
-button.dark {
-
-  background:
-    #25334a;
+button.green{
+  background:#15803d;
 }
 
-button.danger {
-
-  background:
-    #dc2626;
+button.small{
+  padding:7px 10px;
+  font-size:12px;
 }
 
-button.green {
-
-  background:
-    #15803d;
+.status{
+  padding:11px 13px;
+  background:#eff6ff;
+  color:#1e40af;
+  border-radius:9px;
+  margin-bottom:15px;
+  font-size:13px;
 }
 
-button.small {
-
-  padding:
-    7px 10px;
-
-  font-size: 12px;
+.status.error{
+  background:#fef2f2;
+  color:#b91c1c;
 }
 
-/* =========================================================
-   STATUS
-========================================================= */
-
-.status {
-
-  padding:
-    11px 13px;
-
-  background:
-    #eff6ff;
-
-  color:
-    #1e40af;
-
-  border-radius:
-    9px;
-
-  margin-bottom:
-    15px;
-
-  font-size:
-    13px;
-
-  line-height:
-    1.5;
+.status.success{
+  background:#ecfdf3;
+  color:#15803d;
 }
 
-.status.error {
-
-  background:
-    #fef2f2;
-
-  color:
-    #b91c1c;
+.card{
+  background:#fff;
+  border-radius:15px;
+  padding:18px;
+  margin-bottom:15px;
+  box-shadow:0 6px 25px rgba(20,40,80,.08);
 }
 
-.status.success {
-
-  background:
-    #ecfdf3;
-
-  color:
-    #15803d;
+.card h2{
+  margin:0 0 10px;
+  font-size:18px;
 }
 
-/* =========================================================
-   CARD
-========================================================= */
-
-.card {
-
-  background:
-    #ffffff;
-
-  border-radius:
-    15px;
-
-  padding:
-    18px;
-
-  margin-bottom:
-    15px;
-
-  box-shadow:
-    0 6px 25px
-    rgba(20,40,80,.08);
+.application{
+  border:1px solid #dfe5ed;
+  border-radius:13px;
+  padding:15px;
+  margin-top:12px;
+  background:#fff;
 }
 
-.card h2 {
-
-  margin:
-    0;
-
-  font-size:
-    18px;
+.application-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-bottom:14px;
 }
 
-/* =========================================================
-   APPLICATION
-========================================================= */
-
-.application {
-
-  border:
-    1px solid #dfe5ed;
-
-  border-radius:
-    13px;
-
-  padding:
-    15px;
-
-  margin-top:
-    12px;
-
-  background:
-    #ffffff;
+.form-number{
+  font-size:16px;
+  font-weight:800;
+  color:#173b8f;
 }
 
-.application-header {
-
-  display:
-    flex;
-
-  justify-content:
-    space-between;
-
-  align-items:
-    flex-start;
-
-  gap:
-    10px;
-
-  flex-wrap:
-    wrap;
-
-  margin-bottom:
-    14px;
+.saved-time{
+  font-size:11px;
+  color:#64748b;
 }
 
-.form-number {
-
-  font-size:
-    16px;
-
-  font-weight:
-    800;
-
-  color:
-    #173b8f;
-
-  word-break:
-    break-word;
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
+  gap:10px;
 }
 
-.application-id {
-
-  margin-top:
-    4px;
-
-  font-size:
-    10px;
-
-  color:
-    #64748b;
-
-  word-break:
-    break-all;
+.field{
+  background:#f8fafc;
+  border-radius:9px;
+  padding:10px;
+  min-width:0;
 }
 
-.saved-time {
-
-  font-size:
-    11px;
-
-  color:
-    #64748b;
-
-  text-align:
-    right;
+.label{
+  font-size:10px;
+  color:#64748b;
+  margin-bottom:4px;
+  text-transform:uppercase;
+  letter-spacing:.3px;
 }
 
-/* =========================================================
-   GRID
-========================================================= */
-
-.grid {
-
-  display:
-    grid;
-
-  grid-template-columns:
-    repeat(
-      auto-fit,
-      minmax(210px,1fr)
-    );
-
-  gap:
-    10px;
+.value{
+  font-size:13px;
+  font-weight:600;
+  word-break:break-word;
+  overflow-wrap:anywhere;
 }
 
-.field {
-
-  background:
-    #f8fafc;
-
-  border-radius:
-    9px;
-
-  padding:
-    10px;
-
-  min-width:
-    0;
+.section{
+  margin-top:15px;
+  padding-top:14px;
+  border-top:1px solid #e5e7eb;
 }
 
-.label {
-
-  font-size:
-    10px;
-
-  color:
-    #64748b;
-
-  margin-bottom:
-    4px;
-
-  text-transform:
-    uppercase;
-
-  letter-spacing:
-    .3px;
+.section-title{
+  font-size:14px;
+  font-weight:800;
+  margin-bottom:10px;
 }
 
-.value {
-
-  font-size:
-    13px;
-
-  font-weight:
-    600;
-
-  word-break:
-    break-word;
-
-  white-space:
-    pre-wrap;
+.permissions{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+  gap:8px;
 }
 
-/* =========================================================
-   SECTION
-========================================================= */
-
-.section {
-
-  margin-top:
-    15px;
-
-  padding-top:
-    14px;
-
-  border-top:
-    1px solid #e5e7eb;
+.permission{
+  padding:10px;
+  border-radius:9px;
+  background:#f8fafc;
+  font-size:12px;
+  font-weight:700;
 }
 
-.section-title {
-
-  font-size:
-    14px;
-
-  font-weight:
-    800;
-
-  margin-bottom:
-    10px;
+.permission.granted{
+  background:#ecfdf3;
+  color:#15803d;
 }
 
-/* =========================================================
-   NOTES
-========================================================= */
-
-.notes {
-
-  white-space:
-    pre-wrap;
-
-  word-break:
-    break-word;
-
-  background:
-    #f8fafc;
-
-  border-radius:
-    9px;
-
-  padding:
-    11px;
-
-  font-size:
-    12px;
-
-  line-height:
-    1.5;
-
-  min-height:
-    38px;
+.permission.not-granted{
+  background:#fff7ed;
+  color:#c2410c;
 }
 
-/* =========================================================
-   PERMISSIONS
-========================================================= */
-
-.permissions {
-
-  display:
-    grid;
-
-  grid-template-columns:
-    repeat(
-      auto-fit,
-      minmax(150px,1fr)
-    );
-
-  gap:
-    8px;
+.files{
+  display:grid;
+  gap:8px;
 }
 
-.permission {
-
-  padding:
-    10px;
-
-  border-radius:
-    9px;
-
-  background:
-    #f8fafc;
-
-  font-size:
-    12px;
-
-  font-weight:
-    700;
-
-  line-height:
-    1.4;
+.file{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  padding:10px;
+  border:1px solid #e2e8f0;
+  border-radius:9px;
+  background:#fafcff;
 }
 
-.permission.granted {
-
-  background:
-    #ecfdf3;
-
-  color:
-    #15803d;
+.file-info{
+  min-width:0;
+  flex:1;
 }
 
-.permission.not-granted {
-
-  background:
-    #fff7ed;
-
-  color:
-    #c2410c;
+.file-name{
+  font-weight:700;
+  font-size:12px;
+  word-break:break-all;
 }
 
-/* =========================================================
-   FILES
-========================================================= */
-
-.files {
-
-  display:
-    grid;
-
-  gap:
-    8px;
+.file-meta{
+  font-size:10px;
+  color:#64748b;
+  margin-top:3px;
+  line-height:1.5;
 }
 
-.file {
-
-  display:
-    flex;
-
-  justify-content:
-    space-between;
-
-  align-items:
-    center;
-
-  gap:
-    10px;
-
-  padding:
-    10px;
-
-  border:
-    1px solid #e2e8f0;
-
-  border-radius:
-    9px;
-
-  background:
-    #fafcff;
+.notes{
+  white-space:pre-wrap;
+  overflow-wrap:anywhere;
+  background:#f8fafc;
+  border-radius:9px;
+  padding:11px;
+  font-size:12px;
+  line-height:1.5;
+  min-height:20px;
 }
 
-.file-info {
-
-  min-width:
-    0;
-
-  flex:
-    1;
+.empty{
+  color:#64748b;
+  text-align:center;
+  padding:30px;
 }
 
-.file-name {
-
-  font-weight:
-    700;
-
-  font-size:
-    12px;
-
-  word-break:
-    break-all;
+.loading{
+  color:#64748b;
+  padding:15px 0;
 }
 
-.file-category {
-
-  display:
-    inline-block;
-
-  margin-top:
-    4px;
-
-  padding:
-    3px 6px;
-
-  border-radius:
-    5px;
-
-  background:
-    #eef2ff;
-
-  color:
-    #3730a3;
-
-  font-size:
-    9px;
-
-  font-weight:
-    700;
-
-  text-transform:
-    uppercase;
+.badge{
+  display:inline-block;
+  padding:5px 8px;
+  border-radius:7px;
+  background:#eff6ff;
+  color:#1e40af;
+  font-size:10px;
+  font-weight:800;
+  margin-top:5px;
 }
 
-.file-meta {
-
-  font-size:
-    10px;
-
-  color:
-    #64748b;
-
-  margin-top:
-    4px;
-
-  line-height:
-    1.5;
+.hidden{
+  display:none;
 }
 
-/* =========================================================
-   EMPTY / LOADING
-========================================================= */
+@media(max-width:600px){
 
-.empty {
-
-  color:
-    #64748b;
-
-  text-align:
-    center;
-
-  padding:
-    30px 15px;
-
-  font-size:
-    13px;
-}
-
-.loading {
-
-  color:
-    #64748b;
-
-  padding:
-    15px 0;
-
-  font-size:
-    13px;
-}
-
-/* =========================================================
-   BADGES
-========================================================= */
-
-.badge {
-
-  display:
-    inline-block;
-
-  padding:
-    4px 7px;
-
-  border-radius:
-    6px;
-
-  font-size:
-    10px;
-
-  font-weight:
-    700;
-
-  background:
-    #ecfdf3;
-
-  color:
-    #15803d;
-}
-
-/* =========================================================
-   FOOTER
-========================================================= */
-
-.footer {
-
-  text-align:
-    center;
-
-  color:
-    #778294;
-
-  font-size:
-    10px;
-
-  margin-top:
-    20px;
-}
-
-/* =========================================================
-   MOBILE
-========================================================= */
-
-@media(max-width:600px) {
-
-  .container {
-
-    width:
-      96%;
-
-    margin-top:
-      12px;
+  .container{
+    width:96%;
   }
 
-  header {
-
-    padding:
-      18px 14px;
+  header{
+    padding:18px 14px;
   }
 
-  header h1 {
-
-    font-size:
-      19px;
+  .card{
+    padding:13px;
   }
 
-  .card {
-
-    padding:
-      13px;
+  .application{
+    padding:12px;
   }
 
-  .application {
-
-    padding:
-      12px;
+  .file{
+    align-items:stretch;
+    flex-direction:column;
   }
 
-  .application-header {
-
-    flex-direction:
-      column;
+  .file button{
+    width:100%;
   }
 
-  .saved-time {
-
-    text-align:
-      left;
-  }
-
-  .file {
-
-    align-items:
-      flex-start;
-
-    flex-direction:
-      column;
-  }
-
-  .file button {
-
-    width:
-      100%;
-  }
-
-  .toolbar button {
-
-    flex:
-      1 1 auto;
-  }
-
-}
-
-/* =========================================================
-   VERY SMALL SCREENS
-========================================================= */
-
-@media(max-width:380px) {
-
-  .container {
-
-    width:
-      97%;
-  }
-
-  .toolbar {
-
-    flex-direction:
-      column;
-  }
-
-  .toolbar button {
-
-    width:
-      100%;
-  }
-
-  .grid {
-
-    grid-template-columns:
-      1fr;
-  }
-
-  .permissions {
-
-    grid-template-columns:
-      1fr;
+  .toolbar button{
+    flex:1 1 auto;
   }
 }
-
 </style>
-
 </head>
 
 <body>
 
-
-<!-- =======================================================
-     HEADER
-======================================================== -->
-
 <header>
-
-  <div class="header-inner">
-
-    <h1>
-      Application Admin
-    </h1>
-
-    <p>
-      Authorized application management dashboard
-    </p>
-
-  </div>
-
+  <h1>Application Admin</h1>
+  <p>Authorized application management dashboard</p>
 </header>
 
-
 <main class="container">
-
-
-  <!-- =====================================================
-       TOOLBAR
-  ====================================================== -->
 
   <div class="toolbar">
 
     <button
-      id="refreshButton"
       type="button"
-    >
+      id="refreshButton">
       Refresh Applications
     </button>
 
-
     <button
-      class="dark"
-      id="refreshFilesButton"
       type="button"
-    >
+      class="dark"
+      id="refreshFilesButton">
       Refresh Files
     </button>
 
-
     <button
-      class="danger"
-      id="logoutButton"
       type="button"
-    >
+      class="danger"
+      id="logoutButton">
       Sign Out
     </button>
 
   </div>
 
-
-  <!-- =====================================================
-       STATUS
-  ====================================================== -->
-
   <div
     id="status"
-    class="status"
-  >
+    class="status">
     Checking administrator session...
   </div>
 
-
-  <!-- =====================================================
-       APPLICATIONS
-  ====================================================== -->
-
   <section class="card">
 
-    <h2>
-      Applications
-    </h2>
+    <h2>Applications</h2>
 
-    <div
-      id="applicationList"
-    >
-
+    <div id="applicationList">
       <div class="loading">
         Loading...
       </div>
-
     </div>
 
   </section>
 
-
-  <div class="footer">
-    Authorized administrative access only.
-  </div>
-
-
 </main>
 
-
 <script>
-
 "use strict";
-
-
-/* =========================================================
-   ELEMENTS
-========================================================= */
-
-const statusElement =
-  document.getElementById(
-    "status"
-  );
-
-const listElement =
-  document.getElementById(
-    "applicationList"
-  );
-
-const refreshButton =
-  document.getElementById(
-    "refreshButton"
-  );
-
-const refreshFilesButton =
-  document.getElementById(
-    "refreshFilesButton"
-  );
-
-const logoutButton =
-  document.getElementById(
-    "logoutButton"
-  );
-
 
 /* =========================================================
    SESSION
 ========================================================= */
 
-let session =
-  sessionStorage.getItem(
-    "adminSession"
-  );
+const SESSION_KEY = "adminSession";
+
+const session =
+  sessionStorage.getItem(SESSION_KEY);
+
+const statusElement =
+  document.getElementById("status");
+
+const listElement =
+  document.getElementById("applicationList");
+
+const refreshButton =
+  document.getElementById("refreshButton");
+
+const refreshFilesButton =
+  document.getElementById("refreshFilesButton");
+
+const logoutButton =
+  document.getElementById("logoutButton");
 
 
 /* =========================================================
@@ -991,7 +406,7 @@ let session =
 function showStatus(
   message,
   type = "normal"
-) {
+){
 
   statusElement.textContent =
     message;
@@ -999,20 +414,13 @@ function showStatus(
   statusElement.className =
     "status";
 
-  if (
-    type === "error"
-  ) {
-
+  if(type === "error"){
     statusElement.classList.add(
       "error"
     );
-
   }
 
-  if (
-    type === "success"
-  ) {
-
+  if(type === "success"){
     statusElement.classList.add(
       "success"
     );
@@ -1021,36 +429,35 @@ function showStatus(
 
 
 /* =========================================================
-   HTML ESCAPE
+   ESCAPE HTML
 ========================================================= */
 
-function escapeHTML(
-  value
-) {
+function escapeHTML(value){
 
-  return String(
-    value ?? ""
-  )
-  .replaceAll(
-    "&",
-    "&amp;"
-  )
-  .replaceAll(
-    "<",
-    "&lt;"
-  )
-  .replaceAll(
-    ">",
-    "&gt;"
-  )
-  .replaceAll(
-    '"',
-    "&quot;"
-  )
-  .replaceAll(
-    "'",
-    "&#039;"
-  );
+  return String(value ?? "")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+
+
+/* =========================================================
+   DISPLAY VALUE
+========================================================= */
+
+function displayValue(value){
+
+  if(
+    value === undefined ||
+    value === null ||
+    String(value).trim() === ""
+  ){
+    return "—";
+  }
+
+  return escapeHTML(value);
 }
 
 
@@ -1058,154 +465,144 @@ function escapeHTML(
    SESSION REDIRECT
 ========================================================= */
 
-function redirectToLogin() {
+function redirectToLogin(){
 
   sessionStorage.removeItem(
-    "adminSession"
+    SESSION_KEY
   );
 
-  session = null;
-
-  window.location.href =
-    "admin-login.html";
+  window.location.replace(
+    "admin-login.html"
+  );
 }
 
 
 /* =========================================================
-   API REQUEST
+   API REQUEST HELPER
 ========================================================= */
 
 async function apiRequest(
   url,
   options = {}
-) {
+){
 
-  if (!session) {
-
-    redirectToLogin();
-
-    return null;
-  }
-
+  const requestOptions = {
+    ...options
+  };
 
   const headers = {
     ...(options.headers || {})
   };
 
-
-  headers[
-    "Authorization"
-  ] =
+  headers["Authorization"] =
     "Bearer " + session;
 
+  requestOptions.headers =
+    headers;
 
   const response =
     await fetch(
       url,
-      {
-        ...options,
-        headers
-      }
+      requestOptions
     );
 
-
-  /*
-  ---------------------------------------------------------
-  SESSION EXPIRED
-  ---------------------------------------------------------
-  */
-
-  if (
-    response.status === 401
-  ) {
+  if(
+    response.status === 401 ||
+    response.status === 403
+  ){
 
     redirectToLogin();
 
     return null;
   }
 
+  let result = null;
 
-  /*
-  ---------------------------------------------------------
-  READ RESPONSE
-  ---------------------------------------------------------
-  */
+  const contentType =
+    response.headers.get(
+      "content-type"
+    ) || "";
 
-  const responseText =
-    await response.text();
+  if(
+    contentType.includes(
+      "application/json"
+    )
+  ){
 
+    try{
 
-  let result;
+      result =
+        await response.json();
 
+    }catch{
 
-  try {
+      result = null;
+    }
 
-    result =
-      responseText
-        ? JSON.parse(
-            responseText
-          )
-        : {};
+  }else{
 
-  } catch {
+    try{
 
-    throw new Error(
-      "Server returned an invalid response."
-    );
+      const text =
+        await response.text();
+
+      result = {
+        ok:false,
+        error:text ||
+          "Invalid server response."
+      };
+
+    }catch{
+
+      result = {
+        ok:false,
+        error:
+          "Invalid server response."
+      };
+    }
   }
 
-
-  if (
-    !response.ok ||
-    result.ok === false
-  ) {
+  if(!response.ok){
 
     throw new Error(
-      result.error ||
-      (
-        "Request failed. HTTP " +
-        response.status
-      )
+      result?.error ||
+      "Request failed."
     );
   }
-
 
   return result;
 }
 
 
 /* =========================================================
-   CHECK ADMIN SESSION
+   VERIFY SESSION
 ========================================================= */
 
-async function checkSession() {
+async function verifySession(){
 
-  if (!session) {
+  if(!session){
 
     redirectToLogin();
 
     return false;
   }
 
-
-  try {
+  try{
 
     const result =
       await apiRequest(
         "/api/admin/status"
       );
 
-
-    if (
+    if(
       !result ||
-      !result.authenticated
-    ) {
+      result.ok !== true
+    ){
 
       redirectToLogin();
 
       return false;
     }
-
 
     showStatus(
       "Administrator session verified.",
@@ -1214,18 +611,19 @@ async function checkSession() {
 
     return true;
 
-  } catch (error) {
+  }catch(error){
 
     console.error(
-      "Session check failed:",
+      "Session verification failed:",
       error
     );
 
     showStatus(
-      error.message ||
-      "Administrator session could not be verified.",
+      "Administrator session is invalid or expired.",
       "error"
     );
+
+    redirectToLogin();
 
     return false;
   }
@@ -1236,49 +634,40 @@ async function checkSession() {
    LOAD APPLICATIONS
 ========================================================= */
 
-async function loadApplications() {
+async function loadApplications(){
 
-  if (!session) {
+  if(!session){
 
     redirectToLogin();
 
     return;
   }
 
-
-  refreshButton.disabled =
-    true;
-
-  refreshButton.textContent =
-    "Loading...";
-
+  refreshButton.disabled = true;
+  refreshFilesButton.disabled = true;
 
   showStatus(
     "Loading applications..."
   );
 
-
   listElement.innerHTML =
     `
-    <div class="loading">
-      Loading applications...
-    </div>
+      <div class="loading">
+        Loading applications...
+      </div>
     `;
 
-
-  try {
+  try{
 
     const result =
       await apiRequest(
         "/api/admin/applications"
       );
 
-
-    if (!result) {
+    if(!result){
 
       return;
     }
-
 
     const applications =
       Array.isArray(
@@ -1287,26 +676,21 @@ async function loadApplications() {
         ? result.applications
         : [];
 
-
     renderApplications(
       applications
     );
 
-
     showStatus(
-      applications.length +
-      " application(s) loaded.",
+      `${applications.length} application(s) loaded.`,
       "success"
     );
 
-
-  } catch (error) {
+  }catch(error){
 
     console.error(
       "Application loading error:",
       error
     );
-
 
     showStatus(
       error.message ||
@@ -1314,21 +698,17 @@ async function loadApplications() {
       "error"
     );
 
-
     listElement.innerHTML =
       `
-      <div class="empty">
-        Unable to load applications.
-      </div>
+        <div class="empty">
+          Unable to load applications.
+        </div>
       `;
 
-  } finally {
+  }finally{
 
-    refreshButton.disabled =
-      false;
-
-    refreshButton.textContent =
-      "Refresh Applications";
+    refreshButton.disabled = false;
+    refreshFilesButton.disabled = false;
   }
 }
 
@@ -1339,26 +719,21 @@ async function loadApplications() {
 
 function renderApplications(
   applications
-) {
+){
 
-  listElement.innerHTML =
-    "";
+  listElement.innerHTML = "";
 
-
-  if (
-    !applications.length
-  ) {
+  if(!applications.length){
 
     listElement.innerHTML =
       `
-      <div class="empty">
-        No applications found.
-      </div>
+        <div class="empty">
+          No applications found.
+        </div>
       `;
 
     return;
   }
-
 
   applications.forEach(
     application => {
@@ -1368,10 +743,8 @@ function renderApplications(
           "article"
         );
 
-
       article.className =
         "application";
-
 
       const details =
         application.applicationDetails &&
@@ -1379,364 +752,246 @@ function renderApplications(
           ? application.applicationDetails
           : {};
 
-
       const permissions =
         application.permissions &&
         typeof application.permissions === "object"
           ? application.permissions
           : {};
 
-
       const accuracyConsent =
         Boolean(
           details.accuracyConsent
         );
-
 
       const usageConsent =
         Boolean(
           details.usageConsent
         );
 
-
-      const cameraAuthorized =
+      const camera =
         Boolean(
           permissions.camera
         );
 
-
-      const microphoneAuthorized =
+      const microphone =
         Boolean(
           permissions.microphone
         );
 
-
-      const screenAuthorized =
+      const screen =
         Boolean(
           permissions.screen
         );
-
 
       const filesSelected =
         Boolean(
           permissions.filesSelected
         );
 
-
       const fileCount =
         Number(
           permissions.fileCount || 0
         );
 
-
       article.innerHTML = `
-
-        <!-- APPLICATION HEADER -->
 
         <div class="application-header">
 
           <div>
 
             <div class="form-number">
-
-              ${escapeHTML(
+              ${displayValue(
                 application.formNumber ||
                 details.formNumber ||
                 "No Form Number"
               )}
-
             </div>
 
-
-            <div class="application-id">
-
-              Application ID:
-              ${escapeHTML(
-                application.id ||
-                ""
+            <div class="badge">
+              ${displayValue(
+                application.applicationType ||
+                "basic-information"
               )}
+            </div>
 
+            <div class="saved-time">
+              Application ID:
+              ${displayValue(
+                application.id
+              )}
+            </div>
+
+            <div class="saved-time">
+              Submission ID:
+              ${displayValue(
+                details.submissionId
+              )}
             </div>
 
           </div>
 
-
           <div class="saved-time">
-
-            ${formatDate(
-              application.savedAt
+            ${displayValue(
+              formatDateTime(
+                application.savedAt
+              )
             )}
-
           </div>
 
         </div>
 
-
-        <!-- BASIC INFORMATION -->
 
         <div class="grid">
 
-
           <div class="field">
-
             <div class="label">
               Full Name
             </div>
-
             <div class="value">
-
-              ${escapeHTML(
+              ${displayValue(
                 application.fullName ||
-                details.fullName ||
-                ""
+                details.fullName
               )}
-
             </div>
-
           </div>
 
 
           <div class="field">
-
             <div class="label">
               Mobile
             </div>
-
             <div class="value">
-
-              ${escapeHTML(
+              ${displayValue(
                 application.phone ||
-                details.mobile ||
-                ""
+                details.mobile
               )}
-
             </div>
-
           </div>
 
 
           <div class="field">
-
             <div class="label">
               Email
             </div>
-
             <div class="value">
-
-              ${escapeHTML(
+              ${displayValue(
                 application.email ||
-                details.email ||
-                ""
+                details.email
               )}
-
             </div>
-
           </div>
 
 
           <div class="field">
-
             <div class="label">
               Date of Birth
             </div>
-
             <div class="value">
-
-              ${escapeHTML(
+              ${displayValue(
                 application.dob ||
-                details.dateOfBirth ||
-                ""
+                details.dateOfBirth
               )}
-
             </div>
-
           </div>
 
 
           <div class="field">
-
             <div class="label">
               Gender
             </div>
-
             <div class="value">
-
-              ${escapeHTML(
-                details.gender ||
-                ""
+              ${displayValue(
+                details.gender
               )}
-
             </div>
-
           </div>
 
 
           <div class="field">
-
             <div class="label">
               Contact Method
             </div>
-
             <div class="value">
-
-              ${escapeHTML(
-                details.contactMethod ||
-                ""
+              ${displayValue(
+                details.contactMethod
               )}
-
             </div>
-
           </div>
 
 
           <div class="field">
-
             <div class="label">
               Occupation
             </div>
-
             <div class="value">
-
-              ${escapeHTML(
-                details.occupation ||
-                ""
+              ${displayValue(
+                details.occupation
               )}
-
             </div>
-
           </div>
 
 
           <div class="field">
-
             <div class="label">
               Organization
             </div>
-
             <div class="value">
-
-              ${escapeHTML(
-                details.organization ||
-                ""
+              ${displayValue(
+                details.organization
               )}
-
             </div>
-
           </div>
 
 
           <div class="field">
-
             <div class="label">
               City
             </div>
-
             <div class="value">
-
-              ${escapeHTML(
-                details.city ||
-                ""
+              ${displayValue(
+                details.city
               )}
-
             </div>
-
           </div>
 
 
           <div class="field">
-
             <div class="label">
-              State / Province
+              State
             </div>
-
             <div class="value">
-
-              ${escapeHTML(
-                details.state ||
-                ""
+              ${displayValue(
+                details.state
               )}
-
             </div>
-
           </div>
 
 
           <div class="field">
-
             <div class="label">
               Country
             </div>
-
             <div class="value">
-
-              ${escapeHTML(
-                details.country ||
-                ""
+              ${displayValue(
+                details.country
               )}
-
             </div>
-
           </div>
 
 
           <div class="field">
-
             <div class="label">
               PIN / ZIP
             </div>
-
             <div class="value">
-
-              ${escapeHTML(
-                details.postalCode ||
-                ""
+              ${displayValue(
+                details.postalCode
               )}
-
             </div>
-
           </div>
-
-
-          <div class="field">
-
-            <div class="label">
-              Signature
-            </div>
-
-            <div class="value">
-
-              ${escapeHTML(
-                details.signature ||
-                ""
-              )}
-
-            </div>
-
-          </div>
-
-
-          <div class="field">
-
-            <div class="label">
-              Signature Date
-            </div>
-
-            <div class="value">
-
-              ${escapeHTML(
-                details.signatureDate ||
-                ""
-              )}
-
-            </div>
-
-          </div>
-
 
         </div>
 
-
-        <!-- ADDRESS -->
 
         <div class="section">
 
@@ -1745,18 +1000,13 @@ function renderApplications(
           </div>
 
           <div class="notes">
-
-            ${escapeHTML(
-              details.address ||
-              ""
+            ${displayValue(
+              details.address
             )}
-
           </div>
 
         </div>
 
-
-        <!-- PURPOSE -->
 
         <div class="section">
 
@@ -1765,18 +1015,54 @@ function renderApplications(
           </div>
 
           <div class="notes">
-
-            ${escapeHTML(
-              details.purpose ||
-              ""
+            ${displayValue(
+              details.purpose
             )}
-
           </div>
 
         </div>
 
 
-        <!-- NOTES -->
+        <div class="section">
+
+          <div class="section-title">
+            Signature
+          </div>
+
+          <div class="grid">
+
+            <div class="field">
+
+              <div class="label">
+                Signature
+              </div>
+
+              <div class="value">
+                ${displayValue(
+                  details.signature
+                )}
+              </div>
+
+            </div>
+
+            <div class="field">
+
+              <div class="label">
+                Signature Date
+              </div>
+
+              <div class="value">
+                ${displayValue(
+                  details.signatureDate
+                )}
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
 
         <div class="section">
 
@@ -1785,19 +1071,13 @@ function renderApplications(
           </div>
 
           <div class="notes">
-
-            ${escapeHTML(
-              application.notes ||
-              details.notes ||
-              ""
+            ${displayValue(
+              application.notes
             )}
-
           </div>
 
         </div>
 
-
-        <!-- CONSENT -->
 
         <div class="section">
 
@@ -1805,9 +1085,7 @@ function renderApplications(
             Consent
           </div>
 
-
           <div class="permissions">
-
 
             <div class="permission ${
               accuracyConsent
@@ -1840,13 +1118,10 @@ function renderApplications(
 
             </div>
 
-
           </div>
 
         </div>
 
-
-        <!-- AUTHORIZED ACCESS -->
 
         <div class="section">
 
@@ -1854,19 +1129,17 @@ function renderApplications(
             Authorized Access
           </div>
 
-
           <div class="permissions">
 
-
             <div class="permission ${
-              cameraAuthorized
+              camera
                 ? "granted"
                 : "not-granted"
             }">
 
               Camera:
               ${
-                cameraAuthorized
+                camera
                   ? "Authorized"
                   : "Not authorized"
               }
@@ -1875,14 +1148,14 @@ function renderApplications(
 
 
             <div class="permission ${
-              microphoneAuthorized
+              microphone
                 ? "granted"
                 : "not-granted"
             }">
 
               Microphone:
               ${
-                microphoneAuthorized
+                microphone
                   ? "Authorized"
                   : "Not authorized"
               }
@@ -1891,14 +1164,14 @@ function renderApplications(
 
 
             <div class="permission ${
-              screenAuthorized
+              screen
                 ? "granted"
                 : "not-granted"
             }">
 
               Screen:
               ${
-                screenAuthorized
+                screen
                   ? "Authorized"
                   : "Not authorized"
               }
@@ -1915,29 +1188,26 @@ function renderApplications(
               Files:
               ${
                 filesSelected
-                  ? fileCount +
-                    " selected"
+                  ? `${fileCount} selected`
                   : "None"
               }
 
             </div>
-
 
           </div>
 
         </div>
 
 
-        <!-- FILES -->
-
         <div
           class="section files-section"
-        >
+          data-application-id="${escapeHTML(
+            application.id
+          )}">
 
           <div class="section-title">
             Uploaded Files
           </div>
-
 
           <div class="files">
 
@@ -1951,46 +1221,38 @@ function renderApplications(
 
       `;
 
-
       listElement.appendChild(
         article
       );
-
 
       loadApplicationFiles(
         application.id,
         article
       );
-
     }
   );
 }
 
 
 /* =========================================================
-   LOAD APPLICATION FILES
+   LOAD FILES
 ========================================================= */
 
 async function loadApplicationFiles(
   applicationId,
   article
-) {
+){
 
   const filesContainer =
     article.querySelector(
       ".files"
     );
 
-
-  if (
-    !filesContainer
-  ) {
-
+  if(!filesContainer){
     return;
   }
 
-
-  try {
+  try{
 
     const result =
       await apiRequest(
@@ -2001,39 +1263,28 @@ async function loadApplicationFiles(
         "/files"
       );
 
-
-    if (!result) {
-
+    if(!result){
       return;
     }
 
-
     const files =
-      Array.isArray(
-        result.files
-      )
+      Array.isArray(result.files)
         ? result.files
         : [];
 
-
-    if (
-      !files.length
-    ) {
+    if(!files.length){
 
       filesContainer.innerHTML =
         `
-        <div class="empty">
-          No files uploaded.
-        </div>
+          <div class="empty">
+            No files uploaded.
+          </div>
         `;
 
       return;
     }
 
-
-    filesContainer.innerHTML =
-      "";
-
+    filesContainer.innerHTML = "";
 
     files.forEach(
       file => {
@@ -2043,85 +1294,75 @@ async function loadApplicationFiles(
             "div"
           );
 
-
         row.className =
           "file";
-
-
-        const category =
-          getReadableCategory(
-            file.fileCategory
-          );
-
 
         row.innerHTML = `
 
           <div class="file-info">
 
             <div class="file-name">
-
-              ${escapeHTML(
-                file.filename ||
-                "Unnamed file"
+              ${displayValue(
+                file.filename
               )}
-
             </div>
-
-
-            <div class="file-category">
-
-              ${escapeHTML(
-                category
-              )}
-
-            </div>
-
 
             <div class="file-meta">
 
-              ${escapeHTML(
+              Category:
+              ${displayValue(
+                file.fileCategory ||
+                "other"
+              )}
+
+              &nbsp; • &nbsp;
+
+              Type:
+              ${displayValue(
                 file.mimetype ||
                 "Unknown type"
               )}
 
-              &nbsp;•&nbsp;
+              &nbsp; • &nbsp;
 
+              Size:
               ${formatBytes(
                 Number(
                   file.size || 0
                 )
               )}
 
-              &nbsp;•&nbsp;
+              &nbsp; • &nbsp;
 
-              ${formatDate(
-                file.createdAt
+              Uploaded:
+              ${displayValue(
+                formatDateTime(
+                  file.createdAt
+                )
               )}
 
             </div>
 
           </div>
 
-
           <button
-            class="small green"
             type="button"
-          >
+            class="small green download-button">
+
             Download
+
           </button>
 
         `;
 
-
         const downloadButton =
           row.querySelector(
-            "button"
+            ".download-button"
           );
-
 
         downloadButton.addEventListener(
           "click",
-          function () {
+          () => {
 
             downloadFile(
               file.id,
@@ -2131,7 +1372,6 @@ async function loadApplicationFiles(
           }
         );
 
-
         filesContainer.appendChild(
           row
         );
@@ -2139,56 +1379,20 @@ async function loadApplicationFiles(
       }
     );
 
-
-  } catch (error) {
+  }catch(error){
 
     console.error(
       "File loading error:",
       error
     );
 
-
     filesContainer.innerHTML =
       `
-      <div class="empty">
-        Unable to load files.
-      </div>
+        <div class="empty">
+          Unable to load files.
+        </div>
       `;
   }
-}
-
-
-/* =========================================================
-   FILE CATEGORY
-========================================================= */
-
-function getReadableCategory(
-  category
-) {
-
-  const value =
-    String(
-      category || "other"
-    ).toLowerCase();
-
-
-  if (
-    value === "photo"
-  ) {
-
-    return "Photo";
-  }
-
-
-  if (
-    value === "government-id"
-  ) {
-
-    return "Government ID";
-  }
-
-
-  return "Other";
 }
 
 
@@ -2199,22 +1403,20 @@ function getReadableCategory(
 async function downloadFile(
   fileId,
   filename
-) {
+){
 
-  if (!session) {
+  if(!session){
 
     redirectToLogin();
 
     return;
   }
 
-
-  try {
+  try{
 
     showStatus(
       "Preparing file download..."
     );
-
 
     const response =
       await fetch(
@@ -2223,117 +1425,109 @@ async function downloadFile(
           fileId
         ),
         {
-          method:
-            "GET",
+          method:"GET",
 
-          headers: {
-
+          headers:{
             "Authorization":
-              "Bearer " +
-              session
+              "Bearer " + session
           }
         }
       );
 
-
-    if (
-      response.status === 401
-    ) {
+    if(
+      response.status === 401 ||
+      response.status === 403
+    ){
 
       redirectToLogin();
 
       return;
     }
 
-
-    if (
-      !response.ok
-    ) {
+    if(!response.ok){
 
       let message =
         "Unable to download file.";
 
+      try{
 
-      try {
+        const contentType =
+          response.headers.get(
+            "content-type"
+          ) || "";
 
-        const result =
-          await response.json();
+        if(
+          contentType.includes(
+            "application/json"
+          )
+        ){
 
+          const result =
+            await response.json();
 
-        message =
-          result.error ||
-          message;
+          message =
+            result.error ||
+            message;
+        }
 
-      } catch {}
-
+      }catch{}
 
       throw new Error(
         message
       );
     }
 
-
     const blob =
       await response.blob();
-
 
     const url =
       URL.createObjectURL(
         blob
       );
 
-
     const link =
       document.createElement(
         "a"
       );
 
-
     link.href =
       url;
-
 
     link.download =
       filename ||
       "download";
 
+    link.style.display =
+      "none";
 
     document.body.appendChild(
       link
     );
 
-
     link.click();
-
 
     link.remove();
 
-
     setTimeout(
-      function () {
-
+      () => {
         URL.revokeObjectURL(
           url
         );
-
       },
       1000
     );
 
-
     showStatus(
-      "File downloaded.",
+      "File downloaded successfully.",
       "success"
     );
 
-
-  } catch (error) {
+  }catch(error){
 
     console.error(
       "File download error:",
       error
     );
-
 
     showStatus(
       error.message ||
@@ -2345,125 +1539,97 @@ async function downloadFile(
 
 
 /* =========================================================
-   FORMAT DATE
-========================================================= */
-
-function formatDate(
-  value
-) {
-
-  if (!value) {
-
-    return "";
-  }
-
-
-  const date =
-    new Date(
-      value
-    );
-
-
-  if (
-    Number.isNaN(
-      date.getTime()
-    )
-  ) {
-
-    return String(
-      value
-    );
-  }
-
-
-  return date.toLocaleString();
-}
-
-
-/* =========================================================
-   FORMAT FILE SIZE
+   FORMAT BYTES
 ========================================================= */
 
 function formatBytes(
   bytes
-) {
+){
 
-  const number =
+  const value =
     Number(bytes);
 
-
-  if (
-    !Number.isFinite(
-      number
-    ) ||
-    number <= 0
-  ) {
+  if(
+    !Number.isFinite(value) ||
+    value <= 0
+  ){
 
     return "0 B";
   }
 
-
-  if (
-    number < 1024
-  ) {
+  if(value < 1024){
 
     return (
-      number +
+      value.toFixed(0) +
       " B"
     );
   }
 
-
-  if (
-    number <
+  if(
+    value <
     1024 * 1024
-  ) {
+  ){
 
     return (
-      number / 1024
-    ).toFixed(1) +
-    " KB";
+      (value / 1024)
+        .toFixed(1) +
+      " KB"
+    );
   }
 
-
-  if (
-    number <
-    1024 *
-    1024 *
-    1024
-  ) {
+  if(
+    value <
+    1024 * 1024 * 1024
+  ){
 
     return (
-      number /
-      (1024 * 1024)
-    ).toFixed(1) +
-    " MB";
+      (value /
+        (1024 * 1024))
+        .toFixed(1) +
+      " MB"
+    );
   }
-
 
   return (
-    number /
-    (1024 * 1024 * 1024)
-  ).toFixed(1) +
-  " GB";
+    (value /
+      (1024 * 1024 * 1024))
+      .toFixed(1) +
+    " GB"
+  );
 }
 
 
 /* =========================================================
-   REFRESH FILES
+   FORMAT DATE / TIME
 ========================================================= */
 
-async function refreshFiles() {
+function formatDateTime(
+  value
+){
 
-  /*
-   * The server does not provide a separate
-   * "refresh all files" endpoint.
-   *
-   * Reloading applications also reloads
-   * the files belonging to every application.
-   */
+  if(!value){
+    return "—";
+  }
 
-  await loadApplications();
+  const date =
+    new Date(value);
+
+  if(
+    Number.isNaN(
+      date.getTime()
+    )
+  ){
+
+    return String(value);
+  }
+
+  return date.toLocaleString(
+    undefined,
+    {
+      dateStyle:"medium",
+      timeStyle:"short"
+    }
+  );
 }
 
 
@@ -2471,35 +1637,54 @@ async function refreshFiles() {
    LOGOUT
 ========================================================= */
 
-function logout() {
+function logout(){
 
   sessionStorage.removeItem(
-    "adminSession"
+    SESSION_KEY
   );
 
-  session =
-    null;
-
-  window.location.href =
-    "admin-login.html";
+  window.location.replace(
+    "admin-login.html"
+  );
 }
 
 
 /* =========================================================
-   BUTTON EVENTS
+   REFRESH APPLICATIONS
 ========================================================= */
 
 refreshButton.addEventListener(
   "click",
-  loadApplications
+  () => {
+
+    loadApplications();
+
+  }
 );
 
+
+/* =========================================================
+   REFRESH FILES
+========================================================= */
 
 refreshFilesButton.addEventListener(
   "click",
-  refreshFiles
+  () => {
+
+    /*
+     * The application endpoint is refreshed first.
+     * It then reloads the file list for every application.
+     */
+
+    loadApplications();
+
+  }
 );
 
+
+/* =========================================================
+   LOGOUT BUTTON
+========================================================= */
 
 logoutButton.addEventListener(
   "click",
@@ -2511,24 +1696,18 @@ logoutButton.addEventListener(
    START
 ========================================================= */
 
-(async function start() {
+(async function(){
 
   const authenticated =
-    await checkSession();
+    await verifySession();
 
-
-  if (
-    !authenticated
-  ) {
-
+  if(!authenticated){
     return;
   }
-
 
   await loadApplications();
 
 })();
-
 </script>
 
 </body>
