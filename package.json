@@ -1,6 +1,6 @@
 {
   "name": "application-form",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Application Form submission portal",
   "main": "server.js",
   "scripts": {
@@ -8,7 +8,8 @@
     "dev": "node server.js"
   },
   "dependencies": {
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "pg": "^8.16.3"
   },
   "engines": {
     "node": ">=18"
