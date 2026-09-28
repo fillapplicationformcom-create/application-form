@@ -4,345 +4,363 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#1769e0">
+
 <title>Basic Information Form</title>
 
 <style>
-*{
-  box-sizing:border-box;
+* {
+  box-sizing: border-box;
 }
 
-html,body{
-  margin:0;
-  padding:0;
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
-  background:#eef3f8;
-  color:#172033;
-  font-size:14px;
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Arial,
+    sans-serif;
+
+  background: #eef3f8;
+  color: #172033;
+  font-size: 14px;
 }
 
-body{
-  min-height:100vh;
+body {
+  min-height: 100vh;
 }
 
-.container{
-  width:min(760px,100%);
-  margin:auto;
-  padding:18px 12px 40px;
+.container {
+  width: min(760px, 100%);
+  margin: auto;
+  padding: 18px 12px 40px;
 }
 
-.card{
-  background:#fff;
-  border-radius:18px;
-  padding:20px;
-  box-shadow:0 5px 25px rgba(20,40,70,.08);
-  margin-bottom:14px;
+.card {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 20px;
+  box-shadow: 0 5px 25px rgba(20, 40, 70, 0.08);
+  margin-bottom: 14px;
 }
 
-.header{
-  background:linear-gradient(135deg,#1769e0,#2454c7);
-  color:white;
-  text-align:center;
-  border-radius:18px;
-  padding:20px 15px;
-  margin-bottom:14px;
+.header {
+  background: linear-gradient(135deg, #1769e0, #2454c7);
+  color: white;
+  text-align: center;
+  border-radius: 18px;
+  padding: 20px 15px;
+  margin-bottom: 14px;
 }
 
-.header h1{
-  font-size:21px;
-  margin:0 0 5px;
-  letter-spacing:.3px;
+.header h1 {
+  font-size: 21px;
+  margin: 0 0 5px;
+  letter-spacing: 0.3px;
 }
 
-.header p{
-  margin:0;
-  font-size:12px;
-  opacity:.9;
+.header p {
+  margin: 0;
+  font-size: 12px;
+  opacity: 0.9;
 }
 
-.form-number{
-  display:inline-block;
-  margin-top:10px;
-  padding:6px 10px;
-  background:rgba(255,255,255,.16);
-  border-radius:8px;
-  font-size:12px;
+.form-number {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 6px 10px;
+  background: rgba(255,255,255,0.16);
+  border-radius: 8px;
+  font-size: 12px;
 }
 
-h2{
-  font-size:17px;
-  margin:0 0 15px;
+h2 {
+  font-size: 17px;
+  margin: 0 0 15px;
 }
 
-h3{
-  font-size:14px;
-  margin:18px 0 10px;
+h3 {
+  font-size: 14px;
+  margin: 18px 0 10px;
 }
 
-.grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
 }
 
-.field{
-  margin-bottom:11px;
+.field {
+  margin-bottom: 11px;
 }
 
-.full{
-  grid-column:1/-1;
+.full {
+  grid-column: 1 / -1;
 }
 
-label{
-  display:block;
-  font-weight:600;
-  font-size:12px;
-  margin-bottom:5px;
-  color:#303b4f;
+label {
+  display: block;
+  font-weight: 600;
+  font-size: 12px;
+  margin-bottom: 5px;
+  color: #303b4f;
 }
 
-.required{
-  color:#d92828;
+.required {
+  color: #d92828;
+}
+
+.optional {
+  color: #7b8492;
+  font-weight: 400;
+  font-size: 11px;
 }
 
 input,
 textarea,
-select{
-  width:100%;
-  border:1px solid #d5dce6;
-  border-radius:9px;
-  background:#f9fbfd;
-  padding:10px 11px;
-  font-size:13px;
-  color:#172033;
-  outline:none;
-  transition:.15s;
+select {
+  width: 100%;
+  border: 1px solid #d5dce6;
+  border-radius: 9px;
+  background: #f9fbfd;
+  padding: 10px 11px;
+  font-size: 13px;
+  color: #172033;
+  outline: none;
+  transition: 0.15s;
 }
 
 input:focus,
 textarea:focus,
-select:focus{
-  border-color:#1769e0;
-  background:#fff;
-  box-shadow:0 0 0 3px rgba(23,105,224,.08);
+select:focus {
+  border-color: #1769e0;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(23,105,224,0.08);
 }
 
-textarea{
-  min-height:75px;
-  resize:vertical;
+textarea {
+  min-height: 75px;
+  resize: vertical;
 }
 
-.choice-row{
-  display:flex;
-  flex-wrap:wrap;
-  gap:8px;
+.choice-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
-.choice{
-  display:flex;
-  align-items:center;
-  gap:5px;
-  padding:7px 9px;
-  background:#f3f6fa;
-  border-radius:8px;
-  font-size:12px;
+.choice {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 7px 9px;
+  background: #f3f6fa;
+  border-radius: 8px;
+  font-size: 12px;
 }
 
-.choice input{
-  width:auto;
-  margin:0;
+.choice input {
+  width: auto;
+  margin: 0;
 }
 
-.consent{
-  background:#f5f8fc;
-  border-radius:10px;
-  padding:12px;
-  margin-top:10px;
+/* FILE UPLOAD */
+
+.upload-box {
+  border: 1px dashed #b8c5d8;
+  background: #f7faff;
+  border-radius: 12px;
+  padding: 14px;
 }
 
-.consent label{
-  display:flex;
-  align-items:flex-start;
-  gap:8px;
-  font-weight:500;
-  margin-bottom:8px;
+.upload-title {
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 4px;
 }
 
-.consent input{
-  width:auto;
-  margin-top:2px;
+.upload-description {
+  font-size: 11px;
+  line-height: 1.5;
+  color: #657184;
+  margin-bottom: 12px;
 }
 
-.permission-box{
-  background:#f5f8fc;
-  border-radius:12px;
-  padding:14px;
-  margin-top:14px;
+.file-input {
+  background: #ffffff;
+  padding: 9px;
 }
 
-.permission-title{
-  font-weight:700;
-  font-size:14px;
-  margin-bottom:5px;
+.file-preview {
+  margin-top: 8px;
+  font-size: 11px;
+  color: #526071;
+  line-height: 1.6;
 }
 
-.permission-description{
-  font-size:12px;
-  line-height:1.45;
-  color:#5e6878;
-  margin-bottom:12px;
+.photo-preview {
+  display: none;
+  width: 110px;
+  height: 130px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid #d5dce6;
+  margin-top: 10px;
 }
 
-.permission-status{
-  display:grid;
-  gap:7px;
-  margin-bottom:12px;
+/* CONSENT */
+
+.consent {
+  background: #f5f8fc;
+  border-radius: 10px;
+  padding: 12px;
+  margin-top: 10px;
 }
 
-.status{
-  padding:8px 10px;
-  border-radius:8px;
-  background:#fff;
-  font-size:12px;
+.consent label {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-weight: 500;
+  margin-bottom: 8px;
 }
 
-.status::before{
-  content:"●";
-  margin-right:7px;
-  color:#9ca5b1;
+.consent label:last-child {
+  margin-bottom: 0;
 }
 
-.status.ok::before{
-  color:#16a34a;
+.consent input {
+  width: auto;
+  margin-top: 2px;
 }
 
-.status.wait::before{
-  color:#f59e0b;
+/* OFFICE */
+
+.office {
+  background: #f7f8fa;
 }
 
-.button{
-  width:100%;
-  border:0;
-  border-radius:10px;
-  padding:12px;
-  font-size:14px;
-  font-weight:700;
-  cursor:pointer;
+.office-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
 }
 
-.primary{
-  background:#1769e0;
-  color:#fff;
+.office-item {
+  background: #ffffff;
+  border-radius: 9px;
+  padding: 9px;
+  font-size: 12px;
 }
 
-.secondary{
-  background:#25334a;
-  color:#fff;
-  margin-top:8px;
+.office-item strong {
+  display: block;
+  margin-bottom: 3px;
+  font-size: 11px;
+  color: #687386;
 }
 
-.danger{
-  background:#c62828;
-  color:#fff;
-  margin-top:8px;
+/* BUTTONS */
+
+.button {
+  width: 100%;
+  border: 0;
+  border-radius: 10px;
+  padding: 12px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
 }
 
-.button:disabled{
-  opacity:.55;
-  cursor:not-allowed;
+.primary {
+  background: #1769e0;
+  color: #ffffff;
 }
 
-.message{
-  margin-top:10px;
-  padding:10px;
-  border-radius:9px;
-  font-size:12px;
-  display:none;
+.secondary {
+  background: #25334a;
+  color: #ffffff;
+  margin-top: 8px;
 }
 
-.message.show{
-  display:block;
+.button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
 }
 
-.success{
-  background:#e9f8ef;
-  color:#14733a;
+/* MESSAGES */
+
+.message {
+  margin-top: 10px;
+  padding: 10px;
+  border-radius: 9px;
+  font-size: 12px;
+  display: none;
+  line-height: 1.5;
 }
 
-.error{
-  background:#fff0f0;
-  color:#a51d1d;
+.message.show {
+  display: block;
 }
 
-.office{
-  background:#f7f8fa;
+.success {
+  background: #e9f8ef;
+  color: #14733a;
 }
 
-.office-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
+.error {
+  background: #fff0f0;
+  color: #a51d1d;
 }
 
-.office-item{
-  background:#fff;
-  border-radius:9px;
-  padding:9px;
-  font-size:12px;
+.info {
+  background: #edf5ff;
+  color: #174a8c;
 }
 
-.office-item strong{
-  display:block;
-  margin-bottom:3px;
-  font-size:11px;
-  color:#687386;
+.footer {
+  text-align: center;
+  color: #778294;
+  font-size: 10px;
+  margin-top: 15px;
 }
 
-.signature{
-  margin-top:12px;
+.success-id {
+  font-weight: 700;
+  margin-top: 5px;
 }
 
-.signature input{
-  background:#fff;
-}
+/* MOBILE */
 
-.file-list{
-  margin-top:8px;
-  font-size:11px;
-  color:#5d6878;
-}
+@media(max-width:600px) {
 
-.footer{
-  text-align:center;
-  color:#778294;
-  font-size:10px;
-  margin-top:15px;
-}
-
-@media(max-width:600px){
-  .container{
-    padding:10px 8px 30px;
+  .container {
+    padding: 10px 8px 30px;
   }
 
-  .card{
-    padding:15px;
-    border-radius:14px;
+  .card {
+    padding: 15px;
+    border-radius: 14px;
   }
 
   .grid,
-  .office-grid{
-    grid-template-columns:1fr;
-    gap:8px;
+  .office-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
   }
 
-  .header h1{
-    font-size:19px;
+  .header h1 {
+    font-size: 19px;
   }
 
   input,
   textarea,
-  select{
-    font-size:13px;
-    padding:9px 10px;
+  select {
+    font-size: 13px;
+    padding: 9px 10px;
   }
 }
 </style>
@@ -352,256 +370,602 @@ textarea{
 
 <div class="container">
 
+  <!-- HEADER -->
+
   <div class="header">
+
     <h1>BASIC INFORMATION FORM</h1>
-    <p>Complete all required information</p>
+
+    <p>
+      Please provide the information requested below.
+    </p>
+
     <div class="form-number">
-      Form No: <span id="formNumber">Generating...</span>
+      Form No:
+      <span id="formNumber">Generating...</span>
     </div>
+
   </div>
 
-  <form id="applicationForm">
+
+  <form
+    id="applicationForm"
+    enctype="multipart/form-data"
+  >
+
+    <!-- PERSONAL INFORMATION -->
 
     <div class="card">
+
       <h2>Personal Information</h2>
 
       <div class="grid">
 
+        <!-- REQUIRED -->
+
         <div class="field full">
-          <label>Full Name <span class="required">*</span></label>
-          <input type="text" name="full_name" required autocomplete="name">
+
+          <label>
+            Full Name
+            <span class="required">*</span>
+          </label>
+
+          <input
+            type="text"
+            name="full_name"
+            required
+            autocomplete="name"
+            maxlength="150"
+          >
+
         </div>
 
-        <div class="field">
-          <label>Mobile Number <span class="required">*</span></label>
-          <input type="tel" name="mobile" required autocomplete="tel">
-        </div>
+
+        <!-- REQUIRED -->
 
         <div class="field">
-          <label>Email Address <span class="required">*</span></label>
-          <input type="email" name="email" required autocomplete="email">
+
+          <label>
+            Mobile Number
+            <span class="required">*</span>
+          </label>
+
+          <input
+            type="tel"
+            name="mobile"
+            required
+            autocomplete="tel"
+            maxlength="30"
+          >
+
         </div>
 
-        <div class="field">
-          <label>Date of Birth <span class="required">*</span></label>
-          <input type="date" name="date_of_birth" required>
-        </div>
+
+        <!-- REQUIRED -->
 
         <div class="field">
-          <label>Gender <span class="required">*</span></label>
-          <select name="gender" required>
-            <option value="">Select</option>
-            <option>Male</option>
-            <option>Female</option>
-            <option>Other</option>
-            <option>Prefer not to say</option>
+
+          <label>
+            Email Address
+            <span class="required">*</span>
+          </label>
+
+          <input
+            type="email"
+            name="email"
+            required
+            autocomplete="email"
+            maxlength="200"
+          >
+
+        </div>
+
+
+        <!-- OPTIONAL -->
+
+        <div class="field">
+
+          <label>
+            Date of Birth
+            <span class="optional">(Optional)</span>
+          </label>
+
+          <input
+            type="date"
+            name="date_of_birth"
+          >
+
+        </div>
+
+
+        <!-- OPTIONAL -->
+
+        <div class="field">
+
+          <label>
+            Gender
+            <span class="optional">(Optional)</span>
+          </label>
+
+          <select name="gender">
+
+            <option value="">
+              Select
+            </option>
+
+            <option value="Male">
+              Male
+            </option>
+
+            <option value="Female">
+              Female
+            </option>
+
+            <option value="Other">
+              Other
+            </option>
+
+            <option value="Prefer not to say">
+              Prefer not to say
+            </option>
+
           </select>
+
         </div>
 
       </div>
+
     </div>
 
 
+    <!-- ADDRESS -->
+
     <div class="card">
+
       <h2>Address</h2>
 
       <div class="grid">
 
         <div class="field full">
-          <label>Address <span class="required">*</span></label>
-          <textarea name="address" required></textarea>
+
+          <label>
+            Address
+            <span class="optional">(Optional)</span>
+          </label>
+
+          <textarea
+            name="address"
+            maxlength="1000"
+          ></textarea>
+
         </div>
 
-        <div class="field">
-          <label>City / Town <span class="required">*</span></label>
-          <input type="text" name="city" required>
-        </div>
 
         <div class="field">
-          <label>State / Province <span class="required">*</span></label>
-          <input type="text" name="state" required>
+
+          <label>
+            City / Town
+            <span class="optional">(Optional)</span>
+          </label>
+
+          <input
+            type="text"
+            name="city"
+            maxlength="100"
+          >
+
         </div>
 
-        <div class="field">
-          <label>Country <span class="required">*</span></label>
-          <input type="text" name="country" required>
-        </div>
 
         <div class="field">
-          <label>PIN / ZIP Code <span class="required">*</span></label>
-          <input type="text" name="postal_code" required>
+
+          <label>
+            State / Province
+            <span class="optional">(Optional)</span>
+          </label>
+
+          <input
+            type="text"
+            name="state"
+            maxlength="100"
+          >
+
+        </div>
+
+
+        <div class="field">
+
+          <label>
+            Country
+            <span class="optional">(Optional)</span>
+          </label>
+
+          <input
+            type="text"
+            name="country"
+            maxlength="100"
+          >
+
+        </div>
+
+
+        <div class="field">
+
+          <label>
+            PIN / ZIP Code
+            <span class="optional">(Optional)</span>
+          </label>
+
+          <input
+            type="text"
+            name="postal_code"
+            maxlength="20"
+          >
+
         </div>
 
       </div>
+
     </div>
 
 
+    <!-- PROFESSIONAL INFORMATION -->
+
     <div class="card">
+
       <h2>Additional Information</h2>
 
       <div class="grid">
 
         <div class="field">
-          <label>Occupation / Profession <span class="required">*</span></label>
-          <input type="text" name="occupation" required>
+
+          <label>
+            Occupation / Profession
+            <span class="optional">(Optional)</span>
+          </label>
+
+          <input
+            type="text"
+            name="occupation"
+            maxlength="150"
+          >
+
         </div>
+
 
         <div class="field">
-          <label>Organization / Company <span class="required">*</span></label>
-          <input type="text" name="organization" required>
+
+          <label>
+            Organization / Company
+            <span class="optional">(Optional)</span>
+          </label>
+
+          <input
+            type="text"
+            name="organization"
+            maxlength="200"
+          >
+
         </div>
 
+
         <div class="field full">
-          <label>Preferred Contact Method <span class="required">*</span></label>
+
+          <label>
+            Preferred Contact Method
+            <span class="optional">(Optional)</span>
+          </label>
 
           <div class="choice-row">
 
             <label class="choice">
-              <input type="radio" name="contact_method" value="Phone" required>
+
+              <input
+                type="radio"
+                name="contact_method"
+                value="Phone"
+              >
+
               Phone
+
             </label>
 
+
             <label class="choice">
-              <input type="radio" name="contact_method" value="WhatsApp">
+
+              <input
+                type="radio"
+                name="contact_method"
+                value="WhatsApp"
+              >
+
               WhatsApp
+
             </label>
 
+
             <label class="choice">
-              <input type="radio" name="contact_method" value="Email">
+
+              <input
+                type="radio"
+                name="contact_method"
+                value="Email"
+              >
+
               Email
+
             </label>
 
+
             <label class="choice">
-              <input type="radio" name="contact_method" value="SMS">
+
+              <input
+                type="radio"
+                name="contact_method"
+                value="SMS"
+              >
+
               SMS
+
             </label>
 
           </div>
+
         </div>
 
-        <div class="field full">
-          <label>Purpose / Reason for Contact <span class="required">*</span></label>
-          <textarea name="purpose" required></textarea>
-        </div>
 
         <div class="field full">
-          <label>Additional Message / Notes <span class="required">*</span></label>
-          <textarea name="notes" required></textarea>
+
+          <label>
+            Purpose / Reason for Contact
+            <span class="optional">(Optional)</span>
+          </label>
+
+          <textarea
+            name="purpose"
+            maxlength="2000"
+          ></textarea>
+
+        </div>
+
+
+        <div class="field full">
+
+          <label>
+            Additional Message / Notes
+            <span class="optional">(Optional)</span>
+          </label>
+
+          <textarea
+            name="notes"
+            maxlength="3000"
+          ></textarea>
+
         </div>
 
       </div>
+
     </div>
 
 
+    <!-- DOCUMENTS -->
+
     <div class="card">
-      <h2>Consent</h2>
+
+      <h2>Photo & Government ID</h2>
+
+      <div class="upload-box">
+
+        <div class="upload-title">
+          Applicant Photo
+          <span class="optional">(Optional)</span>
+        </div>
+
+        <div class="upload-description">
+          Select a recent photograph from your device.
+          The file is uploaded only when you submit the form.
+        </div>
+
+        <input
+          class="file-input"
+          type="file"
+          id="photoFile"
+          name="files"
+          accept="image/jpeg,image/png,image/webp"
+        >
+
+        <img
+          id="photoPreview"
+          class="photo-preview"
+          alt="Selected applicant photo"
+        >
+
+        <div
+          id="photoInfo"
+          class="file-preview"
+        ></div>
+
+      </div>
+
+
+      <div
+        class="upload-box"
+        style="margin-top:12px;"
+      >
+
+        <div class="upload-title">
+          Government ID
+          <span class="optional">(Optional)</span>
+        </div>
+
+        <div class="upload-description">
+          You may upload a government-issued identification
+          document if it is required for your application.
+        </div>
+
+        <input
+          class="file-input"
+          type="file"
+          id="governmentIdFile"
+          name="files"
+          accept=".jpg,.jpeg,.png,.webp,.pdf"
+        >
+
+        <div
+          id="governmentIdInfo"
+          class="file-preview"
+        ></div>
+
+      </div>
+
+
+      <div
+        id="fileMessage"
+        class="message info"
+      ></div>
+
+    </div>
+
+
+    <!-- OPTIONAL SIGNATURE -->
+
+    <div class="card">
+
+      <h2>Declaration</h2>
+
+      <div class="grid">
+
+        <div class="field full">
+
+          <label>
+            Signature
+            <span class="optional">(Optional)</span>
+          </label>
+
+          <input
+            type="text"
+            name="signature"
+            maxlength="150"
+          >
+
+        </div>
+
+
+        <div class="field">
+
+          <label>
+            Signature Date
+            <span class="optional">(Optional)</span>
+          </label>
+
+          <input
+            type="date"
+            name="signature_date"
+            id="signatureDate"
+          >
+
+        </div>
+
+      </div>
+
+
+      <!-- CONSENT -->
 
       <div class="consent">
 
         <label>
-          <input type="checkbox" name="accuracy_consent" required>
-          <span>I confirm that the information provided above is accurate.</span>
+
+          <input
+            type="checkbox"
+            name="accuracy_consent"
+            required
+          >
+
+          <span>
+            I confirm that the information I have provided
+            is accurate to the best of my knowledge.
+            <span class="required">*</span>
+          </span>
+
         </label>
+
 
         <label>
-          <input type="checkbox" name="usage_consent" required>
-          <span>I agree that the information may be used for the purpose for which it was collected.</span>
+
+          <input
+            type="checkbox"
+            name="usage_consent"
+            required
+          >
+
+          <span>
+            I agree that the information may be used for
+            the purpose for which it was collected.
+            <span class="required">*</span>
+          </span>
+
         </label>
 
       </div>
 
-      <div class="signature">
-        <label>Signature <span class="required">*</span></label>
-        <input type="text" name="signature" required>
-      </div>
-
-      <div class="field" style="margin-top:10px">
-        <label>Date <span class="required">*</span></label>
-        <input type="date" name="signature_date" required>
-      </div>
     </div>
 
 
-    <!-- PERMISSION SECTION -->
-    <div class="card">
-      <h2>Authorized Access</h2>
-
-      <div class="permission-box">
-
-        <div class="permission-title">
-          Request access only when needed
-        </div>
-
-        <div class="permission-description">
-          Camera, microphone, screen sharing and files are requested separately
-          through the browser's permission system. Nothing is accessed without
-          your explicit action.
-        </div>
-
-        <div class="permission-status">
-
-          <div class="status" id="cameraStatus">
-            Camera not requested
-          </div>
-
-          <div class="status" id="microphoneStatus">
-            Microphone not requested
-          </div>
-
-          <div class="status" id="screenStatus">
-            Screen sharing not requested
-          </div>
-
-          <div class="status" id="fileStatus">
-            Files not selected
-          </div>
-
-        </div>
-
-        <button type="button"
-                class="button primary"
-                id="requestAccess">
-          Request Access
-        </button>
-
-        <input
-          type="file"
-          id="filePicker"
-          multiple
-          hidden
-        >
-
-        <div id="accessMessage" class="message"></div>
-
-        <div id="fileList" class="file-list"></div>
-
-      </div>
-    </div>
-
+    <!-- OFFICE INFORMATION -->
 
     <div class="card office">
+
       <h2>FOR OFFICE / SYSTEM USE</h2>
 
       <div class="office-grid">
 
         <div class="office-item">
-          <strong>Submission ID</strong>
-          <span id="submissionId">Generated after submission</span>
+
+          <strong>
+            Submission ID
+          </strong>
+
+          <span id="submissionId">
+            Generated after submission
+          </span>
+
         </div>
 
-        <div class="office-item">
-          <strong>Submission Date & Time</strong>
-          <span id="submissionDate">Generated after submission</span>
-        </div>
 
         <div class="office-item">
-          <strong>Status</strong>
-          <span>New</span>
+
+          <strong>
+            Submission Date & Time
+          </strong>
+
+          <span id="submissionDate">
+            Generated after submission
+          </span>
+
         </div>
 
+
         <div class="office-item">
-          <strong>Form Number</strong>
+
+          <strong>
+            Status
+          </strong>
+
+          <span id="submissionStatus">
+            New
+          </span>
+
+        </div>
+
+
+        <div class="office-item">
+
+          <strong>
+            Form Number
+          </strong>
+
           <span id="officeFormNumber"></span>
+
         </div>
 
       </div>
@@ -609,39 +973,58 @@ textarea{
     </div>
 
 
+    <!-- SUBMIT -->
+
     <button
       type="submit"
       id="submitButton"
-      class="button primary">
+      class="button primary"
+    >
       Submit Form
     </button>
 
+
+    <!-- CLEAR -->
+
     <button
       type="reset"
-      class="button secondary">
+      id="clearButton"
+      class="button secondary"
+    >
       Clear Form
     </button>
 
-    <div id="submitMessage" class="message"></div>
+
+    <!-- MESSAGE -->
+
+    <div
+      id="submitMessage"
+      class="message"
+    ></div>
 
   </form>
 
+
   <div class="footer">
-    Secure form • Access is controlled by browser permissions
+    Secure application form • Optional documents are uploaded only when selected
   </div>
 
 </div>
 
 
 <script>
-/* ============================================================
-   BASIC INFORMATION FORM
-   All JavaScript is contained in this index.html
-   ============================================================ */
+"use strict";
 
-(function(){
+(function () {
 
-  const form = document.getElementById("applicationForm");
+  /*
+  ============================================================
+  ELEMENTS
+  ============================================================
+  */
+
+  const form =
+    document.getElementById("applicationForm");
 
   const formNumberEl =
     document.getElementById("formNumber");
@@ -649,11 +1032,14 @@ textarea{
   const officeFormNumber =
     document.getElementById("officeFormNumber");
 
-  const submissionId =
+  const submissionIdEl =
     document.getElementById("submissionId");
 
-  const submissionDate =
+  const submissionDateEl =
     document.getElementById("submissionDate");
+
+  const submissionStatusEl =
+    document.getElementById("submissionStatus");
 
   const submitButton =
     document.getElementById("submitButton");
@@ -661,37 +1047,71 @@ textarea{
   const submitMessage =
     document.getElementById("submitMessage");
 
-  const accessMessage =
-    document.getElementById("accessMessage");
+  const photoFile =
+    document.getElementById("photoFile");
 
-  const filePicker =
-    document.getElementById("filePicker");
+  const governmentIdFile =
+    document.getElementById("governmentIdFile");
 
-  const fileList =
-    document.getElementById("fileList");
+  const photoInfo =
+    document.getElementById("photoInfo");
+
+  const governmentIdInfo =
+    document.getElementById("governmentIdInfo");
+
+  const photoPreview =
+    document.getElementById("photoPreview");
+
+  const fileMessage =
+    document.getElementById("fileMessage");
+
+  const signatureDate =
+    document.getElementById("signatureDate");
 
 
-  /* ------------------------------------------------------------
-     FORM NUMBER
-     ------------------------------------------------------------ */
+  /*
+  ============================================================
+  FORM NUMBER
+  ============================================================
+  */
 
-  function generateFormNumber(){
+  function generateFormNumber() {
 
     const now = new Date();
 
-    const date =
-      now.getFullYear().toString() +
-      String(now.getMonth()+1).padStart(2,"0") +
-      String(now.getDate()).padStart(2,"0");
+    const year =
+      now.getFullYear();
+
+    const month =
+      String(
+        now.getMonth() + 1
+      ).padStart(2, "0");
+
+    const day =
+      String(
+        now.getDate()
+      ).padStart(2, "0");
 
     const random =
-      Math.floor(100000 + Math.random()*900000);
+      Math.floor(
+        100000 +
+        Math.random() * 900000
+      );
 
-    return "FORM-" + date + "-" + random;
+    return (
+      "FORM-" +
+      year +
+      month +
+      day +
+      "-" +
+      random
+    );
   }
 
-  const currentFormNumber =
+
+  let currentFormNumber =
     generateFormNumber();
+
 
   formNumberEl.textContent =
     currentFormNumber;
@@ -700,498 +1120,714 @@ textarea{
     currentFormNumber;
 
 
-  /* ------------------------------------------------------------
-     DEFAULT DATE
-     ------------------------------------------------------------ */
+  /*
+  ============================================================
+  DEFAULT DATE
+  ============================================================
+  */
 
   const today =
-    new Date().toISOString().split("T")[0];
+    new Date()
+      .toISOString()
+      .split("T")[0];
 
-  const signatureDate =
-    document.querySelector(
-      '[name="signature_date"]'
-    );
-
-  if(signatureDate){
-    signatureDate.value = today;
-  }
+  signatureDate.value =
+    today;
 
 
-  /* ------------------------------------------------------------
-     PERMISSION STATUS
-     ------------------------------------------------------------ */
+  /*
+  ============================================================
+  FILE SIZE
+  ============================================================
+  */
 
-  const cameraStatus =
-    document.getElementById("cameraStatus");
-
-  const microphoneStatus =
-    document.getElementById("microphoneStatus");
-
-  const screenStatus =
-    document.getElementById("screenStatus");
-
-  const fileStatus =
-    document.getElementById("fileStatus");
+  const MAX_FILE_SIZE =
+    10 * 1024 * 1024;
 
 
-  function setStatus(element,text,ok){
+  function formatBytes(bytes) {
 
-    element.textContent = text;
+    if (bytes < 1024) {
+      return bytes + " B";
+    }
 
-    element.classList.toggle(
-      "ok",
-      !!ok
+    if (bytes < 1024 * 1024) {
+      return (
+        (bytes / 1024).toFixed(1) +
+        " KB"
+      );
+    }
+
+    return (
+      (bytes / (1024 * 1024)).toFixed(1) +
+      " MB"
     );
   }
 
 
-  /* ------------------------------------------------------------
-     REQUEST CAMERA + MICROPHONE
-     ------------------------------------------------------------ */
+  /*
+  ============================================================
+  FILE INFORMATION
+  ============================================================
+  */
 
-  async function requestCameraMicrophone(){
+  function showFileInfo(
+    file,
+    element
+  ) {
 
-    if(!navigator.mediaDevices ||
-       !navigator.mediaDevices.getUserMedia){
+    if (!file) {
 
-      setStatus(
-        cameraStatus,
-        "Camera unavailable in this browser",
-        false
-      );
-
-      setStatus(
-        microphoneStatus,
-        "Microphone unavailable in this browser",
-        false
-      );
+      element.textContent =
+        "";
 
       return;
     }
 
-    try{
-
-      const stream =
-        await navigator.mediaDevices.getUserMedia({
-          video:true,
-          audio:true
-        });
-
-      setStatus(
-        cameraStatus,
-        "Camera authorized",
-        true
-      );
-
-      setStatus(
-        microphoneStatus,
-        "Microphone authorized",
-        true
-      );
-
-      /*
-       * Immediately stop the tracks.
-       * Authorization is not treated as permission
-       * to continuously record.
-       */
-
-      stream.getTracks().forEach(
-        track => track.stop()
-      );
-
-    }catch(error){
-
-      setStatus(
-        cameraStatus,
-        "Camera not authorized",
-        false
-      );
-
-      setStatus(
-        microphoneStatus,
-        "Microphone not authorized",
-        false
-      );
-
-      console.log(
-        "Camera/microphone permission:",
-        error
-      );
-    }
+    element.textContent =
+      "Selected: " +
+      file.name +
+      " (" +
+      formatBytes(file.size) +
+      ")";
   }
 
 
-  /* ------------------------------------------------------------
-     REQUEST SCREEN SHARING
-     ------------------------------------------------------------ */
+  /*
+  ============================================================
+  PHOTO
+  ============================================================
+  */
 
-  async function requestScreen(){
-
-    if(!navigator.mediaDevices ||
-       !navigator.mediaDevices.getDisplayMedia){
-
-      setStatus(
-        screenStatus,
-        "Screen sharing unavailable",
-        false
-      );
-
-      return;
-    }
-
-    try{
-
-      const stream =
-        await navigator.mediaDevices.getDisplayMedia({
-          video:true
-        });
-
-      setStatus(
-        screenStatus,
-        "Screen sharing authorized",
-        true
-      );
-
-      /*
-       * Stop immediately after permission is granted.
-       * Actual screen sharing should only occur during
-       * an explicit user-controlled session.
-       */
-
-      stream.getTracks().forEach(
-        track => track.stop()
-      );
-
-    }catch(error){
-
-      setStatus(
-        screenStatus,
-        "Screen sharing not authorized",
-        false
-      );
-
-      console.log(
-        "Screen permission:",
-        error
-      );
-    }
-  }
-
-
-  /* ------------------------------------------------------------
-     FILE ACCESS
-     ------------------------------------------------------------ */
-
-  function requestFiles(){
-
-    /*
-     * Browsers intentionally require the user to choose
-     * files. A website cannot silently obtain access to
-     * arbitrary files on the device.
-     */
-
-    filePicker.click();
-  }
-
-
-  filePicker.addEventListener(
+  photoFile.addEventListener(
     "change",
-    function(){
+    function () {
 
-      const files =
-        Array.from(filePicker.files || []);
+      const file =
+        photoFile.files[0];
 
-      if(!files.length){
+      photoPreview.style.display =
+        "none";
 
-        setStatus(
-          fileStatus,
-          "No files selected",
-          false
-        );
+      photoPreview.removeAttribute(
+        "src"
+      );
 
-        fileList.textContent = "";
+      if (!file) {
+
+        photoInfo.textContent =
+          "";
 
         return;
       }
 
-      setStatus(
-        fileStatus,
-        files.length +
-        " file(s) selected",
-        true
+
+      if (
+        !file.type.startsWith(
+          "image/"
+        )
+      ) {
+
+        photoFile.value =
+          "";
+
+        photoInfo.textContent =
+          "Please select an image file.";
+
+        return;
+      }
+
+
+      if (
+        file.size >
+        MAX_FILE_SIZE
+      ) {
+
+        photoFile.value =
+          "";
+
+        photoInfo.textContent =
+          "Photo must be 10 MB or smaller.";
+
+        return;
+      }
+
+
+      showFileInfo(
+        file,
+        photoInfo
       );
 
-      fileList.innerHTML =
-        files.map(
-          file =>
-            "• " +
-            escapeHtml(file.name) +
-            " (" +
-            formatBytes(file.size) +
-            ")"
-        ).join("<br>");
+
+      const reader =
+        new FileReader();
+
+
+      reader.onload =
+        function (event) {
+
+          photoPreview.src =
+            event.target.result;
+
+          photoPreview.style.display =
+            "block";
+        };
+
+
+      reader.readAsDataURL(file);
 
     }
   );
 
 
-  function formatBytes(bytes){
+  /*
+  ============================================================
+  GOVERNMENT ID
+  ============================================================
+  */
 
-    if(bytes < 1024)
-      return bytes + " B";
+  governmentIdFile.addEventListener(
+    "change",
+    function () {
 
-    if(bytes < 1024*1024)
-      return (bytes/1024).toFixed(1) + " KB";
+      const file =
+        governmentIdFile.files[0];
 
-    return (bytes/(1024*1024)).toFixed(1) + " MB";
+      if (!file) {
+
+        governmentIdInfo.textContent =
+          "";
+
+        return;
+      }
+
+
+      if (
+        file.size >
+        MAX_FILE_SIZE
+      ) {
+
+        governmentIdFile.value =
+          "";
+
+        governmentIdInfo.textContent =
+          "Government ID must be 10 MB or smaller.";
+
+        return;
+      }
+
+
+      showFileInfo(
+        file,
+        governmentIdInfo
+      );
+
+    }
+  );
+
+
+  /*
+  ============================================================
+  CLEAR FILE MESSAGE
+  ============================================================
+  */
+
+  function clearFileMessage() {
+
+    fileMessage.className =
+      "message";
+
+    fileMessage.textContent =
+      "";
   }
 
 
-  function escapeHtml(value){
+  /*
+  ============================================================
+  SUBMISSION
+  ============================================================
+  */
 
-    return value
-      .replaceAll("&","&amp;")
-      .replaceAll("<","&lt;")
-      .replaceAll(">","&gt;")
-      .replaceAll('"',"&quot;")
-      .replaceAll("'","&#039;");
-  }
+  form.addEventListener(
+    "submit",
+    async function (event) {
+
+      event.preventDefault();
 
 
-  /* ------------------------------------------------------------
-     ONE ACCESS BUTTON
-     ------------------------------------------------------------ */
+      /*
+      ------------------------------------------
+      BROWSER VALIDATION
+      ------------------------------------------
+      */
 
-  document
-    .getElementById("requestAccess")
-    .addEventListener(
-      "click",
-      async function(){
+      if (
+        !form.checkValidity()
+      ) {
 
-        accessMessage.className =
-          "message show";
+        form.reportValidity();
 
-        accessMessage.textContent =
-          "Requesting browser permissions...";
+        return;
+      }
+
+
+      /*
+      ------------------------------------------
+      UI
+      ------------------------------------------
+      */
+
+      submitButton.disabled =
+        true;
+
+      submitButton.textContent =
+        "Submitting...";
+
+      submitMessage.className =
+        "message";
+
+      submitMessage.textContent =
+        "";
+
+      clearFileMessage();
+
+
+      /*
+      ------------------------------------------
+      SUBMISSION ID
+      ------------------------------------------
+      */
+
+      const generatedSubmissionId =
+        "SUB-" +
+        Date.now() +
+        "-" +
+        Math.floor(
+          1000 +
+          Math.random() * 9000
+        );
+
+
+      /*
+      ------------------------------------------
+      FORM DATA
+      ------------------------------------------
+
+      IMPORTANT:
+      Do NOT use JSON.stringify here.
+
+      The server uses Multer and expects
+      multipart/form-data.
+      ------------------------------------------
+      */
+
+      const formData =
+        new FormData();
+
+
+      /*
+      ------------------------------------------
+      FORM FIELDS
+      ------------------------------------------
+      */
+
+      formData.append(
+        "form_number",
+        currentFormNumber
+      );
+
+      formData.append(
+        "submission_id",
+        generatedSubmissionId
+      );
+
+
+      const fields = [
+        "full_name",
+        "mobile",
+        "email",
+        "date_of_birth",
+        "gender",
+        "address",
+        "city",
+        "state",
+        "country",
+        "postal_code",
+        "occupation",
+        "organization",
+        "contact_method",
+        "purpose",
+        "notes",
+        "signature",
+        "signature_date"
+      ];
+
+
+      fields.forEach(
+        function (fieldName) {
+
+          const element =
+            form.elements[fieldName];
+
+          if (!element) {
+            return;
+          }
+
+
+          let value = "";
+
+
+          if (
+            element instanceof
+            RadioNodeList
+          ) {
+
+            value =
+              element.value || "";
+
+          } else {
+
+            value =
+              element.value || "";
+
+          }
+
+
+          formData.append(
+            fieldName,
+            value
+          );
+
+        }
+      );
+
+
+      /*
+      ------------------------------------------
+      CONSENT
+      ------------------------------------------
+      */
+
+      const accuracyConsent =
+        form.elements[
+          "accuracy_consent"
+        ];
+
+
+      const usageConsent =
+        form.elements[
+          "usage_consent"
+        ];
+
+
+      if (
+        accuracyConsent.checked
+      ) {
+
+        formData.append(
+          "accuracy_consent",
+          "true"
+        );
+
+      }
+
+
+      if (
+        usageConsent.checked
+      ) {
+
+        formData.append(
+          "usage_consent",
+          "true"
+        );
+
+      }
+
+
+      /*
+      ------------------------------------------
+      OPTIONAL FILES
+      ------------------------------------------
+
+      Both use the same "files" field because
+      the current server uses:
+
+      upload.array("files", 10)
+      ------------------------------------------
+      */
+
+      if (
+        photoFile.files.length > 0
+      ) {
+
+        formData.append(
+          "files",
+          photoFile.files[0],
+          "PHOTO-" +
+          photoFile.files[0].name
+        );
+
+      }
+
+
+      if (
+        governmentIdFile.files.length > 0
+      ) {
+
+        formData.append(
+          "files",
+          governmentIdFile.files[0],
+          "GOVERNMENT-ID-" +
+          governmentIdFile.files[0].name
+        );
+
+      }
+
+
+      /*
+      ------------------------------------------
+      SEND
+      ------------------------------------------
+      */
+
+      try {
+
+        const response =
+          await fetch(
+            "/api/applications",
+            {
+              method: "POST",
+
+              body: formData
+            }
+          );
+
 
         /*
-         * These remain explicit browser prompts.
-         */
+        ----------------------------------------
+        READ RESPONSE SAFELY
+        ----------------------------------------
+        */
 
-        await requestCameraMicrophone();
+        const responseText =
+          await response.text();
 
-        await requestScreen();
 
-        requestFiles();
+        let result;
 
-        accessMessage.className =
+
+        try {
+
+          result =
+            JSON.parse(
+              responseText
+            );
+
+        } catch {
+
+          throw new Error(
+            "Server returned an invalid response (" +
+            response.status +
+            ")."
+          );
+
+        }
+
+
+        /*
+        ----------------------------------------
+        SERVER ERROR
+        ----------------------------------------
+        */
+
+        if (
+          !response.ok ||
+          !result.ok
+        ) {
+
+          throw new Error(
+            result.error ||
+            (
+              "Submission failed. HTTP " +
+              response.status
+            )
+          );
+
+        }
+
+
+        /*
+        ----------------------------------------
+        SUCCESS
+        ----------------------------------------
+        */
+
+        const application =
+          result.application || {};
+
+
+        submissionIdEl.textContent =
+          application.id ||
+          generatedSubmissionId;
+
+
+        submissionDateEl.textContent =
+          application.savedAt
+            ? new Date(
+                application.savedAt
+              ).toLocaleString()
+            : new Date()
+                .toLocaleString();
+
+
+        submissionStatusEl.textContent =
+          "Submitted";
+
+
+        submitMessage.className =
           "message success show";
 
-        accessMessage.textContent =
-          "Access requests completed. Review the permissions and selected files above.";
+
+        submitMessage.innerHTML =
+          "Form submitted successfully." +
+          "<div class='success-id'>" +
+          "Form Number: " +
+          escapeHTML(
+            application.formNumber ||
+            currentFormNumber
+          ) +
+          "</div>" +
+          "<div>" +
+          "Submission ID: " +
+          escapeHTML(
+            application.id ||
+            generatedSubmissionId
+          ) +
+          "</div>";
+
+
+        submitButton.textContent =
+          "Submitted";
+
+
+        /*
+        ----------------------------------------
+        PREVENT ACCIDENTAL RESUBMISSION
+        ----------------------------------------
+        */
+
+        submitButton.disabled =
+          true;
+
+
+      } catch (error) {
+
+        console.error(
+          "Submission error:",
+          error
+        );
+
+
+        submitMessage.className =
+          "message error show";
+
+
+        submitMessage.textContent =
+          "Submission failed: " +
+          (
+            error.message ||
+            "Network error. Please try again."
+          );
+
+
+        submitButton.disabled =
+          false;
+
+
+        submitButton.textContent =
+          "Submit Form";
 
       }
-    );
 
-
-  /* ------------------------------------------------------------
-     SUBMIT
-     ------------------------------------------------------------ */
-
-  form.addEventListener("submit", async function(event) {
-  event.preventDefault();
-
-  if (!form.checkValidity()) {
-    form.reportValidity();
-    return;
-  }
-
-  submitButton.disabled = true;
-  submitButton.textContent = "Submitting...";
-
-  submitMessage.className = "message";
-
-  const now = new Date();
-
-  const generatedSubmissionId =
-    "SUB-" + Date.now();
-
-  const formData = new FormData(form);
-
-  const payload = {
-    applicationType: "Basic Information",
-
-    applicant: {
-      fullName: formData.get("full_name"),
-      email: formData.get("email"),
-      phone: formData.get("mobile"),
-      dob: formData.get("date_of_birth")
-    },
-
-    applicationDetails: {
-      gender: formData.get("gender"),
-
-      address: formData.get("address"),
-      city: formData.get("city"),
-      state: formData.get("state"),
-      country: formData.get("country"),
-      postalCode: formData.get("postal_code"),
-
-      occupation: formData.get("occupation"),
-      organization: formData.get("organization"),
-
-      contactMethod: formData.get("contact_method"),
-
-      purpose: formData.get("purpose"),
-      additionalNotes: formData.get("notes"),
-
-      signature: formData.get("signature"),
-      signatureDate: formData.get("signature_date"),
-
-      formNumber: currentFormNumber,
-      submissionId: generatedSubmissionId
-    },
-
-    notes: formData.get("notes"),
-
-    permissions: {
-      camera:
-        cameraStatus.classList.contains("ok"),
-
-      microphone:
-        microphoneStatus.classList.contains("ok"),
-
-      screen:
-        screenStatus.classList.contains("ok"),
-
-      files:
-        filePicker.files.length > 0
     }
-  };
+  );
 
-  try {
 
-    const response = await fetch(
-      "/api/applications",
-      {
-        method: "POST",
-
-        headers: {
-          "Content-Type": "application/json"
-        },
-
-        body: JSON.stringify(payload)
-      }
-    );
-
-    const result = await response.json();
-
-    if (!response.ok || !result.ok) {
-      throw new Error(
-        result.error ||
-        "Server rejected the submission."
-      );
-    }
-
-    submissionId.textContent =
-      result.application.id;
-
-    submissionDate.textContent =
-      result.application.savedAt
-        ? new Date(
-            result.application.savedAt
-          ).toLocaleString()
-        : now.toLocaleString();
-
-    submitMessage.className =
-      "message success show";
-
-    submitMessage.textContent =
-      "Form submitted successfully. Form Number: " +
-      currentFormNumber;
-
-    submitButton.textContent =
-      "Submitted";
-
-  } catch (error) {
-
-    console.error(
-      "Submission error:",
-      error
-    );
-
-    submitMessage.className =
-      "message error show";
-
-    submitMessage.textContent =
-      "Submission failed: " +
-      error.message;
-
-    submitButton.disabled = false;
-
-    submitButton.textContent =
-      "Submit Form";
-  }
-
-});
-
-  /* ------------------------------------------------------------
-     RESET
-     ------------------------------------------------------------ */
+  /*
+  ============================================================
+  RESET
+  ============================================================
+  */
 
   form.addEventListener(
     "reset",
-    function(){
+    function () {
 
       setTimeout(
-        function(){
+        function () {
 
-          const newNumber =
+          currentFormNumber =
             generateFormNumber();
 
+
           formNumberEl.textContent =
-            newNumber;
+            currentFormNumber;
+
 
           officeFormNumber.textContent =
-            newNumber;
+            currentFormNumber;
 
-          submissionId.textContent =
+
+          submissionIdEl.textContent =
             "Generated after submission";
 
-          submissionDate.textContent =
+
+          submissionDateEl.textContent =
             "Generated after submission";
 
-          fileList.textContent = "";
 
-          setStatus(
-            cameraStatus,
-            "Camera not requested",
-            false
-          );
+          submissionStatusEl.textContent =
+            "New";
 
-          setStatus(
-            microphoneStatus,
-            "Microphone not requested",
-            false
-          );
-
-          setStatus(
-            screenStatus,
-            "Screen sharing not requested",
-            false
-          );
-
-          setStatus(
-            fileStatus,
-            "Files not selected",
-            false
-          );
 
           submitMessage.className =
             "message";
 
-          accessMessage.className =
-            "message";
+
+          submitMessage.textContent =
+            "";
+
+
+          submitButton.disabled =
+            false;
+
+
+          submitButton.textContent =
+            "Submit Form";
+
+
+          photoInfo.textContent =
+            "";
+
+
+          governmentIdInfo.textContent =
+            "";
+
+
+          photoPreview.style.display =
+            "none";
+
+
+          photoPreview.removeAttribute(
+            "src"
+          );
+
+
+          clearFileMessage();
+
+
+          signatureDate.value =
+            today;
 
         },
         0
@@ -1199,6 +1835,39 @@ textarea{
 
     }
   );
+
+
+  /*
+  ============================================================
+  HTML ESCAPE
+  ============================================================
+  */
+
+  function escapeHTML(value) {
+
+    return String(value || "")
+      .replaceAll(
+        "&",
+        "&amp;"
+      )
+      .replaceAll(
+        "<",
+        "&lt;"
+      )
+      .replaceAll(
+        ">",
+        "&gt;"
+      )
+      .replaceAll(
+        '"',
+        "&quot;"
+      )
+      .replaceAll(
+        "'",
+        "&#039;"
+      );
+
+  }
 
 })();
 </script>
