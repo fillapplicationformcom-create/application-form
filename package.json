@@ -1,0 +1,16 @@
+{
+  "name": "application-form",
+  "version": "1.0.0",
+  "description": "Application Form submission portal",
+  "main": "server/server.js",
+  "scripts": {
+    "start": "node server/server.js",
+    "dev": "node server/server.js"
+  },
+  "dependencies": {
+    "express": "^5.1.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

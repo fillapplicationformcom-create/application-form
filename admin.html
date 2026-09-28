@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width,initial-scale=1.0">
+
+<title>Application Admin</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg,#eef3ff,#f8f9fc);
+  color: #172033;
+}
+
+header {
+  background: linear-gradient(135deg,#173b8f,#2563eb);
+  color: white;
+  padding: 25px 20px;
+}
+
+header h1 {
+  margin: 0 0 6px;
+}
+
+.container {
+  width: min(1150px,94%);
+  margin: 25px auto 60px;
+}
+
+.toolbar {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+button {
+  padding: 12px 16px;
+  border: 0;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 700;
+  color: white;
+  background: #2563eb;
+}
+
+button.danger {
+  background: #dc2626;
+}
+
+.card {
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 8px 30px rgba(20,40,80,.09);
+}
+
+.application {
+  border: 1px solid #e1e5ec;
+  border-radius: 13px;
+  padding: 16px;
+  margin-top: 12px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns:
+    repeat(auto-fit,minmax(220px,1fr));
+  gap: 12px;
+}
+
+.label {
+  font-size: 12px;
+  color: #64748b;
+  margin-bottom: 3px;
+}
+
+.value {
+  font-weight: 600;
+  word-break: break-word;
+}
+
+.status {
+  padding: 12px;
+  background: #eff6ff;
+  color: #1e40af;
+  border-radius: 10px;
+  margin-bottom: 15px;
+}
+
+.error {
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
+.empty {
+  color: #64748b;
+  text-align: center;
+  padding: 30px;
+}
+
+@media(max-width:600px) {
+  .container {
+    width: 94%;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>Application Admin</h1>
+  <p>Authorized application management dashboard</p>
+</header>
+
+<main class="container">
+
+  <div class="toolbar">
+
+    <button
+      id="refreshButton">
+      Refresh Applications
+    </button>
+
+    <button
+      class="danger"
+      id="logoutButton">
+      Sign Out
+    </button>
+
+  </div>
+
+  <div
+    id="status"
+    class="status">
+    Loading applications...
+  </div>
+
+  <section class="card">
+
+    <h2>Applications</h2>
+
+    <div
+      id="applicationList">
+    </div>
+
+  </section>
+
+</main>
+
+<script>
+"use strict";
+
+const session =
+  sessionStorage.getItem(
+    "adminSession"
+  );
+
+const statusElement =
+  document.getElementById(
+    "status"
+  );
+
+const listElement =
+  document.getElementById(
+    "applicationList"
+  );
+
+
+function showStatus(
+  message,
+  error = false
+) {
+
+  statusElement.textContent =
+    message;
+
+  statusElement.className =
+    error
+      ? "status error"
+      : "status";
+}
+
+
+function escapeHTML(value) {
+
+  return String(
+    value ?? ""
+  )
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+
+async function loadApplications() {
+
+  if (!session) {
+
+    window.location.href =
+      "admin-login.html";
+
+    return;
+  }
+
+  showStatus(
+    "Loading applications..."
+  );
+
+  try {
+
+    const response =
+      await fetch(
+        "/api/admin/applications",
+        {
+          method: "GET",
+          headers: {
+            "Authorization":
+              "Bearer " + session
+          }
+        }
+      );
+
+
+    if (response.status === 401) {
+
+      sessionStorage.removeItem(
+        "adminSession"
+      );
+
+      window.location.href =
+        "admin-login.html";
+
+      return;
+    }
+
+
+    const result =
+      await response.json();
+
+
+    if (!response.ok) {
+
+      throw new Error(
+        result.error ||
+        "Unable to load applications."
+      );
+    }
+
+
+    renderApplications(
+      result.applications || []
+    );
+
+
+    showStatus(
+      `${result.applications?.length || 0} application(s) loaded.`
+    );
+
+
+  } catch (error) {
+
+    console.error(error);
+
+    showStatus(
+      error.message ||
+      "Unable to load applications.",
+      true
+    );
+  }
+}
+
+
+function renderApplications(
+  applications
+) {
+
+  listElement.innerHTML = "";
+
+
+  if (!applications.length) {
+
+    listElement.innerHTML =
+      `<div class="empty">
+        No applications found.
+      </div>`;
+
+    return;
+  }
+
+
+  applications.forEach(
+    application => {
+
+      const article =
+        document.createElement(
+          "article"
+        );
+
+      article.className =
+        "application";
+
+
+      article.innerHTML = `
+        <div class="grid">
+
+          <div>
+            <div class="label">
+              Application ID
+            </div>
+            <div class="value">
+              ${escapeHTML(application.id)}
+            </div>
+          </div>
+
+          <div>
+            <div class="label">
+              Application Type
+            </div>
+            <div class="value">
+              ${escapeHTML(application.applicationType)}
+            </div>
+          </div>
+
+          <div>
+            <div class="label">
+              Full Name
+            </div>
+            <div class="value">
+              ${escapeHTML(application.fullName)}
+            </div>
+          </div>
+
+          <div>
+            <div class="label">
+              Email
+            </div>
+            <div class="value">
+              ${escapeHTML(application.email)}
+            </div>
+          </div>
+
+          <div>
+            <div class="label">
+              Phone
+            </div>
+            <div class="value">
+              ${escapeHTML(application.phone)}
+            </div>
+          </div>
+
+          <div>
+            <div class="label">
+              Date of Birth
+            </div>
+            <div class="value">
+              ${escapeHTML(application.dob)}
+            </div>
+          </div>
+
+          <div>
+            <div class="label">
+              Submitted
+            </div>
+            <div class="value">
+              ${escapeHTML(application.savedAt)}
+            </div>
+          </div>
+
+        </div>
+
+        <hr>
+
+        <div class="label">
+          Additional Information
+        </div>
+
+        <div class="value">
+          ${escapeHTML(application.notes)}
+        </div>
+      `;
+
+
+      listElement.appendChild(
+        article
+      );
+
+    }
+  );
+}
+
+
+function logout() {
+
+  sessionStorage.removeItem(
+    "adminSession"
+  );
+
+  window.location.href =
+    "admin-login.html";
+}
+
+
+document
+  .getElementById(
+    "refreshButton"
+  )
+  .addEventListener(
+    "click",
+    loadApplications
+  );
+
+
+document
+  .getElementById(
+    "logoutButton"
+  )
+  .addEventListener(
+    "click",
+    logout
+  );
+
+
+loadApplications();
+</script>
+
+</body>
+</html>

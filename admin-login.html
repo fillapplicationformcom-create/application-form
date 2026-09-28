@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width,initial-scale=1.0">
+
+<title>Administrator Login</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: Arial, sans-serif;
+  background:
+    linear-gradient(
+      135deg,
+      #eef3ff,
+      #f8f9fc
+    );
+  color: #172033;
+}
+
+.card {
+  width: min(430px, 92%);
+  background: white;
+  padding: 30px;
+  border-radius: 18px;
+  box-shadow:
+    0 15px 45px rgba(20,40,80,.12);
+}
+
+h1 {
+  margin: 0 0 8px;
+}
+
+p {
+  color: #64748b;
+  line-height: 1.5;
+}
+
+label {
+  display: block;
+  margin: 18px 0 7px;
+  font-weight: 700;
+}
+
+input,
+button {
+  width: 100%;
+  padding: 13px;
+  border-radius: 10px;
+  font: inherit;
+}
+
+input {
+  border: 1px solid #ccd3df;
+}
+
+button {
+  margin-top: 18px;
+  border: 0;
+  background: #2563eb;
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: .6;
+}
+
+.status {
+  display: none;
+  margin-top: 15px;
+  padding: 12px;
+  border-radius: 9px;
+  background: #eff6ff;
+  color: #1e40af;
+}
+
+.error {
+  background: #fef2f2;
+  color: #b91c1c;
+}
+</style>
+</head>
+
+<body>
+
+<main class="card">
+
+  <h1>Administrator Login</h1>
+
+  <p>
+    Authorized administrators only.
+  </p>
+
+  <form id="loginForm">
+
+    <label for="adminToken">
+      Administrator Token
+    </label>
+
+    <input
+      id="adminToken"
+      type="password"
+      autocomplete="current-password"
+      required>
+
+    <button
+      id="loginButton"
+      type="submit">
+
+      Sign In
+
+    </button>
+
+  </form>
+
+  <div
+    id="status"
+    class="status">
+  </div>
+
+</main>
+
+<script>
+"use strict";
+
+const form =
+  document.getElementById(
+    "loginForm"
+  );
+
+const tokenInput =
+  document.getElementById(
+    "adminToken"
+  );
+
+const button =
+  document.getElementById(
+    "loginButton"
+  );
+
+const status =
+  document.getElementById(
+    "status"
+  );
+
+
+function showStatus(
+  message,
+  error = false
+) {
+
+  status.textContent =
+    message;
+
+  status.className =
+    "status" +
+    (error ? " error" : "");
+
+  status.style.display =
+    "block";
+}
+
+
+form.addEventListener(
+  "submit",
+  async event => {
+
+    event.preventDefault();
+
+    const token =
+      tokenInput.value.trim();
+
+    if (!token) {
+      showStatus(
+        "Enter the administrator token.",
+        true
+      );
+      return;
+    }
+
+    button.disabled = true;
+    button.textContent =
+      "Signing in...";
+
+    try {
+
+      /*
+       * The server-side login endpoint will
+       * validate this token and return a
+       * short-lived session.
+       */
+
+      const response =
+        await fetch(
+          "/api/admin/login",
+          {
+            method: "POST",
+
+            headers: {
+              "Content-Type":
+                "application/json"
+            },
+
+            body: JSON.stringify({
+              token
+            })
+          }
+        );
+
+      const result =
+        await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          result.error ||
+          "Authentication failed."
+        );
+      }
+
+      /*
+       * Store only the short-lived session
+       * token returned by the server.
+       */
+
+      sessionStorage.setItem(
+        "adminSession",
+        result.token
+      );
+
+      window.location.href =
+        "admin.html";
+
+    } catch (error) {
+
+      showStatus(
+        error.message ||
+        "Unable to sign in.",
+        true
+      );
+
+      button.disabled = false;
+      button.textContent =
+        "Sign In";
+    }
+
+  }
+);
+</script>
+
+</body>
+</html>

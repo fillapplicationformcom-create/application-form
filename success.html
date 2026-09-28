@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>Application Submitted</title>
+
+<style>
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  font-family:Arial,sans-serif;
+  background:#eef3f8;
+  color:#172033;
+}
+
+.card{
+  width:min(560px,100%);
+  background:#fff;
+  padding:35px 25px;
+  border-radius:20px;
+  text-align:center;
+  box-shadow:0 10px 35px rgba(0,0,0,.10);
+}
+
+.icon{
+  width:70px;
+  height:70px;
+  margin:0 auto 20px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#dcfce7;
+  color:#15803d;
+  font-size:38px;
+  font-weight:bold;
+}
+
+h1{
+  margin:0 0 12px;
+}
+
+.message{
+  color:#64748b;
+  line-height:1.6;
+}
+
+.reference{
+  margin:25px 0;
+  padding:18px;
+  border-radius:12px;
+  background:#f1f5f9;
+}
+
+.reference-label{
+  font-size:13px;
+  color:#64748b;
+  margin-bottom:7px;
+}
+
+#applicationId{
+  font-family:monospace;
+  font-size:20px;
+  font-weight:bold;
+  word-break:break-all;
+}
+
+button{
+  width:100%;
+  border:0;
+  border-radius:10px;
+  padding:14px;
+  margin-top:10px;
+  background:#1769e0;
+  color:#fff;
+  font-size:15px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+button.secondary{
+  background:#64748b;
+}
+
+.notice{
+  margin-top:20px;
+  padding:13px;
+  border-radius:10px;
+  background:#fff7ed;
+  color:#7c2d12;
+  font-size:13px;
+  line-height:1.5;
+}
+
+.error{
+  color:#991b1b;
+  background:#fef2f2;
+  padding:15px;
+  border-radius:10px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+<div class="icon">
+✓
+</div>
+
+<h1>
+Application Submitted
+</h1>
+
+<p class="message">
+Your application has been submitted successfully.
+Please keep your application reference number for future correspondence.
+</p>
+
+
+<div class="reference">
+
+<div class="reference-label">
+Application Reference Number
+</div>
+
+<div id="applicationId">
+Loading...
+</div>
+
+</div>
+
+
+<button
+  type="button"
+  onclick="copyApplicationId()"
+>
+Copy Reference Number
+</button>
+
+
+<button
+  type="button"
+  class="secondary"
+  onclick="goHome()"
+>
+Submit Another Application
+</button>
+
+
+<div class="notice">
+Keep your reference number private. The portal will never ask you to provide your password, OTP, PIN, CVV, or other authentication credentials through this page.
+</div>
+
+</div>
+
+
+<script>
+
+const params =
+  new URLSearchParams(
+    window.location.search
+  );
+
+const applicationId =
+  params.get(
+    "applicationId"
+  );
+
+
+const applicationElement =
+  document.getElementById(
+    "applicationId"
+  );
+
+
+/* =========================
+   DISPLAY REFERENCE
+========================= */
+
+if(applicationId){
+
+  applicationElement.textContent =
+    applicationId;
+
+}else{
+
+  applicationElement.textContent =
+    "Reference unavailable";
+
+}
+
+
+/* =========================
+   COPY
+========================= */
+
+async function copyApplicationId(){
+
+  if(!applicationId){
+    return;
+  }
+
+  try{
+
+    await navigator.clipboard.writeText(
+      applicationId
+    );
+
+    alert(
+      "Application reference copied."
+    );
+
+  }catch(error){
+
+    console.error(error);
+
+    alert(
+      "Unable to copy automatically. Please copy the reference manually."
+    );
+
+  }
+
+}
+
+
+/* =========================
+   HOME
+========================= */
+
+function goHome(){
+
+  window.location.href =
+    "/";
+
+}
+
+</script>
+
+</body>
+</html>
