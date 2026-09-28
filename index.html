@@ -167,8 +167,6 @@ textarea {
   margin: 0;
 }
 
-/* FILE UPLOAD */
-
 .upload-box {
   border: 1px dashed #b8c5d8;
   background: #f7faff;
@@ -211,8 +209,6 @@ textarea {
   margin-top: 10px;
 }
 
-/* CONSENT */
-
 .consent {
   background: #f5f8fc;
   border-radius: 10px;
@@ -237,8 +233,6 @@ textarea {
   margin-top: 2px;
 }
 
-/* OFFICE */
-
 .office {
   background: #f7f8fa;
 }
@@ -262,8 +256,6 @@ textarea {
   font-size: 11px;
   color: #687386;
 }
-
-/* BUTTONS */
 
 .button {
   width: 100%;
@@ -290,8 +282,6 @@ textarea {
   opacity: 0.55;
   cursor: not-allowed;
 }
-
-/* MESSAGES */
 
 .message {
   margin-top: 10px;
@@ -333,8 +323,6 @@ textarea {
   margin-top: 5px;
 }
 
-/* MOBILE */
-
 @media(max-width:600px) {
 
   .container {
@@ -370,8 +358,6 @@ textarea {
 
 <div class="container">
 
-  <!-- HEADER -->
-
   <div class="header">
 
     <h1>BASIC INFORMATION FORM</h1>
@@ -391,17 +377,18 @@ textarea {
   <form
     id="applicationForm"
     enctype="multipart/form-data"
+    novalidate
   >
 
-    <!-- PERSONAL INFORMATION -->
+    <!-- =====================================================
+         PERSONAL INFORMATION
+    ====================================================== -->
 
     <div class="card">
 
       <h2>Personal Information</h2>
 
       <div class="grid">
-
-        <!-- REQUIRED -->
 
         <div class="field full">
 
@@ -421,8 +408,6 @@ textarea {
         </div>
 
 
-        <!-- REQUIRED -->
-
         <div class="field">
 
           <label>
@@ -440,8 +425,6 @@ textarea {
 
         </div>
 
-
-        <!-- REQUIRED -->
 
         <div class="field">
 
@@ -461,8 +444,6 @@ textarea {
         </div>
 
 
-        <!-- OPTIONAL -->
-
         <div class="field">
 
           <label>
@@ -477,8 +458,6 @@ textarea {
 
         </div>
 
-
-        <!-- OPTIONAL -->
 
         <div class="field">
 
@@ -518,7 +497,9 @@ textarea {
     </div>
 
 
-    <!-- ADDRESS -->
+    <!-- =====================================================
+         ADDRESS
+    ====================================================== -->
 
     <div class="card">
 
@@ -609,7 +590,9 @@ textarea {
     </div>
 
 
-    <!-- PROFESSIONAL INFORMATION -->
+    <!-- =====================================================
+         ADDITIONAL INFORMATION
+    ====================================================== -->
 
     <div class="card">
 
@@ -748,11 +731,14 @@ textarea {
     </div>
 
 
-    <!-- DOCUMENTS -->
+    <!-- =====================================================
+         FILES
+    ====================================================== -->
 
     <div class="card">
 
       <h2>Photo & Government ID</h2>
+
 
       <div class="upload-box">
 
@@ -766,11 +752,15 @@ textarea {
           The file is uploaded only when you submit the form.
         </div>
 
+        <!-- IMPORTANT:
+             name="photo" matches server getFileCategory()
+        -->
+
         <input
           class="file-input"
           type="file"
           id="photoFile"
-          name="files"
+          name="photo"
           accept="image/jpeg,image/png,image/webp"
         >
 
@@ -803,11 +793,15 @@ textarea {
           document if it is required for your application.
         </div>
 
+        <!-- IMPORTANT:
+             name="government_id" matches server
+        -->
+
         <input
           class="file-input"
           type="file"
           id="governmentIdFile"
-          name="files"
+          name="government_id"
           accept=".jpg,.jpeg,.png,.webp,.pdf"
         >
 
@@ -827,7 +821,9 @@ textarea {
     </div>
 
 
-    <!-- OPTIONAL SIGNATURE -->
+    <!-- =====================================================
+         DECLARATION
+    ====================================================== -->
 
     <div class="card">
 
@@ -869,8 +865,6 @@ textarea {
       </div>
 
 
-      <!-- CONSENT -->
-
       <div class="consent">
 
         <label>
@@ -878,6 +872,7 @@ textarea {
           <input
             type="checkbox"
             name="accuracy_consent"
+            value="true"
             required
           >
 
@@ -895,6 +890,7 @@ textarea {
           <input
             type="checkbox"
             name="usage_consent"
+            value="true"
             required
           >
 
@@ -911,7 +907,9 @@ textarea {
     </div>
 
 
-    <!-- OFFICE INFORMATION -->
+    <!-- =====================================================
+         OFFICE / SYSTEM
+    ====================================================== -->
 
     <div class="card office">
 
@@ -973,7 +971,9 @@ textarea {
     </div>
 
 
-    <!-- SUBMIT -->
+    <!-- =====================================================
+         SUBMIT
+    ====================================================== -->
 
     <button
       type="submit"
@@ -984,8 +984,6 @@ textarea {
     </button>
 
 
-    <!-- CLEAR -->
-
     <button
       type="reset"
       id="clearButton"
@@ -994,8 +992,6 @@ textarea {
       Clear Form
     </button>
 
-
-    <!-- MESSAGE -->
 
     <div
       id="submitMessage"
@@ -1017,11 +1013,9 @@ textarea {
 
 (function () {
 
-  /*
-  ============================================================
-  ELEMENTS
-  ============================================================
-  */
+  /* =========================================================
+     ELEMENTS
+  ========================================================= */
 
   const form =
     document.getElementById("applicationForm");
@@ -1069,15 +1063,14 @@ textarea {
     document.getElementById("signatureDate");
 
 
-  /*
-  ============================================================
-  FORM NUMBER
-  ============================================================
-  */
+  /* =========================================================
+     FORM NUMBER
+  ========================================================= */
 
   function generateFormNumber() {
 
-    const now = new Date();
+    const now =
+      new Date();
 
     const year =
       now.getFullYear();
@@ -1120,26 +1113,45 @@ textarea {
     currentFormNumber;
 
 
-  /*
-  ============================================================
-  DEFAULT DATE
-  ============================================================
-  */
+  /* =========================================================
+     DEFAULT DATE
+  ========================================================= */
 
-  const today =
-    new Date()
-      .toISOString()
-      .split("T")[0];
+  function getLocalDate() {
+
+    const now =
+      new Date();
+
+    const year =
+      now.getFullYear();
+
+    const month =
+      String(
+        now.getMonth() + 1
+      ).padStart(2, "0");
+
+    const day =
+      String(
+        now.getDate()
+      ).padStart(2, "0");
+
+    return (
+      year +
+      "-" +
+      month +
+      "-" +
+      day
+    );
+  }
+
 
   signatureDate.value =
-    today;
+    getLocalDate();
 
 
-  /*
-  ============================================================
-  FILE SIZE
-  ============================================================
-  */
+  /* =========================================================
+     FILE CONFIGURATION
+  ========================================================= */
 
   const MAX_FILE_SIZE =
     10 * 1024 * 1024;
@@ -1148,28 +1160,32 @@ textarea {
   function formatBytes(bytes) {
 
     if (bytes < 1024) {
-      return bytes + " B";
+
+      return (
+        bytes +
+        " B"
+      );
     }
 
-    if (bytes < 1024 * 1024) {
+    if (
+      bytes <
+      1024 * 1024
+    ) {
+
       return (
-        (bytes / 1024).toFixed(1) +
+        (bytes / 1024)
+          .toFixed(1) +
         " KB"
       );
     }
 
     return (
-      (bytes / (1024 * 1024)).toFixed(1) +
+      (bytes / (1024 * 1024))
+        .toFixed(1) +
       " MB"
     );
   }
 
-
-  /*
-  ============================================================
-  FILE INFORMATION
-  ============================================================
-  */
 
   function showFileInfo(
     file,
@@ -1193,11 +1209,19 @@ textarea {
   }
 
 
-  /*
-  ============================================================
-  PHOTO
-  ============================================================
-  */
+  function clearFileMessage() {
+
+    fileMessage.className =
+      "message";
+
+    fileMessage.textContent =
+      "";
+  }
+
+
+  /* =========================================================
+     PHOTO PREVIEW
+  ========================================================= */
 
   photoFile.addEventListener(
     "change",
@@ -1212,6 +1236,7 @@ textarea {
       photoPreview.removeAttribute(
         "src"
       );
+
 
       if (!file) {
 
@@ -1232,7 +1257,7 @@ textarea {
           "";
 
         photoInfo.textContent =
-          "Please select an image file.";
+          "Please select a JPG, PNG or WebP image.";
 
         return;
       }
@@ -1274,17 +1299,17 @@ textarea {
         };
 
 
-      reader.readAsDataURL(file);
+      reader.readAsDataURL(
+        file
+      );
 
     }
   );
 
 
-  /*
-  ============================================================
-  GOVERNMENT ID
-  ============================================================
-  */
+  /* =========================================================
+     GOVERNMENT ID
+  ========================================================= */
 
   governmentIdFile.addEventListener(
     "change",
@@ -1292,6 +1317,7 @@ textarea {
 
       const file =
         governmentIdFile.files[0];
+
 
       if (!file) {
 
@@ -1326,27 +1352,9 @@ textarea {
   );
 
 
-  /*
-  ============================================================
-  CLEAR FILE MESSAGE
-  ============================================================
-  */
-
-  function clearFileMessage() {
-
-    fileMessage.className =
-      "message";
-
-    fileMessage.textContent =
-      "";
-  }
-
-
-  /*
-  ============================================================
-  SUBMISSION
-  ============================================================
-  */
+  /* =========================================================
+     SUBMISSION
+  ========================================================= */
 
   form.addEventListener(
     "submit",
@@ -1355,11 +1363,9 @@ textarea {
       event.preventDefault();
 
 
-      /*
-      ------------------------------------------
-      BROWSER VALIDATION
-      ------------------------------------------
-      */
+      /* -----------------------------------------------------
+         BROWSER VALIDATION
+      ----------------------------------------------------- */
 
       if (
         !form.checkValidity()
@@ -1371,11 +1377,9 @@ textarea {
       }
 
 
-      /*
-      ------------------------------------------
-      UI
-      ------------------------------------------
-      */
+      /* -----------------------------------------------------
+         UI
+      ----------------------------------------------------- */
 
       submitButton.disabled =
         true;
@@ -1392,11 +1396,9 @@ textarea {
       clearFileMessage();
 
 
-      /*
-      ------------------------------------------
-      SUBMISSION ID
-      ------------------------------------------
-      */
+      /* -----------------------------------------------------
+         SUBMISSION ID
+      ----------------------------------------------------- */
 
       const generatedSubmissionId =
         "SUB-" +
@@ -1408,28 +1410,23 @@ textarea {
         );
 
 
-      /*
-      ------------------------------------------
-      FORM DATA
-      ------------------------------------------
-
-      IMPORTANT:
-      Do NOT use JSON.stringify here.
-
-      The server uses Multer and expects
-      multipart/form-data.
-      ------------------------------------------
-      */
+      /* -----------------------------------------------------
+         FORM DATA
+         
+         IMPORTANT:
+         Do NOT use JSON.stringify().
+         
+         The server uses Multer and therefore expects
+         multipart/form-data.
+      ----------------------------------------------------- */
 
       const formData =
         new FormData();
 
 
-      /*
-      ------------------------------------------
-      FORM FIELDS
-      ------------------------------------------
-      */
+      /* -----------------------------------------------------
+         IDENTIFIERS
+      ----------------------------------------------------- */
 
       formData.append(
         "form_number",
@@ -1442,24 +1439,46 @@ textarea {
       );
 
 
+      /* -----------------------------------------------------
+         TEXT FORM FIELDS
+      ----------------------------------------------------- */
+
       const fields = [
+
         "full_name",
+
         "mobile",
+
         "email",
+
         "date_of_birth",
+
         "gender",
+
         "address",
+
         "city",
+
         "state",
+
         "country",
+
         "postal_code",
+
         "occupation",
+
         "organization",
+
         "contact_method",
+
         "purpose",
+
         "notes",
+
         "signature",
+
         "signature_date"
+
       ];
 
 
@@ -1469,12 +1488,15 @@ textarea {
           const element =
             form.elements[fieldName];
 
+
           if (!element) {
+
             return;
           }
 
 
-          let value = "";
+          let value =
+            "";
 
 
           if (
@@ -1483,13 +1505,14 @@ textarea {
           ) {
 
             value =
-              element.value || "";
+              element.value ||
+              "";
 
           } else {
 
             value =
-              element.value || "";
-
+              element.value ||
+              "";
           }
 
 
@@ -1502,17 +1525,14 @@ textarea {
       );
 
 
-      /*
-      ------------------------------------------
-      CONSENT
-      ------------------------------------------
-      */
+      /* -----------------------------------------------------
+         CONSENT
+      ----------------------------------------------------- */
 
       const accuracyConsent =
         form.elements[
           "accuracy_consent"
         ];
-
 
       const usageConsent =
         form.elements[
@@ -1520,75 +1540,74 @@ textarea {
         ];
 
 
-      if (
+      formData.append(
+        "accuracy_consent",
         accuracyConsent.checked
-      ) {
-
-        formData.append(
-          "accuracy_consent",
-          "true"
-        );
-
-      }
+          ? "true"
+          : "false"
+      );
 
 
-      if (
+      formData.append(
+        "usage_consent",
         usageConsent.checked
-      ) {
-
-        formData.append(
-          "usage_consent",
-          "true"
-        );
-
-      }
+          ? "true"
+          : "false"
+      );
 
 
-      /*
-      ------------------------------------------
-      OPTIONAL FILES
-      ------------------------------------------
-
-      Both use the same "files" field because
-      the current server uses:
-
-      upload.array("files", 10)
-      ------------------------------------------
-      */
+      /* -----------------------------------------------------
+         PHOTO
+         
+         IMPORTANT:
+         Field name is "photo".
+         This matches getFileCategory() in server.js.
+      ----------------------------------------------------- */
 
       if (
+        photoFile &&
+        photoFile.files &&
         photoFile.files.length > 0
       ) {
 
         formData.append(
-          "files",
+          "photo",
           photoFile.files[0],
           "PHOTO-" +
           photoFile.files[0].name
         );
-
       }
 
 
+      /* -----------------------------------------------------
+         GOVERNMENT ID
+         
+         IMPORTANT:
+         Field name is "government_id".
+         This matches getFileCategory() in server.js.
+      ----------------------------------------------------- */
+
       if (
+        governmentIdFile &&
+        governmentIdFile.files &&
         governmentIdFile.files.length > 0
       ) {
 
         formData.append(
-          "files",
+          "government_id",
           governmentIdFile.files[0],
           "GOVERNMENT-ID-" +
           governmentIdFile.files[0].name
         );
-
       }
 
 
-      /*
-      ------------------------------------------
-      SEND
-      ------------------------------------------
-      */
+      /* -----------------------------------------------------
+         SEND TO SERVER
+         
+         DO NOT manually set Content-Type.
+         Browser automatically creates multipart boundary.
+      ----------------------------------------------------- */
 
       try {
 
@@ -1603,11 +1622,9 @@ textarea {
           );
 
 
-        /*
-        ----------------------------------------
-        READ RESPONSE SAFELY
-        ----------------------------------------
-        */
+        /* ---------------------------------------------------
+           READ SERVER RESPONSE
+        --------------------------------------------------- */
 
         const responseText =
           await response.text();
@@ -1623,22 +1640,23 @@ textarea {
               responseText
             );
 
-        } catch {
+        } catch (parseError) {
 
-          throw new Error(
-            "Server returned an invalid response (" +
-            response.status +
-            ")."
+          console.error(
+            "Invalid server response:",
+            responseText
           );
 
+          throw new Error(
+            "Server returned an invalid response. HTTP " +
+            response.status
+          );
         }
 
 
-        /*
-        ----------------------------------------
-        SERVER ERROR
-        ----------------------------------------
-        */
+        /* ---------------------------------------------------
+           SERVER ERROR
+        --------------------------------------------------- */
 
         if (
           !response.ok ||
@@ -1652,23 +1670,36 @@ textarea {
               response.status
             )
           );
-
         }
 
 
-        /*
-        ----------------------------------------
-        SUCCESS
-        ----------------------------------------
-        */
+        /* ---------------------------------------------------
+           SUCCESS
+        --------------------------------------------------- */
 
         const application =
-          result.application || {};
+          result.application ||
+          {};
+
+
+        /*
+         * IMPORTANT:
+         * application.submissionId is the submission ID
+         * generated/saved by server.js.
+         */
+
+        const finalSubmissionId =
+          application.submissionId ||
+          generatedSubmissionId;
+
+
+        const finalFormNumber =
+          application.formNumber ||
+          currentFormNumber;
 
 
         submissionIdEl.textContent =
-          application.id ||
-          generatedSubmissionId;
+          finalSubmissionId;
 
 
         submissionDateEl.textContent =
@@ -1684,37 +1715,45 @@ textarea {
           "Submitted";
 
 
+        /*
+         * Keep displayed form number synchronized
+         * with server response.
+         */
+
+        formNumberEl.textContent =
+          finalFormNumber;
+
+        officeFormNumber.textContent =
+          finalFormNumber;
+
+        currentFormNumber =
+          finalFormNumber;
+
+
         submitMessage.className =
           "message success show";
 
 
         submitMessage.innerHTML =
           "Form submitted successfully." +
+
           "<div class='success-id'>" +
           "Form Number: " +
           escapeHTML(
-            application.formNumber ||
-            currentFormNumber
+            finalFormNumber
           ) +
           "</div>" +
+
           "<div>" +
           "Submission ID: " +
           escapeHTML(
-            application.id ||
-            generatedSubmissionId
+            finalSubmissionId
           ) +
           "</div>";
 
 
         submitButton.textContent =
           "Submitted";
-
-
-        /*
-        ----------------------------------------
-        PREVENT ACCIDENTAL RESUBMISSION
-        ----------------------------------------
-        */
 
         submitButton.disabled =
           true;
@@ -1743,7 +1782,6 @@ textarea {
         submitButton.disabled =
           false;
 
-
         submitButton.textContent =
           "Submit Form";
 
@@ -1753,11 +1791,9 @@ textarea {
   );
 
 
-  /*
-  ============================================================
-  RESET
-  ============================================================
-  */
+  /* =========================================================
+     RESET FORM
+  ========================================================= */
 
   form.addEventListener(
     "reset",
@@ -1827,7 +1863,7 @@ textarea {
 
 
           signatureDate.value =
-            today;
+            getLocalDate();
 
         },
         0
@@ -1837,37 +1873,43 @@ textarea {
   );
 
 
-  /*
-  ============================================================
-  HTML ESCAPE
-  ============================================================
-  */
+  /* =========================================================
+     HTML ESCAPE
+  ========================================================= */
 
   function escapeHTML(value) {
 
-    return String(value || "")
+    return String(
+      value || ""
+    )
+
       .replaceAll(
         "&",
         "&amp;"
       )
+
       .replaceAll(
         "<",
         "&lt;"
       )
+
       .replaceAll(
         ">",
         "&gt;"
       )
+
       .replaceAll(
         '"',
         "&quot;"
       )
+
       .replaceAll(
         "'",
         "&#039;"
       );
 
   }
+
 
 })();
 </script>
