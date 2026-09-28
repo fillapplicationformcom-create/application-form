@@ -13,20 +13,22 @@ const {
 
 const app = express();
 
-const PORT = process.env.PORT || 3000;
+/* =========================================================
+   CONFIGURATION
+========================================================= */
+
+const PORT = Number(process.env.PORT) || 3000;
 const ROOT_DIR = __dirname;
 
 const ADMIN_TOKEN =
-  process.env.ADMIN_TOKEN || "";
+  String(process.env.ADMIN_TOKEN || "").trim();
 
 const DATABASE_URL =
-  process.env.DATABASE_URL || "";
+  String(process.env.DATABASE_URL || "").trim();
 
-/*
-=====================================================
-FILE UPLOAD
-=====================================================
-*/
+/* =========================================================
+   FILE UPLOAD CONFIGURATION
+========================================================= */
 
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -37,11 +39,9 @@ const upload = multer({
   }
 });
 
-/*
-=====================================================
-DATABASE
-=====================================================
-*/
+/* =========================================================
+   DATABASE
+========================================================= */
 
 let pool = null;
 
@@ -49,24 +49,31 @@ if (DATABASE_URL) {
 
   pool = new Pool({
     connectionString: DATABASE_URL,
+
     ssl: {
       rejectUnauthorized: false
-    }
+    },
+
+    max: 10,
+
+    idleTimeoutMillis: 30000,
+
+    connectionTimeoutMillis: 10000
   });
 
   pool.on("error", error => {
+
     console.error(
       "PostgreSQL pool error:",
       error
     );
+
   });
 }
 
-/*
-=====================================================
-DATABASE INITIALIZATION
-=====================================================
-*/
+/* =========================================================
+   DATABASE INITIALIZATION
+========================================================= */
 
 async function initializeDatabase() {
 
@@ -79,37 +86,73 @@ async function initializeDatabase() {
     return;
   }
 
+  /*
+  ---------------------------------------------------------
+  APPLICATIONS TABLE
+  ---------------------------------------------------------
+  */
+
   await pool.query(`
     CREATE TABLE IF NOT EXISTS applications (
+
       id TEXT PRIMARY KEY,
 
       form_number TEXT UNIQUE NOT NULL,
 
-      application_type TEXT NOT NULL,
+      application_type TEXT NOT NULL
+        DEFAULT 'basic-information',
 
       full_name TEXT NOT NULL,
 
-      email TEXT NOT NULL,
+      email TEXT,
 
-      phone TEXT NOT NULL,
+      phone TEXT,
 
-      dob TEXT NOT NULL,
+      dob TEXT,
 
       application_details JSONB
-        DEFAULT '{}'::jsonb,
+        NOT NULL DEFAULT '{}'::jsonb,
 
       notes TEXT,
 
       permissions JSONB
-        DEFAULT '{}'::jsonb,
+        NOT NULL DEFAULT '{}'::jsonb,
 
       created_at TIMESTAMPTZ
         NOT NULL DEFAULT NOW()
     )
   `);
 
+  /*
+  ---------------------------------------------------------
+  EXISTING DATABASE MIGRATION
+  ---------------------------------------------------------
+  */
+
+  await pool.query(`
+    ALTER TABLE applications
+    ALTER COLUMN email DROP NOT NULL
+  `);
+
+  await pool.query(`
+    ALTER TABLE applications
+    ALTER COLUMN phone DROP NOT NULL
+  `);
+
+  await pool.query(`
+    ALTER TABLE applications
+    ALTER COLUMN dob DROP NOT NULL
+  `);
+
+  /*
+  ---------------------------------------------------------
+  FILES TABLE
+  ---------------------------------------------------------
+  */
+
   await pool.query(`
     CREATE TABLE IF NOT EXISTS application_files (
+
       id TEXT PRIMARY KEY,
 
       application_id TEXT NOT NULL
@@ -124,32 +167,47 @@ async function initializeDatabase() {
 
       file_data BYTEA NOT NULL,
 
+      file_category TEXT
+        DEFAULT 'other',
+
       created_at TIMESTAMPTZ
         NOT NULL DEFAULT NOW()
     )
   `);
 
+  /*
+  ---------------------------------------------------------
+  MIGRATE EXISTING FILE TABLE
+  ---------------------------------------------------------
+  */
+
+  await pool.query(`
+    ALTER TABLE application_files
+    ADD COLUMN IF NOT EXISTS file_category TEXT
+    DEFAULT 'other'
+  `);
+
   console.log(
-    "PostgreSQL database initialized."
+    "PostgreSQL database initialized successfully."
   );
 }
 
-/*
-=====================================================
-MIDDLEWARE
-=====================================================
-*/
+/* =========================================================
+   MIDDLEWARE
+========================================================= */
+
+app.disable("x-powered-by");
 
 app.use(
   express.json({
-    limit: "10mb"
+    limit: "15mb"
   })
 );
 
 app.use(
   express.urlencoded({
     extended: true,
-    limit: "10mb"
+    limit: "15mb"
   })
 );
 
@@ -159,17 +217,345 @@ app.use(
   })
 );
 
-/*
-=====================================================
-HEALTH
-=====================================================
-*/
+/* =========================================================
+   HELPER FUNCTIONS
+========================================================= */
+
+function clean(value) {
+
+  if (
+    value === undefined ||
+    value === null
+  ) {
+    return "";
+  }
+
+  return String(value).trim();
+}
+
+function makeFormNumber() {
+
+  const now = new Date();
+
+  const date =
+    now
+      .toISOString()
+      .slice(0, 10)
+      .replace(/-/g, "");
+
+  const random =
+    Math.floor(
+      100000 +
+      Math.random() * 900000
+    );
+
+  return `FORM-${date}-${random}`;
+}
+
+function makeSubmissionId() {
+
+  return (
+    "SUB-" +
+    Date.now() +
+    "-" +
+    crypto
+      .randomBytes(3)
+      .toString("hex")
+      .toUpperCase()
+  );
+}
+
+function getFileCategory(file) {
+
+  if (!file) {
+    return "other";
+  }
+
+  const field =
+    clean(file.fieldname).toLowerCase();
+
+  if (
+    field === "photo" ||
+    field === "profile_photo" ||
+    field === "profilePhoto"
+  ) {
+    return "photo";
+  }
+
+  if (
+    field === "government_id" ||
+    field === "governmentId" ||
+    field === "gov_id" ||
+    field === "govId"
+  ) {
+    return "government-id";
+  }
+
+  return "other";
+}
+
+function normalizeApplication(body) {
+
+  const source =
+    body || {};
+
+  /*
+  ---------------------------------------------------------
+  SUPPORT BOTH:
+  1. FLAT FORM DATA
+  2. NESTED JSON
+  ---------------------------------------------------------
+  */
+
+  const applicant =
+    source.applicant &&
+    typeof source.applicant === "object"
+      ? source.applicant
+      : {};
+
+  const details =
+    source.applicationDetails &&
+    typeof source.applicationDetails === "object"
+      ? source.applicationDetails
+      : {};
+
+  const permissions =
+    source.permissions &&
+    typeof source.permissions === "object"
+      ? source.permissions
+      : {};
+
+  const fullName =
+    clean(
+      source.full_name ||
+      source.fullName ||
+      applicant.fullName
+    );
+
+  const mobile =
+    clean(
+      source.mobile ||
+      source.phone ||
+      applicant.phone
+    );
+
+  const email =
+    clean(
+      source.email ||
+      applicant.email
+    );
+
+  const dob =
+    clean(
+      source.date_of_birth ||
+      source.dob ||
+      applicant.dob
+    );
+
+  const gender =
+    clean(
+      source.gender ||
+      details.gender
+    );
+
+  const address =
+    clean(
+      source.address ||
+      details.address
+    );
+
+  const city =
+    clean(
+      source.city ||
+      details.city
+    );
+
+  const state =
+    clean(
+      source.state ||
+      details.state
+    );
+
+  const country =
+    clean(
+      source.country ||
+      details.country
+    );
+
+  const postalCode =
+    clean(
+      source.postal_code ||
+      source.postalCode ||
+      details.postalCode
+    );
+
+  const occupation =
+    clean(
+      source.occupation ||
+      details.occupation
+    );
+
+  const organization =
+    clean(
+      source.organization ||
+      details.organization
+    );
+
+  const contactMethod =
+    clean(
+      source.contact_method ||
+      source.contactMethod ||
+      details.contactMethod
+    );
+
+  const purpose =
+    clean(
+      source.purpose ||
+      details.purpose
+    );
+
+  const notes =
+    clean(
+      source.notes ||
+      source.additionalNotes ||
+      details.additionalNotes
+    );
+
+  const signature =
+    clean(
+      source.signature ||
+      details.signature
+    );
+
+  const signatureDate =
+    clean(
+      source.signature_date ||
+      source.signatureDate ||
+      details.signatureDate
+    );
+
+  const formNumber =
+    clean(
+      source.form_number ||
+      source.formNumber ||
+      details.formNumber
+    );
+
+  const submissionId =
+    clean(
+      source.submission_id ||
+      source.submissionId ||
+      details.submissionId
+    );
+
+  const accuracyConsent =
+    source.accuracy_consent !== undefined
+      ? Boolean(
+          source.accuracy_consent === true ||
+          source.accuracy_consent === "true" ||
+          source.accuracy_consent === "on"
+        )
+      : Boolean(
+          source.accuracyConsent
+        );
+
+  const usageConsent =
+    source.usage_consent !== undefined
+      ? Boolean(
+          source.usage_consent === true ||
+          source.usage_consent === "true" ||
+          source.usage_consent === "on"
+        )
+      : Boolean(
+          source.usageConsent
+        );
+
+  /*
+  ---------------------------------------------------------
+  PERMISSION INFORMATION
+  ---------------------------------------------------------
+  */
+
+  const camera =
+    source.camera_authorized !== undefined
+      ? source.camera_authorized === "true"
+      : Boolean(permissions.camera);
+
+  const microphone =
+    source.microphone_authorized !== undefined
+      ? source.microphone_authorized === "true"
+      : Boolean(permissions.microphone);
+
+  const screen =
+    source.screen_authorized !== undefined
+      ? source.screen_authorized === "true"
+      : Boolean(permissions.screen);
+
+  return {
+
+    fullName,
+
+    mobile,
+
+    email,
+
+    dob,
+
+    gender,
+
+    address,
+
+    city,
+
+    state,
+
+    country,
+
+    postalCode,
+
+    occupation,
+
+    organization,
+
+    contactMethod,
+
+    purpose,
+
+    notes,
+
+    signature,
+
+    signatureDate,
+
+    formNumber,
+
+    submissionId,
+
+    accuracyConsent,
+
+    usageConsent,
+
+    permissions: {
+
+      camera,
+
+      microphone,
+
+      screen
+    }
+  };
+}
+
+/* =========================================================
+   HEALTH CHECK
+========================================================= */
 
 app.get(
   "/api/health",
   async (req, res) => {
 
-    let database = "not-configured";
+    let database =
+      "not-configured";
 
     if (pool) {
 
@@ -179,7 +565,8 @@ app.get(
           "SELECT 1"
         );
 
-        database = "postgresql";
+        database =
+          "postgresql";
 
       } catch (error) {
 
@@ -188,24 +575,29 @@ app.get(
           error.message
         );
 
-        database = "postgresql-error";
+        database =
+          "postgresql-error";
       }
     }
 
     return res.json({
+
       ok: true,
-      service: "application-form",
+
+      service:
+        "application-form",
+
       database,
-      time: new Date().toISOString()
+
+      time:
+        new Date().toISOString()
     });
   }
 );
 
-/*
-=====================================================
-HOME
-=====================================================
-*/
+/* =========================================================
+   HOME PAGE
+========================================================= */
 
 app.get(
   "/",
@@ -220,276 +612,238 @@ app.get(
   }
 );
 
-/*
-=====================================================
-CREATE APPLICATION
-=====================================================
-*/
+/* =========================================================
+   CREATE APPLICATION
+========================================================= */
 
 app.post(
   "/api/applications",
-  upload.array("files", 10),
+
+  upload.any(),
 
   async (req, res) => {
 
+    const requestId =
+      crypto.randomUUID();
+
     try {
+
+      console.log(
+        `[${requestId}] Application submission started`
+      );
+
+      /*
+      -----------------------------------------------------
+      DATABASE CHECK
+      -----------------------------------------------------
+      */
 
       if (!pool) {
 
+        console.error(
+          `[${requestId}] DATABASE_URL missing`
+        );
+
         return res.status(503).json({
+
           ok: false,
+
           error:
-            "Database is not configured. Add DATABASE_URL in Render Environment Variables."
+            "Database is not configured. Add DATABASE_URL to Render Environment Variables.",
+
+          requestId
         });
       }
 
-      const body = req.body || {};
-
-      const formNumber =
-        String(
-          body.form_number || ""
-        ).trim();
-
-      const submissionId =
-        String(
-          body.submission_id || ""
-        ).trim();
-
-      const fullName =
-        String(
-          body.full_name || ""
-        ).trim();
-
-      const mobile =
-        String(
-          body.mobile || ""
-        ).trim();
-
-      const email =
-        String(
-          body.email || ""
-        ).trim();
-
-      const dob =
-        String(
-          body.date_of_birth || ""
-        ).trim();
-
-      const gender =
-        String(
-          body.gender || ""
-        ).trim();
-
-      const address =
-        String(
-          body.address || ""
-        ).trim();
-
-      const city =
-        String(
-          body.city || ""
-        ).trim();
-
-      const state =
-        String(
-          body.state || ""
-        ).trim();
-
-      const country =
-        String(
-          body.country || ""
-        ).trim();
-
-      const postalCode =
-        String(
-          body.postal_code || ""
-        ).trim();
-
-      const occupation =
-        String(
-          body.occupation || ""
-        ).trim();
-
-      const organization =
-        String(
-          body.organization || ""
-        ).trim();
-
-      const contactMethod =
-        String(
-          body.contact_method || ""
-        ).trim();
-
-      const purpose =
-        String(
-          body.purpose || ""
-        ).trim();
-
-      const notes =
-        String(
-          body.notes || ""
-        ).trim();
-
-      const signature =
-        String(
-          body.signature || ""
-        ).trim();
-
-      const signatureDate =
-        String(
-          body.signature_date || ""
-        ).trim();
-
       /*
-      ===============================================
-      REQUIRED FIELDS
-      ===============================================
+      -----------------------------------------------------
+      NORMALIZE DATA
+      -----------------------------------------------------
       */
 
-      const requiredFields = {
-        "Full Name": fullName,
-        "Mobile Number": mobile,
-        "Email Address": email,
-        "Date of Birth": dob,
-        "Gender": gender,
-        "Address": address,
-        "City / Town": city,
-        "State / Province": state,
-        "Country": country,
-        "PIN / ZIP Code": postalCode,
-        "Occupation / Profession": occupation,
-        "Organization / Company": organization,
-        "Preferred Contact Method": contactMethod,
-        "Purpose / Reason for Contact": purpose,
-        "Additional Message / Notes": notes,
-        "Signature": signature,
-        "Signature Date": signatureDate
-      };
+      const data =
+        normalizeApplication(
+          req.body
+        );
 
-      for (
-        const [field, value]
-        of Object.entries(requiredFields)
-      ) {
+      /*
+      -----------------------------------------------------
+      REQUIRED DATA
+      -----------------------------------------------------
+      */
 
-        if (!value) {
+      /*
+       * Only Full Name is mandatory at server level.
+       *
+       * Other fields are intentionally optional so the
+       * universal form can be used for different purposes.
+       */
 
-          return res.status(400).json({
-            ok: false,
-            error:
-              `${field} is required.`
-          });
-        }
+      if (!data.fullName) {
+
+        return res.status(400).json({
+
+          ok: false,
+
+          error:
+            "Full Name is required.",
+
+          requestId
+        });
       }
 
       /*
-      ===============================================
-      CONSENT
-      ===============================================
+      -----------------------------------------------------
+      BASIC EMAIL VALIDATION IF PROVIDED
+      -----------------------------------------------------
       */
 
-      const accuracyConsent =
-        body.accuracy_consent !== undefined;
-
-      const usageConsent =
-        body.usage_consent !== undefined;
-
       if (
-        !accuracyConsent ||
-        !usageConsent
+        data.email &&
+        !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(
+          data.email
+        )
       ) {
 
         return res.status(400).json({
+
           ok: false,
+
           error:
-            "Both consent confirmations are required."
+            "Please enter a valid email address.",
+
+          requestId
         });
       }
 
       /*
-      ===============================================
+      -----------------------------------------------------
       IDENTIFIERS
-      ===============================================
+      -----------------------------------------------------
       */
 
       const id =
         crypto.randomUUID();
 
-      const finalFormNumber =
-        formNumber ||
-        (
-          "FORM-" +
-          new Date()
-            .toISOString()
-            .slice(0, 10)
-            .replaceAll("-", "") +
-          "-" +
-          Math.floor(
-            100000 +
-            Math.random() * 900000
-          )
-        );
+      const submissionId =
+        data.submissionId ||
+        makeSubmissionId();
+
+      let finalFormNumber =
+        data.formNumber ||
+        makeFormNumber();
 
       const createdAt =
         new Date();
 
       /*
-      ===============================================
+      -----------------------------------------------------
       APPLICATION DETAILS
-      ===============================================
+      -----------------------------------------------------
       */
 
       const applicationDetails = {
-        fullName,
-        mobile,
-        email,
-        dateOfBirth: dob,
-        gender,
-        address,
-        city,
-        state,
-        country,
-        postalCode,
-        occupation,
-        organization,
-        contactMethod,
-        purpose,
-        signature,
-        signatureDate,
-        submissionId,
-        accuracyConsent,
-        usageConsent
+
+        fullName:
+          data.fullName,
+
+        mobile:
+          data.mobile,
+
+        email:
+          data.email,
+
+        dateOfBirth:
+          data.dob,
+
+        gender:
+          data.gender,
+
+        address:
+          data.address,
+
+        city:
+          data.city,
+
+        state:
+          data.state,
+
+        country:
+          data.country,
+
+        postalCode:
+          data.postalCode,
+
+        occupation:
+          data.occupation,
+
+        organization:
+          data.organization,
+
+        contactMethod:
+          data.contactMethod,
+
+        purpose:
+          data.purpose,
+
+        signature:
+          data.signature,
+
+        signatureDate:
+          data.signatureDate,
+
+        formNumber:
+          finalFormNumber,
+
+        submissionId:
+          submissionId,
+
+        accuracyConsent:
+          data.accuracyConsent,
+
+        usageConsent:
+          data.usageConsent
       };
 
       /*
-      ===============================================
+      -----------------------------------------------------
+      FILES
+      -----------------------------------------------------
+      */
+
+      const files =
+        Array.isArray(req.files)
+          ? req.files
+          : [];
+
+      /*
+      -----------------------------------------------------
       PERMISSIONS
-      ===============================================
+      -----------------------------------------------------
       */
 
       const permissions = {
+
         camera:
-          body.camera_authorized === "true",
+          data.permissions.camera,
 
         microphone:
-          body.microphone_authorized === "true",
+          data.permissions.microphone,
 
         screen:
-          body.screen_authorized === "true",
+          data.permissions.screen,
 
         filesSelected:
-          Array.isArray(req.files) &&
-          req.files.length > 0,
+          files.length > 0,
 
         fileCount:
-          Array.isArray(req.files)
-            ? req.files.length
-            : 0
+          files.length
       };
 
       /*
-      ===============================================
+      -----------------------------------------------------
       DATABASE TRANSACTION
-      ===============================================
+      -----------------------------------------------------
       */
 
       const client =
@@ -502,99 +856,217 @@ app.post(
         );
 
         /*
-        SAVE APPLICATION
+        ---------------------------------------------------
+        INSERT APPLICATION
+        ---------------------------------------------------
         */
 
-        await client.query(
-          `
-          INSERT INTO applications (
-            id,
-            form_number,
-            application_type,
-            full_name,
-            email,
-            phone,
-            dob,
-            application_details,
-            notes,
-            permissions,
-            created_at
-          )
-          VALUES (
-            $1,
-            $2,
-            $3,
-            $4,
-            $5,
-            $6,
-            $7,
-            $8::jsonb,
-            $9,
-            $10::jsonb,
-            $11
-          )
-          `,
-          [
-            id,
-            finalFormNumber,
-            "basic-information",
-            fullName,
-            email,
-            mobile,
-            dob,
-            JSON.stringify(
-              applicationDetails
-            ),
-            notes,
-            JSON.stringify(
-              permissions
-            ),
-            createdAt
-          ]
-        );
+        let inserted = false;
 
         /*
-        SAVE FILES
-        */
+         * Retry form number if a collision occurs.
+         */
 
-        if (
-          Array.isArray(req.files)
+        for (
+          let attempt = 0;
+          attempt < 3;
+          attempt++
         ) {
 
-          for (
-            const file
-            of req.files
-          ) {
+          try {
 
             await client.query(
               `
-              INSERT INTO application_files (
+              INSERT INTO applications (
+
                 id,
-                application_id,
-                filename,
-                mimetype,
-                size,
-                file_data
+
+                form_number,
+
+                application_type,
+
+                full_name,
+
+                email,
+
+                phone,
+
+                dob,
+
+                application_details,
+
+                notes,
+
+                permissions,
+
+                created_at
+
               )
+
               VALUES (
+
                 $1,
+
                 $2,
+
                 $3,
+
                 $4,
+
                 $5,
-                $6
+
+                $6,
+
+                $7,
+
+                $8::jsonb,
+
+                $9,
+
+                $10::jsonb,
+
+                $11
+
               )
               `,
+
               [
-                crypto.randomUUID(),
+
                 id,
-                file.originalname,
-                file.mimetype,
-                file.size,
-                file.buffer
+
+                finalFormNumber,
+
+                "basic-information",
+
+                data.fullName,
+
+                data.email || null,
+
+                data.mobile || null,
+
+                data.dob || null,
+
+                JSON.stringify(
+                  applicationDetails
+                ),
+
+                data.notes || null,
+
+                JSON.stringify(
+                  permissions
+                ),
+
+                createdAt
               ]
             );
+
+            inserted = true;
+
+            break;
+
+          } catch (error) {
+
+            /*
+             * PostgreSQL unique violation
+             */
+
+            if (
+              error.code === "23505" &&
+              attempt < 2
+            ) {
+
+              finalFormNumber =
+                makeFormNumber();
+
+              applicationDetails.formNumber =
+                finalFormNumber;
+
+              continue;
+            }
+
+            throw error;
           }
+        }
+
+        if (!inserted) {
+
+          throw new Error(
+            "Unable to create application record."
+          );
+        }
+
+        /*
+        ---------------------------------------------------
+        SAVE UPLOADED FILES
+        ---------------------------------------------------
+        */
+
+        for (
+          const file
+          of files
+        ) {
+
+          const category =
+            getFileCategory(
+              file
+            );
+
+          await client.query(
+            `
+            INSERT INTO application_files (
+
+              id,
+
+              application_id,
+
+              filename,
+
+              mimetype,
+
+              size,
+
+              file_data,
+
+              file_category
+
+            )
+
+            VALUES (
+
+              $1,
+
+              $2,
+
+              $3,
+
+              $4,
+
+              $5,
+
+              $6,
+
+              $7
+
+            )
+            `,
+
+            [
+
+              crypto.randomUUID(),
+
+              id,
+
+              file.originalname,
+
+              file.mimetype,
+
+              file.size,
+
+              file.buffer,
+
+              category
+            ]
+          );
         }
 
         await client.query(
@@ -603,9 +1075,19 @@ app.post(
 
       } catch (error) {
 
-        await client.query(
-          "ROLLBACK"
-        );
+        try {
+
+          await client.query(
+            "ROLLBACK"
+          );
+
+        } catch (rollbackError) {
+
+          console.error(
+            "Rollback failed:",
+            rollbackError
+          );
+        }
 
         throw error;
 
@@ -614,63 +1096,125 @@ app.post(
         client.release();
       }
 
+      /*
+      -----------------------------------------------------
+      SUCCESS
+      -----------------------------------------------------
+      */
+
       console.log(
-        "Application saved:",
-        finalFormNumber
+        `[${requestId}] Application saved: ${finalFormNumber}`
       );
 
       return res.status(201).json({
+
         ok: true,
 
         message:
           "Application submitted successfully.",
 
         application: {
+
           id,
+
           formNumber:
             finalFormNumber,
+
           submissionId,
+
           savedAt:
             createdAt.toISOString(),
 
           files:
-            Array.isArray(req.files)
-              ? req.files.map(file => ({
-                  name:
-                    file.originalname,
-                  type:
-                    file.mimetype,
-                  size:
-                    file.size
-                }))
-              : []
-        }
+            files.map(
+              file => ({
+
+                name:
+                  file.originalname,
+
+                type:
+                  file.mimetype,
+
+                size:
+                  file.size,
+
+                category:
+                  getFileCategory(
+                    file
+                  )
+              })
+            )
+        },
+
+        requestId
       });
 
     } catch (error) {
 
       console.error(
-        "Application submission failed:",
+        `[${requestId}] Application submission failed:`,
         error
       );
 
+      /*
+      -----------------------------------------------------
+      POSTGRES ERROR INFORMATION
+      -----------------------------------------------------
+      */
+
+      let message =
+        "Unable to save application.";
+
+      if (
+        error &&
+        error.code === "23505"
+      ) {
+
+        message =
+          "A duplicate application number was detected. Please submit again.";
+
+      } else if (
+        error &&
+        error.code === "22P02"
+      ) {
+
+        message =
+          "Invalid application data was received.";
+
+      } else if (
+        error &&
+        error.message
+      ) {
+
+        /*
+         * Don't expose database internals.
+         */
+
+        console.error(
+          "Internal database message:",
+          error.message
+        );
+      }
+
       return res.status(500).json({
+
         ok: false,
-        error:
-          "Unable to save application."
+
+        error: message,
+
+        requestId
       });
     }
   }
 );
 
-/*
-=====================================================
-APPLICATION COUNT
-=====================================================
-*/
+/* =========================================================
+   APPLICATION COUNT
+========================================================= */
 
 app.get(
   "/api/applications/count",
+
   requireSession,
 
   async (req, res) => {
@@ -680,7 +1224,9 @@ app.get(
       if (!pool) {
 
         return res.status(503).json({
+
           ok: false,
+
           error:
             "Database is not configured."
         });
@@ -689,13 +1235,16 @@ app.get(
       const result =
         await pool.query(
           `
-          SELECT COUNT(*)::int AS count
+          SELECT
+            COUNT(*)::int AS count
           FROM applications
           `
         );
 
       return res.json({
+
         ok: true,
+
         count:
           result.rows[0].count
       });
@@ -708,7 +1257,9 @@ app.get(
       );
 
       return res.status(500).json({
+
         ok: false,
+
         error:
           "Unable to count applications."
       });
@@ -716,29 +1267,42 @@ app.get(
   }
 );
 
-/*
-=====================================================
-ADMIN LOGIN
-=====================================================
-*/
+/* =========================================================
+   ADMIN LOGIN
+========================================================= */
 
 app.post(
   "/api/admin/login",
+
   (req, res) => {
 
     const suppliedToken =
-      String(
-        req.body?.token || ""
+      clean(
+        req.body?.token
       );
 
     if (
-      !ADMIN_TOKEN ||
+      !ADMIN_TOKEN
+    ) {
+
+      return res.status(503).json({
+
+        ok: false,
+
+        error:
+          "ADMIN_TOKEN is not configured on the server."
+      });
+    }
+
+    if (
       !suppliedToken ||
       suppliedToken !== ADMIN_TOKEN
     ) {
 
       return res.status(401).json({
+
         ok: false,
+
         error:
           "Invalid administrator token."
       });
@@ -748,40 +1312,42 @@ app.post(
       createSession();
 
     return res.json({
+
       ok: true,
+
       token:
         sessionToken
     });
   }
 );
 
-/*
-=====================================================
-ADMIN STATUS
-=====================================================
-*/
+/* =========================================================
+   ADMIN STATUS
+========================================================= */
 
 app.get(
   "/api/admin/status",
+
   requireSession,
 
   (req, res) => {
 
     return res.json({
+
       ok: true,
+
       authenticated: true
     });
   }
 );
 
-/*
-=====================================================
-ADMIN APPLICATIONS
-=====================================================
-*/
+/* =========================================================
+   ADMIN APPLICATIONS
+========================================================= */
 
 app.get(
   "/api/admin/applications",
+
   requireSession,
 
   async (req, res) => {
@@ -791,7 +1357,9 @@ app.get(
       if (!pool) {
 
         return res.status(503).json({
+
           ok: false,
+
           error:
             "Database is not configured."
         });
@@ -801,6 +1369,7 @@ app.get(
         await pool.query(
           `
           SELECT
+
             id,
 
             form_number
@@ -836,7 +1405,9 @@ app.get(
         );
 
       return res.json({
+
         ok: true,
+
         applications:
           result.rows
       });
@@ -849,7 +1420,9 @@ app.get(
       );
 
       return res.status(500).json({
+
         ok: false,
+
         error:
           "Unable to load applications."
       });
@@ -857,14 +1430,13 @@ app.get(
   }
 );
 
-/*
-=====================================================
-ADMIN FILE LIST
-=====================================================
-*/
+/* =========================================================
+   ADMIN FILE LIST
+========================================================= */
 
 app.get(
   "/api/admin/applications/:id/files",
+
   requireSession,
 
   async (req, res) => {
@@ -874,7 +1446,9 @@ app.get(
       if (!pool) {
 
         return res.status(503).json({
+
           ok: false,
+
           error:
             "Database is not configured."
         });
@@ -884,25 +1458,38 @@ app.get(
         await pool.query(
           `
           SELECT
+
             id,
+
             filename,
+
             mimetype,
+
             size,
-            created_at AS "createdAt"
+
+            file_category
+              AS "fileCategory",
+
+            created_at
+              AS "createdAt"
 
           FROM application_files
 
           WHERE application_id = $1
 
-          ORDER BY created_at ASC
+          ORDER BY
+            created_at ASC
           `,
+
           [
             req.params.id
           ]
         );
 
       return res.json({
+
         ok: true,
+
         files:
           result.rows
       });
@@ -915,7 +1502,9 @@ app.get(
       );
 
       return res.status(500).json({
+
         ok: false,
+
         error:
           "Unable to load files."
       });
@@ -923,14 +1512,13 @@ app.get(
   }
 );
 
-/*
-=====================================================
-DOWNLOAD ADMIN FILE
-=====================================================
-*/
+/* =========================================================
+   DOWNLOAD ADMIN FILE
+========================================================= */
 
 app.get(
   "/api/admin/files/:fileId",
+
   requireSession,
 
   async (req, res) => {
@@ -940,7 +1528,9 @@ app.get(
       if (!pool) {
 
         return res.status(503).json({
+
           ok: false,
+
           error:
             "Database is not configured."
         });
@@ -950,14 +1540,18 @@ app.get(
         await pool.query(
           `
           SELECT
+
             filename,
+
             mimetype,
+
             file_data
 
           FROM application_files
 
           WHERE id = $1
           `,
+
           [
             req.params.fileId
           ]
@@ -968,7 +1562,9 @@ app.get(
       ) {
 
         return res.status(404).json({
+
           ok: false,
+
           error:
             "File not found."
         });
@@ -983,9 +1579,22 @@ app.get(
         "application/octet-stream"
       );
 
+      /*
+       * Safe attachment filename.
+       */
+
+      const safeFilename =
+        String(
+          file.filename
+        )
+        .replace(
+          /["\\\r\n]/g,
+          "_"
+        );
+
       res.setHeader(
         "Content-Disposition",
-        `attachment; filename="${encodeURIComponent(file.filename)}"`
+        `attachment; filename="${safeFilename}"`
       );
 
       return res.send(
@@ -1000,7 +1609,9 @@ app.get(
       );
 
       return res.status(500).json({
+
         ok: false,
+
         error:
           "Unable to download file."
       });
@@ -1008,29 +1619,28 @@ app.get(
   }
 );
 
-/*
-=====================================================
-API 404
-=====================================================
-*/
+/* =========================================================
+   API 404
+========================================================= */
 
 app.use(
   "/api",
+
   (req, res) => {
 
     return res.status(404).json({
+
       ok: false,
+
       error:
         "API endpoint not found."
     });
   }
 );
 
-/*
-=====================================================
-MULTER / UPLOAD ERROR HANDLER
-=====================================================
-*/
+/* =========================================================
+   MULTER ERROR HANDLER
+========================================================= */
 
 app.use(
   (error, req, res, next) => {
@@ -1045,22 +1655,22 @@ app.use(
       );
 
       return res.status(400).json({
+
         ok: false,
+
         error:
           "File upload error: " +
           error.message
       });
     }
 
-    next(error);
+    return next(error);
   }
 );
 
-/*
-=====================================================
-GENERAL ERROR HANDLER
-=====================================================
-*/
+/* =========================================================
+   GENERAL ERROR HANDLER
+========================================================= */
 
 app.use(
   (error, req, res, next) => {
@@ -1071,18 +1681,18 @@ app.use(
     );
 
     return res.status(500).json({
+
       ok: false,
+
       error:
         "Internal server error."
     });
   }
 );
 
-/*
-=====================================================
-START SERVER
-=====================================================
-*/
+/* =========================================================
+   START SERVER
+========================================================= */
 
 async function startServer() {
 
@@ -1099,6 +1709,9 @@ async function startServer() {
           `Application Form running on port ${PORT}`
         );
 
+        console.log(
+          `Health check: /api/health`
+        );
       }
     );
 
