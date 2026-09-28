@@ -3,7 +3,6 @@
 const express = require("express");
 const path = require("path");
 const crypto = require("crypto");
-const fs = require("fs");
 const multer = require("multer");
 const { Pool } = require("pg");
 
@@ -25,7 +24,7 @@ const DATABASE_URL =
 
 /*
 =====================================================
-FILE UPLOAD CONFIGURATION
+FILE UPLOAD
 =====================================================
 */
 
@@ -47,9 +46,9 @@ DATABASE
 let pool = null;
 
 if (DATABASE_URL) {
+
   pool = new Pool({
     connectionString: DATABASE_URL,
-
     ssl: {
       rejectUnauthorized: false
     }
@@ -65,57 +64,6 @@ if (DATABASE_URL) {
 
 /*
 =====================================================
-LOCAL FALLBACK
-=====================================================
-*/
-
-const LOCAL_DATA_FILE =
-  path.join(
-    ROOT_DIR,
-    "applications.json"
-  );
-
-function ensureLocalFile() {
-  if (!fs.existsSync(LOCAL_DATA_FILE)) {
-    fs.writeFileSync(
-      LOCAL_DATA_FILE,
-      "[]",
-      "utf8"
-    );
-  }
-}
-
-function readLocalApplications() {
-  ensureLocalFile();
-
-  try {
-    return JSON.parse(
-      fs.readFileSync(
-        LOCAL_DATA_FILE,
-        "utf8"
-      )
-    );
-  } catch {
-    return [];
-  }
-}
-
-function writeLocalApplications(
-  applications
-) {
-  fs.writeFileSync(
-    LOCAL_DATA_FILE,
-    JSON.stringify(
-      applications,
-      null,
-      2
-    ),
-    "utf8"
-  );
-}
-
-/*
-=====================================================
 DATABASE INITIALIZATION
 =====================================================
 */
@@ -123,6 +71,7 @@ DATABASE INITIALIZATION
 async function initializeDatabase() {
 
   if (!pool) {
+
     console.warn(
       "DATABASE_URL is not configured."
     );
@@ -205,12 +154,9 @@ app.use(
 );
 
 app.use(
-  express.static(
-    ROOT_DIR,
-    {
-      index: false
-    }
-  )
+  express.static(ROOT_DIR, {
+    index: false
+  })
 );
 
 /*
@@ -223,9 +169,10 @@ app.get(
   "/api/health",
   async (req, res) => {
 
-    let database = "local";
+    let database = "not-configured";
 
     if (pool) {
+
       try {
 
         await pool.query(
@@ -241,21 +188,15 @@ app.get(
           error.message
         );
 
-        database =
-          "postgresql-error";
+        database = "postgresql-error";
       }
     }
 
-    res.json({
+    return res.json({
       ok: true,
-
-      service:
-        "application-form",
-
+      service: "application-form",
       database,
-
-      time:
-        new Date().toISOString()
+      time: new Date().toISOString()
     });
   }
 );
@@ -270,7 +211,7 @@ app.get(
   "/",
   (req, res) => {
 
-    res.sendFile(
+    return res.sendFile(
       path.join(
         ROOT_DIR,
         "index.html"
@@ -287,24 +228,22 @@ CREATE APPLICATION
 
 app.post(
   "/api/applications",
-
-  upload.array(
-    "files",
-    10
-  ),
+  upload.array("files", 10),
 
   async (req, res) => {
 
     try {
 
-      const body =
-        req.body || {};
+      if (!pool) {
 
-      /*
-      -----------------------------------------------
-      FORM FIELDS
-      -----------------------------------------------
-      */
+        return res.status(503).json({
+          ok: false,
+          error:
+            "Database is not configured. Add DATABASE_URL in Render Environment Variables."
+        });
+      }
+
+      const body = req.body || {};
 
       const formNumber =
         String(
@@ -402,9 +341,9 @@ app.post(
         ).trim();
 
       /*
-      -----------------------------------------------
-      REQUIRED VALIDATION
-      -----------------------------------------------
+      ===============================================
+      REQUIRED FIELDS
+      ===============================================
       */
 
       const requiredFields = {
@@ -443,9 +382,9 @@ app.post(
       }
 
       /*
-      -----------------------------------------------
+      ===============================================
       CONSENT
-      -----------------------------------------------
+      ===============================================
       */
 
       const accuracyConsent =
@@ -467,24 +406,9 @@ app.post(
       }
 
       /*
-      -----------------------------------------------
-      DATABASE REQUIRED
-      -----------------------------------------------
-      */
-
-      if (!pool) {
-
-        return res.status(503).json({
-          ok: false,
-          error:
-            "Database is not configured. Add DATABASE_URL in Render Environment Variables."
-        });
-      }
-
-      /*
-      -----------------------------------------------
+      ===============================================
       IDENTIFIERS
-      -----------------------------------------------
+      ===============================================
       */
 
       const id =
@@ -509,60 +433,40 @@ app.post(
         new Date();
 
       /*
-      -----------------------------------------------
+      ===============================================
       APPLICATION DETAILS
-      -----------------------------------------------
+      ===============================================
       */
 
       const applicationDetails = {
-
         fullName,
-
         mobile,
-
         email,
-
         dateOfBirth: dob,
-
         gender,
-
         address,
-
         city,
-
         state,
-
         country,
-
         postalCode,
-
         occupation,
-
         organization,
-
         contactMethod,
-
         purpose,
-
         signature,
-
         signatureDate,
-
         submissionId,
-
         accuracyConsent,
-
         usageConsent
       };
 
       /*
-      -----------------------------------------------
+      ===============================================
       PERMISSIONS
-      -----------------------------------------------
+      ===============================================
       */
 
       const permissions = {
-
         camera:
           body.camera_authorized === "true",
 
@@ -583,9 +487,9 @@ app.post(
       };
 
       /*
-      -----------------------------------------------
+      ===============================================
       DATABASE TRANSACTION
-      -----------------------------------------------
+      ===============================================
       */
 
       const client =
@@ -598,9 +502,7 @@ app.post(
         );
 
         /*
-        ---------------------------------------------
         SAVE APPLICATION
-        ---------------------------------------------
         */
 
         await client.query(
@@ -634,37 +536,25 @@ app.post(
           `,
           [
             id,
-
             finalFormNumber,
-
             "basic-information",
-
             fullName,
-
             email,
-
             mobile,
-
             dob,
-
             JSON.stringify(
               applicationDetails
             ),
-
             notes,
-
             JSON.stringify(
               permissions
             ),
-
             createdAt
           ]
         );
 
         /*
-        ---------------------------------------------
         SAVE FILES
-        ---------------------------------------------
         */
 
         if (
@@ -697,15 +587,10 @@ app.post(
               `,
               [
                 crypto.randomUUID(),
-
                 id,
-
                 file.originalname,
-
                 file.mimetype,
-
                 file.size,
-
                 file.buffer
               ]
             );
@@ -729,39 +614,22 @@ app.post(
         client.release();
       }
 
-      /*
-      -----------------------------------------------
-      LOG
-      -----------------------------------------------
-      */
-
       console.log(
         "Application saved:",
         finalFormNumber
       );
 
-      /*
-      -----------------------------------------------
-      SUCCESS RESPONSE
-      -----------------------------------------------
-      */
-
       return res.status(201).json({
-
         ok: true,
 
         message:
           "Application submitted successfully.",
 
         application: {
-
           id,
-
           formNumber:
             finalFormNumber,
-
           submissionId,
-
           savedAt:
             createdAt.toISOString(),
 
@@ -770,10 +638,8 @@ app.post(
               ? req.files.map(file => ({
                   name:
                     file.originalname,
-
                   type:
                     file.mimetype,
-
                   size:
                     file.size
                 }))
@@ -789,9 +655,7 @@ app.post(
       );
 
       return res.status(500).json({
-
         ok: false,
-
         error:
           "Unable to save application."
       });
@@ -825,16 +689,13 @@ app.get(
       const result =
         await pool.query(
           `
-          SELECT
-            COUNT(*)::int AS count
+          SELECT COUNT(*)::int AS count
           FROM applications
           `
         );
 
       return res.json({
-
         ok: true,
-
         count:
           result.rows[0].count
       });
@@ -847,9 +708,7 @@ app.get(
       );
 
       return res.status(500).json({
-
         ok: false,
-
         error:
           "Unable to count applications."
       });
@@ -865,7 +724,6 @@ ADMIN LOGIN
 
 app.post(
   "/api/admin/login",
-
   (req, res) => {
 
     const suppliedToken =
@@ -880,9 +738,7 @@ app.post(
     ) {
 
       return res.status(401).json({
-
         ok: false,
-
         error:
           "Invalid administrator token."
       });
@@ -892,9 +748,7 @@ app.post(
       createSession();
 
     return res.json({
-
       ok: true,
-
       token:
         sessionToken
     });
@@ -909,15 +763,12 @@ ADMIN STATUS
 
 app.get(
   "/api/admin/status",
-
   requireSession,
 
   (req, res) => {
 
     return res.json({
-
       ok: true,
-
       authenticated: true
     });
   }
@@ -931,7 +782,6 @@ ADMIN APPLICATIONS
 
 app.get(
   "/api/admin/applications",
-
   requireSession,
 
   async (req, res) => {
@@ -941,9 +791,7 @@ app.get(
       if (!pool) {
 
         return res.status(503).json({
-
           ok: false,
-
           error:
             "Database is not configured."
         });
@@ -988,9 +836,7 @@ app.get(
         );
 
       return res.json({
-
         ok: true,
-
         applications:
           result.rows
       });
@@ -1003,9 +849,7 @@ app.get(
       );
 
       return res.status(500).json({
-
         ok: false,
-
         error:
           "Unable to load applications."
       });
@@ -1021,7 +865,6 @@ ADMIN FILE LIST
 
 app.get(
   "/api/admin/applications/:id/files",
-
   requireSession,
 
   async (req, res) => {
@@ -1031,9 +874,7 @@ app.get(
       if (!pool) {
 
         return res.status(503).json({
-
           ok: false,
-
           error:
             "Database is not configured."
         });
@@ -1044,22 +885,16 @@ app.get(
           `
           SELECT
             id,
-
             filename,
-
             mimetype,
-
             size,
-
-            created_at
-              AS "createdAt"
+            created_at AS "createdAt"
 
           FROM application_files
 
           WHERE application_id = $1
 
-          ORDER BY
-            created_at ASC
+          ORDER BY created_at ASC
           `,
           [
             req.params.id
@@ -1067,9 +902,7 @@ app.get(
         );
 
       return res.json({
-
         ok: true,
-
         files:
           result.rows
       });
@@ -1082,9 +915,7 @@ app.get(
       );
 
       return res.status(500).json({
-
         ok: false,
-
         error:
           "Unable to load files."
       });
@@ -1100,7 +931,6 @@ DOWNLOAD ADMIN FILE
 
 app.get(
   "/api/admin/files/:fileId",
-
   requireSession,
 
   async (req, res) => {
@@ -1110,9 +940,7 @@ app.get(
       if (!pool) {
 
         return res.status(503).json({
-
           ok: false,
-
           error:
             "Database is not configured."
         });
@@ -1123,9 +951,7 @@ app.get(
           `
           SELECT
             filename,
-
             mimetype,
-
             file_data
 
           FROM application_files
@@ -1142,9 +968,7 @@ app.get(
       ) {
 
         return res.status(404).json({
-
           ok: false,
-
           error:
             "File not found."
         });
@@ -1176,9 +1000,7 @@ app.get(
       );
 
       return res.status(500).json({
-
         ok: false,
-
         error:
           "Unable to download file."
       });
@@ -1194,13 +1016,10 @@ API 404
 
 app.use(
   "/api",
-
   (req, res) => {
 
     return res.status(404).json({
-
       ok: false,
-
       error:
         "API endpoint not found."
     });
@@ -1209,7 +1028,7 @@ app.use(
 
 /*
 =====================================================
-FILE UPLOAD ERROR HANDLER
+MULTER / UPLOAD ERROR HANDLER
 =====================================================
 */
 
@@ -1226,33 +1045,14 @@ app.use(
       );
 
       return res.status(400).json({
-
         ok: false,
-
         error:
           "File upload error: " +
           error.message
       });
     }
 
-    if (error) {
-
-      console.error(
-        "Upload error:",
-        error
-      );
-
-      return res.status(400).json({
-
-        ok: false,
-
-        error:
-          error.message ||
-          "File upload error."
-      });
-    }
-
-    next();
+    next(error);
   }
 );
 
@@ -1271,9 +1071,7 @@ app.use(
     );
 
     return res.status(500).json({
-
       ok: false,
-
       error:
         "Internal server error."
     });
