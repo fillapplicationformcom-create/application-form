@@ -4,7 +4,6 @@ const express = require("express");
 const path = require("path");
 const crypto = require("crypto");
 const fs = require("fs");
-const multer = require("multer");
 const { Pool } = require("pg");
 
 const {
@@ -29,8 +28,6 @@ UPLOAD CONFIGURATION
 =====================================================
 */
 
-const upload = multer({
-  storage: multer.memoryStorage(),
 
   limits: {
     files: 10,
@@ -1239,16 +1236,13 @@ app.use(
 
 /*
 =====================================================
-MULTER ERROR
+
 =====================================================
 */
 
 app.use(
   (error, req, res, next) => {
 
-    if (
-      error instanceof multer.MulterError
-    ) {
 
       return res.status(400).json({
 
