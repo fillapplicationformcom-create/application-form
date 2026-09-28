@@ -14,23 +14,13 @@ A multi-purpose application submission portal supporting:
 
 ```text
 application-form/
-├── public/
-│   ├── index.html
-│   ├── admin.html
-│   ├── success.html
-│   └── assets/
-│       ├── css/
-│       │   └── style.css
-│       └── js/
-│           ├── form.js
-│           ├── permissions.js
-│           └── storage.js
-│
-├── data/
-│   └── applications.json
-│
-├── server/
-│   └── server.js
-│
-├── package.json
-└── README.md
+├── index.html
+├── admin.html
+├── admin-login.html
+├── form.js
+├── permissions.js
+├── storage.js
+├── auth.js
+├── applications.json
+├── server.js
+└── package.json
