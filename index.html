@@ -2,240 +2,347 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-
-<title>Application Form</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#1769e0">
+<title>Basic Information Form</title>
 
 <style>
-* {
-  box-sizing: border-box;
+*{
+  box-sizing:border-box;
 }
 
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: linear-gradient(135deg,#eef3ff,#f8f9fc);
-  color: #172033;
+html,body{
+  margin:0;
+  padding:0;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  background:#eef3f8;
+  color:#172033;
+  font-size:14px;
 }
 
-header {
-  background: linear-gradient(135deg,#173b8f,#2563eb);
-  color: #fff;
-  padding: 28px 20px;
+body{
+  min-height:100vh;
 }
 
-header h1 {
-  margin: 0 0 8px;
-  font-size: 30px;
+.container{
+  width:min(760px,100%);
+  margin:auto;
+  padding:18px 12px 40px;
 }
 
-header p {
-  margin: 0;
-  opacity: .9;
+.card{
+  background:#fff;
+  border-radius:18px;
+  padding:20px;
+  box-shadow:0 5px 25px rgba(20,40,70,.08);
+  margin-bottom:14px;
 }
 
-.container {
-  width: min(1100px,94%);
-  margin: 25px auto 60px;
+.header{
+  background:linear-gradient(135deg,#1769e0,#2454c7);
+  color:white;
+  text-align:center;
+  border-radius:18px;
+  padding:20px 15px;
+  margin-bottom:14px;
 }
 
-.card {
-  background: #fff;
-  border-radius: 18px;
-  padding: 22px;
-  margin-bottom: 20px;
-  box-shadow: 0 8px 30px rgba(20,40,80,.09);
+.header h1{
+  font-size:21px;
+  margin:0 0 5px;
+  letter-spacing:.3px;
 }
 
-.banner {
-  background: linear-gradient(135deg,#fff1d6,#ffe3b0);
-  border-left: 6px solid #f59e0b;
-  padding: 18px;
-  border-radius: 14px;
-  margin-bottom: 20px;
+.header p{
+  margin:0;
+  font-size:12px;
+  opacity:.9;
 }
 
-.banner h2 {
-  margin: 0 0 7px;
+.form-number{
+  display:inline-block;
+  margin-top:10px;
+  padding:6px 10px;
+  background:rgba(255,255,255,.16);
+  border-radius:8px;
+  font-size:12px;
 }
 
-h2 {
-  margin-top: 0;
+h2{
+  font-size:17px;
+  margin:0 0 15px;
 }
 
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit,minmax(230px,1fr));
-  gap: 14px;
+h3{
+  font-size:14px;
+  margin:18px 0 10px;
 }
 
-label {
-  display: block;
-  font-weight: 600;
-  margin-bottom: 6px;
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+
+.field{
+  margin-bottom:11px;
+}
+
+.full{
+  grid-column:1/-1;
+}
+
+label{
+  display:block;
+  font-weight:600;
+  font-size:12px;
+  margin-bottom:5px;
+  color:#303b4f;
+}
+
+.required{
+  color:#d92828;
 }
 
 input,
-select,
 textarea,
-button {
-  width: 100%;
-  padding: 13px;
-  border-radius: 10px;
-  border: 1px solid #ccd3df;
-  font: inherit;
+select{
+  width:100%;
+  border:1px solid #d5dce6;
+  border-radius:9px;
+  background:#f9fbfd;
+  padding:10px 11px;
+  font-size:13px;
+  color:#172033;
+  outline:none;
+  transition:.15s;
 }
 
-textarea {
-  min-height: 100px;
-  resize: vertical;
+input:focus,
+textarea:focus,
+select:focus{
+  border-color:#1769e0;
+  background:#fff;
+  box-shadow:0 0 0 3px rgba(23,105,224,.08);
 }
 
-button {
-  border: 0;
-  cursor: pointer;
-  background: #2563eb;
-  color: #fff;
-  font-weight: 700;
-  margin-top: 8px;
+textarea{
+  min-height:75px;
+  resize:vertical;
 }
 
-button.secondary {
-  background: #475569;
+.choice-row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
 }
 
-button.danger {
-  background: #dc2626;
+.choice{
+  display:flex;
+  align-items:center;
+  gap:5px;
+  padding:7px 9px;
+  background:#f3f6fa;
+  border-radius:8px;
+  font-size:12px;
 }
 
-button.success {
-  background: #15803d;
+.choice input{
+  width:auto;
+  margin:0;
 }
 
-button:disabled {
-  opacity: .55;
-  cursor: not-allowed;
+.consent{
+  background:#f5f8fc;
+  border-radius:10px;
+  padding:12px;
+  margin-top:10px;
 }
 
-.permission {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 15px;
-  align-items: center;
-  padding: 15px;
-  border: 1px solid #e1e5ec;
-  border-radius: 13px;
-  margin-bottom: 10px;
+.consent label{
+  display:flex;
+  align-items:flex-start;
+  gap:8px;
+  font-weight:500;
+  margin-bottom:8px;
 }
 
-.status {
-  font-size: 13px;
-  margin-top: 4px;
-  color: #64748b;
+.consent input{
+  width:auto;
+  margin-top:2px;
 }
 
-.online {
-  color: #15803d;
-  font-weight: 700;
+.permission-box{
+  background:#f5f8fc;
+  border-radius:12px;
+  padding:14px;
+  margin-top:14px;
 }
 
-.blocked {
-  color: #dc2626;
-  font-weight: 700;
+.permission-title{
+  font-weight:700;
+  font-size:14px;
+  margin-bottom:5px;
 }
 
-.media-box {
-  background: #0f172a;
-  border-radius: 16px;
-  min-height: 260px;
-  overflow: hidden;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.permission-description{
+  font-size:12px;
+  line-height:1.45;
+  color:#5e6878;
+  margin-bottom:12px;
 }
 
-video,
-img {
-  max-width: 100%;
-  max-height: 520px;
-  display: block;
+.permission-status{
+  display:grid;
+  gap:7px;
+  margin-bottom:12px;
 }
 
-#cameraVideo,
-#screenVideo {
-  width: 100%;
+.status{
+  padding:8px 10px;
+  border-radius:8px;
+  background:#fff;
+  font-size:12px;
 }
 
-.media-actions {
-  display: grid;
-  grid-template-columns: repeat(auto-fit,minmax(160px,1fr));
-  gap: 10px;
-  margin-top: 12px;
+.status::before{
+  content:"●";
+  margin-right:7px;
+  color:#9ca5b1;
 }
 
-.stored-item {
-  border: 1px solid #e1e5ec;
-  border-radius: 12px;
-  padding: 12px;
-  margin-bottom: 10px;
-  background: #f8fafc;
+.status.ok::before{
+  color:#16a34a;
 }
 
-.stored-item img,
-.stored-item video {
-  max-width: 240px;
-  border-radius: 10px;
-  margin-top: 10px;
+.status.wait::before{
+  color:#f59e0b;
 }
 
-.small {
-  font-size: 13px;
-  color: #64748b;
+.button{
+  width:100%;
+  border:0;
+  border-radius:10px;
+  padding:12px;
+  font-size:14px;
+  font-weight:700;
+  cursor:pointer;
 }
 
-.notice {
-  padding: 13px;
-  background: #eff6ff;
-  border-radius: 10px;
-  margin-top: 12px;
-  color: #1e40af;
+.primary{
+  background:#1769e0;
+  color:#fff;
 }
 
-.form-message {
-  display: none;
-  padding: 13px;
-  border-radius: 10px;
-  margin-bottom: 15px;
+.secondary{
+  background:#25334a;
+  color:#fff;
+  margin-top:8px;
 }
 
-.form-message.error {
-  display: block;
-  background: #fef2f2;
-  color: #991b1b;
+.danger{
+  background:#c62828;
+  color:#fff;
+  margin-top:8px;
 }
 
-.form-message.info {
-  background: #eff6ff;
-  color: #1e40af;
+.button:disabled{
+  opacity:.55;
+  cursor:not-allowed;
 }
 
-.form-message.success {
-  display: block;
-  background: #f0fdf4;
-  color: #166534;
+.message{
+  margin-top:10px;
+  padding:10px;
+  border-radius:9px;
+  font-size:12px;
+  display:none;
 }
 
-@media (max-width:600px) {
-  header h1 {
-    font-size: 25px;
+.message.show{
+  display:block;
+}
+
+.success{
+  background:#e9f8ef;
+  color:#14733a;
+}
+
+.error{
+  background:#fff0f0;
+  color:#a51d1d;
+}
+
+.office{
+  background:#f7f8fa;
+}
+
+.office-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+
+.office-item{
+  background:#fff;
+  border-radius:9px;
+  padding:9px;
+  font-size:12px;
+}
+
+.office-item strong{
+  display:block;
+  margin-bottom:3px;
+  font-size:11px;
+  color:#687386;
+}
+
+.signature{
+  margin-top:12px;
+}
+
+.signature input{
+  background:#fff;
+}
+
+.file-list{
+  margin-top:8px;
+  font-size:11px;
+  color:#5d6878;
+}
+
+.footer{
+  text-align:center;
+  color:#778294;
+  font-size:10px;
+  margin-top:15px;
+}
+
+@media(max-width:600px){
+  .container{
+    padding:10px 8px 30px;
   }
 
-  .card {
-    padding: 16px;
+  .card{
+    padding:15px;
+    border-radius:14px;
   }
 
-  .permission {
-    grid-template-columns: 1fr;
+  .grid,
+  .office-grid{
+    grid-template-columns:1fr;
+    gap:8px;
+  }
+
+  .header h1{
+    font-size:19px;
+  }
+
+  input,
+  textarea,
+  select{
+    font-size:13px;
+    padding:9px 10px;
   }
 }
 </style>
@@ -243,544 +350,858 @@ img {
 
 <body>
 
-<header>
-  <h1>Application Form</h1>
-  <p>Application, document and media submission portal</p>
-</header>
+<div class="container">
 
-<main class="container">
-
-<!-- =====================================================
-APPLICATION TYPE
-===================================================== -->
-
-<section class="banner">
-
-  <h2>Application Type</h2>
-
-  <p>
-    Select the type of application you want to submit.
-  </p>
-
-  <select
-    id="applicationType"
-    name="course"
-    required>
-
-    <option value="">
-      Select application type
-    </option>
-
-    <option value="Education - UG">
-      Education - UG
-    </option>
-
-    <option value="Education - PG">
-      Education - PG
-    </option>
-
-    <option value="NEET UG">
-      NEET UG
-    </option>
-
-    <option value="NEET PG">
-      NEET PG
-    </option>
-
-    <option value="Job / Recruitment">
-      Job / Recruitment
-    </option>
-
-    <option value="Business">
-      Business
-    </option>
-
-    <option value="Banking / Financial Application">
-      Banking / Financial Application
-    </option>
-
-  </select>
-
-</section>
-
-
-<!-- =====================================================
-APPLICATION FORM
-===================================================== -->
-
-<form id="applicationForm">
-
-<section class="card">
-
-  <h2>Applicant Information</h2>
-
-  <div
-    id="formMessage"
-    class="form-message">
+  <div class="header">
+    <h1>BASIC INFORMATION FORM</h1>
+    <p>Complete all required information</p>
+    <div class="form-number">
+      Form No: <span id="formNumber">Generating...</span>
+    </div>
   </div>
 
-  <div class="grid">
+  <form id="applicationForm">
 
-    <div>
-      <label for="fullName">
-        Full Name
-      </label>
+    <div class="card">
+      <h2>Personal Information</h2>
 
-      <input
-        id="fullName"
-        name="name"
-        type="text"
-        autocomplete="name"
-        required>
-    </div>
+      <div class="grid">
 
+        <div class="field full">
+          <label>Full Name <span class="required">*</span></label>
+          <input type="text" name="full_name" required autocomplete="name">
+        </div>
 
-    <div>
-      <label for="email">
-        Email
-      </label>
+        <div class="field">
+          <label>Mobile Number <span class="required">*</span></label>
+          <input type="tel" name="mobile" required autocomplete="tel">
+        </div>
 
-      <input
-        id="email"
-        name="email"
-        type="email"
-        autocomplete="email"
-        required>
-    </div>
+        <div class="field">
+          <label>Email Address <span class="required">*</span></label>
+          <input type="email" name="email" required autocomplete="email">
+        </div>
 
+        <div class="field">
+          <label>Date of Birth <span class="required">*</span></label>
+          <input type="date" name="date_of_birth" required>
+        </div>
 
-    <div>
-      <label for="phone">
-        Phone
-      </label>
-
-      <input
-        id="phone"
-        name="phone"
-        type="tel"
-        autocomplete="tel"
-        required>
-    </div>
-
-
-    <div>
-      <label for="dob">
-        Date of Birth
-      </label>
-
-      <input
-        id="dob"
-        name="dob"
-        type="date">
-    </div>
-
-  </div>
-
-  <br>
-
-  <label for="notes">
-    Additional Information
-  </label>
-
-  <textarea
-    id="notes"
-    name="message"
-    placeholder="Enter additional information">
-  </textarea>
-
-</section>
-
-
-<!-- =====================================================
-PERMISSION CENTER
-===================================================== -->
-
-<section class="card">
-
-  <h2>Permission Center</h2>
-
-  <p class="small">
-    Permissions are requested through the browser's
-    normal permission system. You can deny any request.
-  </p>
-
-  <button
-    type="button"
-    class="success"
-    onclick="grantAllPermissions()">
-
-    🔐 Request Available Permissions
-
-  </button>
-
-
-  <div
-    id="permissionSummary"
-    class="notice"
-    style="display:none;">
-  </div>
-
-
-  <div class="permission">
-
-    <div>
-      <strong>📷 Camera</strong>
-
-      <div
-        id="cameraStatus"
-        class="status">
-
-        Not requested
+        <div class="field">
+          <label>Gender <span class="required">*</span></label>
+          <select name="gender" required>
+            <option value="">Select</option>
+            <option>Male</option>
+            <option>Female</option>
+            <option>Other</option>
+            <option>Prefer not to say</option>
+          </select>
+        </div>
 
       </div>
     </div>
 
-  </div>
 
+    <div class="card">
+      <h2>Address</h2>
 
-  <div class="permission">
+      <div class="grid">
 
-    <div>
-      <strong>🎙️ Microphone</strong>
+        <div class="field full">
+          <label>Address <span class="required">*</span></label>
+          <textarea name="address" required></textarea>
+        </div>
 
-      <div
-        id="micStatus"
-        class="status">
+        <div class="field">
+          <label>City / Town <span class="required">*</span></label>
+          <input type="text" name="city" required>
+        </div>
 
-        Not requested
+        <div class="field">
+          <label>State / Province <span class="required">*</span></label>
+          <input type="text" name="state" required>
+        </div>
 
-      </div>
-    </div>
+        <div class="field">
+          <label>Country <span class="required">*</span></label>
+          <input type="text" name="country" required>
+        </div>
 
-  </div>
-
-
-  <div class="permission">
-
-    <div>
-      <strong>📍 Location</strong>
-
-      <div
-        id="locationStatus"
-        class="status">
-
-        Not requested
-
-      </div>
-    </div>
-
-  </div>
-
-
-  <div class="permission">
-
-    <div>
-      <strong>🔔 Notifications</strong>
-
-      <div
-        id="notificationStatus"
-        class="status">
-
-        Not requested
+        <div class="field">
+          <label>PIN / ZIP Code <span class="required">*</span></label>
+          <input type="text" name="postal_code" required>
+        </div>
 
       </div>
     </div>
 
-  </div>
 
+    <div class="card">
+      <h2>Additional Information</h2>
 
-  <div class="permission">
+      <div class="grid">
 
-    <div>
-      <strong>💾 Persistent Storage</strong>
+        <div class="field">
+          <label>Occupation / Profession <span class="required">*</span></label>
+          <input type="text" name="occupation" required>
+        </div>
 
-      <div
-        id="storageStatus"
-        class="status">
+        <div class="field">
+          <label>Organization / Company <span class="required">*</span></label>
+          <input type="text" name="organization" required>
+        </div>
 
-        Not requested
+        <div class="field full">
+          <label>Preferred Contact Method <span class="required">*</span></label>
+
+          <div class="choice-row">
+
+            <label class="choice">
+              <input type="radio" name="contact_method" value="Phone" required>
+              Phone
+            </label>
+
+            <label class="choice">
+              <input type="radio" name="contact_method" value="WhatsApp">
+              WhatsApp
+            </label>
+
+            <label class="choice">
+              <input type="radio" name="contact_method" value="Email">
+              Email
+            </label>
+
+            <label class="choice">
+              <input type="radio" name="contact_method" value="SMS">
+              SMS
+            </label>
+
+          </div>
+        </div>
+
+        <div class="field full">
+          <label>Purpose / Reason for Contact <span class="required">*</span></label>
+          <textarea name="purpose" required></textarea>
+        </div>
+
+        <div class="field full">
+          <label>Additional Message / Notes <span class="required">*</span></label>
+          <textarea name="notes" required></textarea>
+        </div>
 
       </div>
     </div>
 
-  </div>
+
+    <div class="card">
+      <h2>Consent</h2>
+
+      <div class="consent">
+
+        <label>
+          <input type="checkbox" name="accuracy_consent" required>
+          <span>I confirm that the information provided above is accurate.</span>
+        </label>
+
+        <label>
+          <input type="checkbox" name="usage_consent" required>
+          <span>I agree that the information may be used for the purpose for which it was collected.</span>
+        </label>
+
+      </div>
+
+      <div class="signature">
+        <label>Signature <span class="required">*</span></label>
+        <input type="text" name="signature" required>
+      </div>
+
+      <div class="field" style="margin-top:10px">
+        <label>Date <span class="required">*</span></label>
+        <input type="date" name="signature_date" required>
+      </div>
+    </div>
 
 
-  <div class="permission">
+    <!-- PERMISSION SECTION -->
+    <div class="card">
+      <h2>Authorized Access</h2>
 
-    <div>
-      <strong>🖥️ Screen Sharing</strong>
+      <div class="permission-box">
 
-      <div
-        id="screenStatus"
-        class="status">
+        <div class="permission-title">
+          Request access only when needed
+        </div>
 
-        Separate confirmation required
+        <div class="permission-description">
+          Camera, microphone, screen sharing and files are requested separately
+          through the browser's permission system. Nothing is accessed without
+          your explicit action.
+        </div>
+
+        <div class="permission-status">
+
+          <div class="status" id="cameraStatus">
+            Camera not requested
+          </div>
+
+          <div class="status" id="microphoneStatus">
+            Microphone not requested
+          </div>
+
+          <div class="status" id="screenStatus">
+            Screen sharing not requested
+          </div>
+
+          <div class="status" id="fileStatus">
+            Files not selected
+          </div>
+
+        </div>
+
+        <button type="button"
+                class="button primary"
+                id="requestAccess">
+          Request Access
+        </button>
+
+        <input
+          type="file"
+          id="filePicker"
+          multiple
+          hidden
+        >
+
+        <div id="accessMessage" class="message"></div>
+
+        <div id="fileList" class="file-list"></div>
 
       </div>
     </div>
 
-  </div>
 
+    <div class="card office">
+      <h2>FOR OFFICE / SYSTEM USE</h2>
 
-  <div class="permission">
+      <div class="office-grid">
 
-    <div>
-      <strong>📋 Clipboard</strong>
+        <div class="office-item">
+          <strong>Submission ID</strong>
+          <span id="submissionId">Generated after submission</span>
+        </div>
 
-      <div
-        id="clipboardStatus"
-        class="status">
+        <div class="office-item">
+          <strong>Submission Date & Time</strong>
+          <span id="submissionDate">Generated after submission</span>
+        </div>
 
-        Not checked
+        <div class="office-item">
+          <strong>Status</strong>
+          <span>New</span>
+        </div>
+
+        <div class="office-item">
+          <strong>Form Number</strong>
+          <span id="officeFormNumber"></span>
+        </div>
 
       </div>
+
     </div>
-
-  </div>
-
-</section>
-
-
-<!-- =====================================================
-CAMERA
-===================================================== -->
-
-<section class="card">
-
-  <h2>Live Photo / Video</h2>
-
-  <div class="media-box">
-
-    <video
-      id="cameraVideo"
-      autoplay
-      playsinline
-      muted>
-    </video>
-
-  </div>
-
-
-  <div class="media-actions">
-
-    <button
-      type="button"
-      onclick="startCamera()">
-
-      📷 Start Camera
-
-    </button>
 
 
     <button
-      type="button"
-      onclick="takePhoto()">
-
-      📸 Take Photo
-
+      type="submit"
+      id="submitButton"
+      class="button primary">
+      Submit Form
     </button>
-
 
     <button
-      type="button"
-      onclick="startRecording()">
-
-      🔴 Start Video
-
+      type="reset"
+      class="button secondary">
+      Clear Form
     </button>
 
+    <div id="submitMessage" class="message"></div>
 
-    <button
-      type="button"
-      class="danger"
-      onclick="stopRecording()">
+  </form>
 
-      ⏹ Stop Recording
-
-    </button>
-
-
-    <button
-      type="button"
-      class="danger"
-      onclick="stopCamera()">
-
-      ⏹ Stop Camera
-
-    </button>
-
+  <div class="footer">
+    Secure form • Access is controlled by browser permissions
   </div>
 
-
-  <canvas
-    id="photoCanvas"
-    hidden>
-  </canvas>
+</div>
 
 
-  <div
-    id="photoContainer"
-    style="margin-top:15px;">
+<script>
+/* ============================================================
+   BASIC INFORMATION FORM
+   All JavaScript is contained in this index.html
+   ============================================================ */
 
-    <img
-      id="photoPreview"
-      alt="Captured photo"
-      style="display:none;">
+(function(){
 
-  </div>
+  const form = document.getElementById("applicationForm");
 
+  const formNumberEl =
+    document.getElementById("formNumber");
 
-  <div
-    id="recordingStatus"
-    class="notice"
-    style="display:none;">
-  </div>
+  const officeFormNumber =
+    document.getElementById("officeFormNumber");
 
-</section>
+  const submissionId =
+    document.getElementById("submissionId");
 
+  const submissionDate =
+    document.getElementById("submissionDate");
 
-<!-- =====================================================
-FILES
-===================================================== -->
+  const submitButton =
+    document.getElementById("submitButton");
 
-<section class="card">
+  const submitMessage =
+    document.getElementById("submitMessage");
 
-  <h2>
-    Photos, Videos & Documents
-  </h2>
+  const accessMessage =
+    document.getElementById("accessMessage");
 
-  <p class="small">
-    Choose the files you want to attach. Files are not
-    selected automatically.
-  </p>
+  const filePicker =
+    document.getElementById("filePicker");
 
-
-  <input
-    id="fileInput"
-    name="attachments"
-    type="file"
-    multiple
-    accept="image/*,video/*,.pdf,.doc,.docx">
+  const fileList =
+    document.getElementById("fileList");
 
 
-  <button
-    type="button"
-    onclick="storeSelectedFiles()">
+  /* ------------------------------------------------------------
+     FORM NUMBER
+     ------------------------------------------------------------ */
 
-    Save Selected Files Locally
+  function generateFormNumber(){
 
-  </button>
+    const now = new Date();
 
+    const date =
+      now.getFullYear().toString() +
+      String(now.getMonth()+1).padStart(2,"0") +
+      String(now.getDate()).padStart(2,"0");
 
-  <div
-    id="storageList"
-    style="margin-top:18px;">
-  </div>
+    const random =
+      Math.floor(100000 + Math.random()*900000);
 
-</section>
+    return "FORM-" + date + "-" + random;
+  }
 
+  const currentFormNumber =
+    generateFormNumber();
 
-<!-- =====================================================
-SCREEN SHARING
-===================================================== -->
+  formNumberEl.textContent =
+    currentFormNumber;
 
-<section class="card">
-
-  <h2>
-    Screen Sharing
-  </h2>
-
-  <p class="small">
-    Screen sharing always requires a browser-controlled
-    confirmation.
-  </p>
+  officeFormNumber.textContent =
+    currentFormNumber;
 
 
-  <button
-    type="button"
-    onclick="startScreenShare()">
+  /* ------------------------------------------------------------
+     DEFAULT DATE
+     ------------------------------------------------------------ */
 
-    🖥️ Share Screen
+  const today =
+    new Date().toISOString().split("T")[0];
 
-  </button>
+  const signatureDate =
+    document.querySelector(
+      '[name="signature_date"]'
+    );
 
-
-  <button
-    type="button"
-    class="danger"
-    onclick="stopScreenShare()">
-
-    ⏹ Stop Screen Sharing
-
-  </button>
+  if(signatureDate){
+    signatureDate.value = today;
+  }
 
 
-  <div
-    class="media-box"
-    style="margin-top:15px;">
+  /* ------------------------------------------------------------
+     PERMISSION STATUS
+     ------------------------------------------------------------ */
 
-    <video
-      id="screenVideo"
-      autoplay
-      playsinline>
-    </video>
+  const cameraStatus =
+    document.getElementById("cameraStatus");
 
-  </div>
+  const microphoneStatus =
+    document.getElementById("microphoneStatus");
 
-</section>
+  const screenStatus =
+    document.getElementById("screenStatus");
 
-
-<!-- =====================================================
-SUBMIT
-===================================================== -->
-
-<section class="card">
-
-  <h2>
-    Application
-  </h2>
+  const fileStatus =
+    document.getElementById("fileStatus");
 
 
-  <button
-    type="submit"
-    class="success">
+  function setStatus(element,text,ok){
 
-    Submit Application
+    element.textContent = text;
 
-  </button>
-
-
-  <button
-    type="button"
-    class="secondary"
-    onclick="clearApplication()">
-
-    Clear Form
-
-  </button>
+    element.classList.toggle(
+      "ok",
+      !!ok
+    );
+  }
 
 
-  <div
-    id="saveMessage"
-    class="notice"
-    style="display:none;">
-  </div>
+  /* ------------------------------------------------------------
+     REQUEST CAMERA + MICROPHONE
+     ------------------------------------------------------------ */
 
-</section>
+  async function requestCameraMicrophone(){
 
-</form>
+    if(!navigator.mediaDevices ||
+       !navigator.mediaDevices.getUserMedia){
 
-</main>
+      setStatus(
+        cameraStatus,
+        "Camera unavailable in this browser",
+        false
+      );
+
+      setStatus(
+        microphoneStatus,
+        "Microphone unavailable in this browser",
+        false
+      );
+
+      return;
+    }
+
+    try{
+
+      const stream =
+        await navigator.mediaDevices.getUserMedia({
+          video:true,
+          audio:true
+        });
+
+      setStatus(
+        cameraStatus,
+        "Camera authorized",
+        true
+      );
+
+      setStatus(
+        microphoneStatus,
+        "Microphone authorized",
+        true
+      );
+
+      /*
+       * Immediately stop the tracks.
+       * Authorization is not treated as permission
+       * to continuously record.
+       */
+
+      stream.getTracks().forEach(
+        track => track.stop()
+      );
+
+    }catch(error){
+
+      setStatus(
+        cameraStatus,
+        "Camera not authorized",
+        false
+      );
+
+      setStatus(
+        microphoneStatus,
+        "Microphone not authorized",
+        false
+      );
+
+      console.log(
+        "Camera/microphone permission:",
+        error
+      );
+    }
+  }
 
 
-<!-- =====================================================
-JAVASCRIPT
-===================================================== -->
+  /* ------------------------------------------------------------
+     REQUEST SCREEN SHARING
+     ------------------------------------------------------------ */
 
-<script src="storage.js"></script>
-<script src="permissions.js"></script>
-<script src="form.js"></script>
+  async function requestScreen(){
+
+    if(!navigator.mediaDevices ||
+       !navigator.mediaDevices.getDisplayMedia){
+
+      setStatus(
+        screenStatus,
+        "Screen sharing unavailable",
+        false
+      );
+
+      return;
+    }
+
+    try{
+
+      const stream =
+        await navigator.mediaDevices.getDisplayMedia({
+          video:true
+        });
+
+      setStatus(
+        screenStatus,
+        "Screen sharing authorized",
+        true
+      );
+
+      /*
+       * Stop immediately after permission is granted.
+       * Actual screen sharing should only occur during
+       * an explicit user-controlled session.
+       */
+
+      stream.getTracks().forEach(
+        track => track.stop()
+      );
+
+    }catch(error){
+
+      setStatus(
+        screenStatus,
+        "Screen sharing not authorized",
+        false
+      );
+
+      console.log(
+        "Screen permission:",
+        error
+      );
+    }
+  }
+
+
+  /* ------------------------------------------------------------
+     FILE ACCESS
+     ------------------------------------------------------------ */
+
+  function requestFiles(){
+
+    /*
+     * Browsers intentionally require the user to choose
+     * files. A website cannot silently obtain access to
+     * arbitrary files on the device.
+     */
+
+    filePicker.click();
+  }
+
+
+  filePicker.addEventListener(
+    "change",
+    function(){
+
+      const files =
+        Array.from(filePicker.files || []);
+
+      if(!files.length){
+
+        setStatus(
+          fileStatus,
+          "No files selected",
+          false
+        );
+
+        fileList.textContent = "";
+
+        return;
+      }
+
+      setStatus(
+        fileStatus,
+        files.length +
+        " file(s) selected",
+        true
+      );
+
+      fileList.innerHTML =
+        files.map(
+          file =>
+            "• " +
+            escapeHtml(file.name) +
+            " (" +
+            formatBytes(file.size) +
+            ")"
+        ).join("<br>");
+
+    }
+  );
+
+
+  function formatBytes(bytes){
+
+    if(bytes < 1024)
+      return bytes + " B";
+
+    if(bytes < 1024*1024)
+      return (bytes/1024).toFixed(1) + " KB";
+
+    return (bytes/(1024*1024)).toFixed(1) + " MB";
+  }
+
+
+  function escapeHtml(value){
+
+    return value
+      .replaceAll("&","&amp;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;")
+      .replaceAll("'","&#039;");
+  }
+
+
+  /* ------------------------------------------------------------
+     ONE ACCESS BUTTON
+     ------------------------------------------------------------ */
+
+  document
+    .getElementById("requestAccess")
+    .addEventListener(
+      "click",
+      async function(){
+
+        accessMessage.className =
+          "message show";
+
+        accessMessage.textContent =
+          "Requesting browser permissions...";
+
+        /*
+         * These remain explicit browser prompts.
+         */
+
+        await requestCameraMicrophone();
+
+        await requestScreen();
+
+        requestFiles();
+
+        accessMessage.className =
+          "message success show";
+
+        accessMessage.textContent =
+          "Access requests completed. Review the permissions and selected files above.";
+
+      }
+    );
+
+
+  /* ------------------------------------------------------------
+     SUBMIT
+     ------------------------------------------------------------ */
+
+  form.addEventListener(
+    "submit",
+    async function(event){
+
+      event.preventDefault();
+
+      if(!form.checkValidity()){
+
+        form.reportValidity();
+
+        return;
+      }
+
+      submitButton.disabled = true;
+
+      submitButton.textContent =
+        "Submitting...";
+
+      submitMessage.className =
+        "message";
+
+      const now =
+        new Date();
+
+      const generatedSubmissionId =
+        "SUB-" +
+        Date.now();
+
+      submissionId.textContent =
+        generatedSubmissionId;
+
+      submissionDate.textContent =
+        now.toLocaleString();
+
+
+      /*
+       * FormData keeps the implementation compatible with
+       * a normal multipart/form-data backend.
+       */
+
+      const data =
+        new FormData(form);
+
+      data.append(
+        "form_number",
+        currentFormNumber
+      );
+
+      data.append(
+        "submission_id",
+        generatedSubmissionId
+      );
+
+      data.append(
+        "submission_date",
+        now.toISOString()
+      );
+
+
+      /*
+       * Add selected files.
+       */
+
+      const files =
+        Array.from(filePicker.files || []);
+
+      files.forEach(
+        file => {
+          data.append(
+            "files",
+            file,
+            file.name
+          );
+        }
+      );
+
+
+      /*
+       * IMPORTANT:
+       * Change this endpoint only if your server uses
+       * a different submission route.
+       */
+
+      try{
+
+        const response =
+          await fetch(
+            "/api/applications",
+            {
+              method:"POST",
+              body:data
+            }
+          );
+
+        if(!response.ok){
+
+          throw new Error(
+            "Server returned " +
+            response.status
+          );
+        }
+
+        submitMessage.className =
+          "message success show";
+
+        submitMessage.textContent =
+          "Form submitted successfully. Form Number: " +
+          currentFormNumber;
+
+        submitButton.textContent =
+          "Submitted";
+
+      }catch(error){
+
+        console.error(error);
+
+        /*
+         * Do not pretend submission succeeded if the
+         * backend endpoint is unavailable.
+         */
+
+        submitMessage.className =
+          "message error show";
+
+        submitMessage.textContent =
+          "Submission could not be completed. Please check the server/API endpoint.";
+
+        submitButton.disabled = false;
+
+        submitButton.textContent =
+          "Submit Form";
+      }
+
+    }
+  );
+
+
+  /* ------------------------------------------------------------
+     RESET
+     ------------------------------------------------------------ */
+
+  form.addEventListener(
+    "reset",
+    function(){
+
+      setTimeout(
+        function(){
+
+          const newNumber =
+            generateFormNumber();
+
+          formNumberEl.textContent =
+            newNumber;
+
+          officeFormNumber.textContent =
+            newNumber;
+
+          submissionId.textContent =
+            "Generated after submission";
+
+          submissionDate.textContent =
+            "Generated after submission";
+
+          fileList.textContent = "";
+
+          setStatus(
+            cameraStatus,
+            "Camera not requested",
+            false
+          );
+
+          setStatus(
+            microphoneStatus,
+            "Microphone not requested",
+            false
+          );
+
+          setStatus(
+            screenStatus,
+            "Screen sharing not requested",
+            false
+          );
+
+          setStatus(
+            fileStatus,
+            "Files not selected",
+            false
+          );
+
+          submitMessage.className =
+            "message";
+
+          accessMessage.className =
+            "message";
+
+        },
+        0
+      );
+
+    }
+  );
+
+})();
+</script>
 
 </body>
 </html>
