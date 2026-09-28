@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-
 <title>Administrator Login</title>
 
 <style>
@@ -68,7 +67,7 @@ button {
 
 button:disabled {
   opacity: .6;
-  cursor: wait;
+  cursor: not-allowed;
 }
 
 .status {
@@ -78,7 +77,6 @@ button:disabled {
   border-radius: 9px;
   background: #eff6ff;
   color: #1e40af;
-  line-height: 1.4;
 }
 
 .error {
@@ -94,19 +92,16 @@ button:disabled {
 
   <h1>Administrator Login</h1>
 
-  <p>
-    Authorized administrators only.
-  </p>
+  <p>Authorized administrators only.</p>
 
   <form id="loginForm">
 
     <label for="adminToken">
-      Administrator Token
+      Administrator Password / Token
     </label>
 
     <input
       id="adminToken"
-      name="token"
       type="password"
       autocomplete="current-password"
       required
@@ -127,93 +122,145 @@ button:disabled {
 <script>
 "use strict";
 
-const form = document.getElementById("loginForm");
-const tokenInput = document.getElementById("adminToken");
-const button = document.getElementById("loginButton");
-const status = document.getElementById("status");
+const API_BASE =
+  "https://application-form-qtxc.onrender.com";
+
+const form =
+  document.getElementById("loginForm");
+
+const tokenInput =
+  document.getElementById("adminToken");
+
+const button =
+  document.getElementById("loginButton");
+
+const status =
+  document.getElementById("status");
+
 
 function showStatus(message, error = false) {
+
   status.textContent = message;
-  status.className = "status" + (error ? " error" : "");
+
+  status.className =
+    "status" + (error ? " error" : "");
+
   status.style.display = "block";
 }
+
 
 form.addEventListener("submit", async function(event) {
 
   event.preventDefault();
 
-  const token = tokenInput.value.trim();
+  const token =
+    tokenInput.value.trim();
 
   if (!token) {
-    showStatus("Enter the administrator token.", true);
+    showStatus(
+      "Enter the administrator password/token.",
+      true
+    );
     return;
   }
 
   button.disabled = true;
   button.textContent = "Signing in...";
+
   status.style.display = "none";
 
   try {
 
-    const response = await fetch("/api/admin/login", {
-      method: "POST",
+    const response = await fetch(
+      API_BASE + "/api/admin/login",
+      {
+        method: "POST",
 
-      headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json"
-      },
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
 
-      body: JSON.stringify({
-        token: token
-      })
-    });
+        body: JSON.stringify({
+          token: token
+        })
+      }
+    );
+
+    const contentType =
+      response.headers.get("content-type") || "";
 
     let result;
 
-    try {
+    if (contentType.includes("application/json")) {
       result = await response.json();
-    } catch (jsonError) {
+    } else {
+      const text = await response.text();
+
       throw new Error(
-        "Server returned an invalid response."
+        "Server returned a non-JSON response: " +
+        text.substring(0, 150)
       );
     }
 
-    if (!response.ok || !result.ok) {
+    if (!response.ok) {
+
       throw new Error(
         result.error ||
+        result.message ||
         "Authentication failed."
       );
     }
 
-    if (!result.token) {
+    /*
+     * Accept the common session-token
+     * property names without changing server.js.
+     */
+    const sessionToken =
+      result.token ||
+      result.sessionToken ||
+      result.accessToken;
+
+    if (!sessionToken) {
+
       throw new Error(
-        "Server did not return an administrator session."
+        "Login succeeded but the server did not return a session token."
       );
     }
 
     sessionStorage.setItem(
       "adminSession",
-      result.token
+      sessionToken
+    );
+
+    /*
+     * Keep the token available to admin.html.
+     */
+    sessionStorage.setItem(
+      "adminAuthenticated",
+      "true"
     );
 
     showStatus(
-      "Login successful. Opening administrator dashboard..."
+      "Login successful. Opening administrator panel..."
     );
 
     setTimeout(function() {
-      window.location.replace("/admin.html");
+
+      window.location.href = "admin.html";
+
     }, 300);
 
   } catch (error) {
 
     console.error(
-      "Administrator login failed:",
+      "ADMIN LOGIN ERROR:",
       error
     );
 
     showStatus(
       error.message ||
-      "Unable to sign in.",
+      "Unable to connect to the administrator server.",
       true
     );
 
