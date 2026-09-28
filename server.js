@@ -4,6 +4,7 @@ const express = require("express");
 const path = require("path");
 const crypto = require("crypto");
 const fs = require("fs");
+const multer = require("multer");
 const { Pool } = require("pg");
 
 const {
@@ -22,6 +23,20 @@ const ADMIN_TOKEN =
 const DATABASE_URL =
   process.env.DATABASE_URL || "";
 
+/*
+=====================================================
+FILE UPLOAD CONFIGURATION
+=====================================================
+*/
+
+const upload = multer({
+  storage: multer.memoryStorage(),
+
+  limits: {
+    files: 10,
+    fileSize: 10 * 1024 * 1024
+  }
+});
 
 /*
 =====================================================
@@ -32,7 +47,6 @@ DATABASE
 let pool = null;
 
 if (DATABASE_URL) {
-
   pool = new Pool({
     connectionString: DATABASE_URL,
 
@@ -62,9 +76,7 @@ const LOCAL_DATA_FILE =
   );
 
 function ensureLocalFile() {
-
   if (!fs.existsSync(LOCAL_DATA_FILE)) {
-
     fs.writeFileSync(
       LOCAL_DATA_FILE,
       "[]",
@@ -74,20 +86,16 @@ function ensureLocalFile() {
 }
 
 function readLocalApplications() {
-
   ensureLocalFile();
 
   try {
-
     return JSON.parse(
       fs.readFileSync(
         LOCAL_DATA_FILE,
         "utf8"
       )
     );
-
   } catch {
-
     return [];
   }
 }
@@ -95,7 +103,6 @@ function readLocalApplications() {
 function writeLocalApplications(
   applications
 ) {
-
   fs.writeFileSync(
     LOCAL_DATA_FILE,
     JSON.stringify(
@@ -116,7 +123,6 @@ DATABASE INITIALIZATION
 async function initializeDatabase() {
 
   if (!pool) {
-
     console.warn(
       "DATABASE_URL is not configured."
     );
@@ -126,7 +132,6 @@ async function initializeDatabase() {
 
   await pool.query(`
     CREATE TABLE IF NOT EXISTS applications (
-
       id TEXT PRIMARY KEY,
 
       form_number TEXT UNIQUE NOT NULL,
@@ -156,7 +161,6 @@ async function initializeDatabase() {
 
   await pool.query(`
     CREATE TABLE IF NOT EXISTS application_files (
-
       id TEXT PRIMARY KEY,
 
       application_id TEXT NOT NULL
@@ -222,17 +226,20 @@ app.get(
     let database = "local";
 
     if (pool) {
-
       try {
 
         await pool.query(
           "SELECT 1"
         );
 
-        database =
-          "postgresql";
+        database = "postgresql";
 
-      } catch {
+      } catch (error) {
+
+        console.error(
+          "Database health check failed:",
+          error.message
+        );
 
         database =
           "postgresql-error";
@@ -295,7 +302,7 @@ app.post(
 
       /*
       -----------------------------------------------
-      CURRENT FORM FIELDS
+      FORM FIELDS
       -----------------------------------------------
       */
 
@@ -428,9 +435,7 @@ app.post(
         if (!value) {
 
           return res.status(400).json({
-
             ok: false,
-
             error:
               `${field} is required.`
           });
@@ -455,9 +460,7 @@ app.post(
       ) {
 
         return res.status(400).json({
-
           ok: false,
-
           error:
             "Both consent confirmations are required."
         });
@@ -472,9 +475,7 @@ app.post(
       if (!pool) {
 
         return res.status(503).json({
-
           ok: false,
-
           error:
             "Database is not configured. Add DATABASE_URL in Render Environment Variables."
         });
@@ -556,7 +557,7 @@ app.post(
 
       /*
       -----------------------------------------------
-      PERMISSION INFORMATION
+      PERMISSIONS
       -----------------------------------------------
       */
 
@@ -583,7 +584,7 @@ app.post(
 
       /*
       -----------------------------------------------
-      TRANSACTION
+      DATABASE TRANSACTION
       -----------------------------------------------
       */
 
@@ -596,60 +597,42 @@ app.post(
           "BEGIN"
         );
 
+        /*
+        ---------------------------------------------
+        SAVE APPLICATION
+        ---------------------------------------------
+        */
+
         await client.query(
           `
           INSERT INTO applications (
-
             id,
-
             form_number,
-
             application_type,
-
             full_name,
-
             email,
-
             phone,
-
             dob,
-
             application_details,
-
             notes,
-
             permissions,
-
             created_at
           )
-
           VALUES (
-
             $1,
-
             $2,
-
             $3,
-
             $4,
-
             $5,
-
             $6,
-
             $7,
-
             $8::jsonb,
-
             $9,
-
             $10::jsonb,
-
             $11
           )
           `,
           [
-
             id,
 
             finalFormNumber,
@@ -680,7 +663,7 @@ app.post(
 
         /*
         ---------------------------------------------
-        SAVE UPLOADED FILES
+        SAVE FILES
         ---------------------------------------------
         */
 
@@ -696,37 +679,23 @@ app.post(
             await client.query(
               `
               INSERT INTO application_files (
-
                 id,
-
                 application_id,
-
                 filename,
-
                 mimetype,
-
                 size,
-
                 file_data
               )
-
               VALUES (
-
                 $1,
-
                 $2,
-
                 $3,
-
                 $4,
-
                 $5,
-
                 $6
               )
               `,
               [
-
                 crypto.randomUUID(),
 
                 id,
@@ -760,6 +729,12 @@ app.post(
         client.release();
       }
 
+      /*
+      -----------------------------------------------
+      LOG
+      -----------------------------------------------
+      */
+
       console.log(
         "Application saved:",
         finalFormNumber
@@ -767,7 +742,7 @@ app.post(
 
       /*
       -----------------------------------------------
-      SUCCESS
+      SUCCESS RESPONSE
       -----------------------------------------------
       */
 
@@ -833,6 +808,7 @@ APPLICATION COUNT
 app.get(
   "/api/applications/count",
   requireSession,
+
   async (req, res) => {
 
     try {
@@ -840,9 +816,7 @@ app.get(
       if (!pool) {
 
         return res.status(503).json({
-
           ok: false,
-
           error:
             "Database is not configured."
         });
@@ -857,7 +831,7 @@ app.get(
           `
         );
 
-      res.json({
+      return res.json({
 
         ok: true,
 
@@ -867,9 +841,12 @@ app.get(
 
     } catch (error) {
 
-      console.error(error);
+      console.error(
+        "Count error:",
+        error
+      );
 
-      res.status(500).json({
+      return res.status(500).json({
 
         ok: false,
 
@@ -888,6 +865,7 @@ ADMIN LOGIN
 
 app.post(
   "/api/admin/login",
+
   (req, res) => {
 
     const suppliedToken =
@@ -913,7 +891,7 @@ app.post(
     const sessionToken =
       createSession();
 
-    res.json({
+    return res.json({
 
       ok: true,
 
@@ -931,10 +909,12 @@ ADMIN STATUS
 
 app.get(
   "/api/admin/status",
+
   requireSession,
+
   (req, res) => {
 
-    res.json({
+    return res.json({
 
       ok: true,
 
@@ -951,7 +931,9 @@ ADMIN APPLICATIONS
 
 app.get(
   "/api/admin/applications",
+
   requireSession,
+
   async (req, res) => {
 
     try {
@@ -971,10 +953,10 @@ app.get(
         await pool.query(
           `
           SELECT
-
             id,
 
-            form_number AS "formNumber",
+            form_number
+              AS "formNumber",
 
             application_type
               AS "applicationType",
@@ -1005,7 +987,7 @@ app.get(
           `
         );
 
-      res.json({
+      return res.json({
 
         ok: true,
 
@@ -1020,7 +1002,7 @@ app.get(
         error
       );
 
-      res.status(500).json({
+      return res.status(500).json({
 
         ok: false,
 
@@ -1033,13 +1015,15 @@ app.get(
 
 /*
 =====================================================
-ADMIN FILES
+ADMIN FILE LIST
 =====================================================
 */
 
 app.get(
   "/api/admin/applications/:id/files",
+
   requireSession,
+
   async (req, res) => {
 
     try {
@@ -1059,7 +1043,6 @@ app.get(
         await pool.query(
           `
           SELECT
-
             id,
 
             filename,
@@ -1068,20 +1051,22 @@ app.get(
 
             size,
 
-            created_at AS "createdAt"
+            created_at
+              AS "createdAt"
 
           FROM application_files
 
           WHERE application_id = $1
 
-          ORDER BY created_at ASC
+          ORDER BY
+            created_at ASC
           `,
           [
             req.params.id
           ]
         );
 
-      res.json({
+      return res.json({
 
         ok: true,
 
@@ -1096,7 +1081,7 @@ app.get(
         error
       );
 
-      res.status(500).json({
+      return res.status(500).json({
 
         ok: false,
 
@@ -1115,7 +1100,9 @@ DOWNLOAD ADMIN FILE
 
 app.get(
   "/api/admin/files/:fileId",
+
   requireSession,
+
   async (req, res) => {
 
     try {
@@ -1135,7 +1122,6 @@ app.get(
         await pool.query(
           `
           SELECT
-
             filename,
 
             mimetype,
@@ -1178,7 +1164,7 @@ app.get(
         `attachment; filename="${encodeURIComponent(file.filename)}"`
       );
 
-      res.send(
+      return res.send(
         file.file_data
       );
 
@@ -1189,7 +1175,7 @@ app.get(
         error
       );
 
-      res.status(500).json({
+      return res.status(500).json({
 
         ok: false,
 
@@ -1208,9 +1194,10 @@ API 404
 
 app.use(
   "/api",
+
   (req, res) => {
 
-    res.status(404).json({
+    return res.status(404).json({
 
       ok: false,
 
@@ -1222,13 +1209,21 @@ app.use(
 
 /*
 =====================================================
-
+FILE UPLOAD ERROR HANDLER
 =====================================================
 */
 
 app.use(
   (error, req, res, next) => {
 
+    if (
+      error instanceof multer.MulterError
+    ) {
+
+      console.error(
+        "Multer error:",
+        error
+      );
 
       return res.status(400).json({
 
@@ -1240,13 +1235,30 @@ app.use(
       });
     }
 
-    next(error);
+    if (error) {
+
+      console.error(
+        "Upload error:",
+        error
+      );
+
+      return res.status(400).json({
+
+        ok: false,
+
+        error:
+          error.message ||
+          "File upload error."
+      });
+    }
+
+    next();
   }
 );
 
 /*
 =====================================================
-GENERAL ERROR
+GENERAL ERROR HANDLER
 =====================================================
 */
 
@@ -1258,7 +1270,7 @@ app.use(
       error
     );
 
-    res.status(500).json({
+    return res.status(500).json({
 
       ok: false,
 
@@ -1270,7 +1282,7 @@ app.use(
 
 /*
 =====================================================
-START
+START SERVER
 =====================================================
 */
 
@@ -1288,6 +1300,7 @@ async function startServer() {
         console.log(
           `Application Form running on port ${PORT}`
         );
+
       }
     );
 
