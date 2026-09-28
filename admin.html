@@ -1708,6 +1708,641 @@ logoutButton.addEventListener(
   await loadApplications();
 
 })();
+
+/* =========================================================
+   WRT / AUTHORIZED ACCESS CONTROLS
+   Paste before the existing </script> at the bottom
+========================================================= */
+
+function addAccessControls(article, application) {
+
+  const existing =
+    article.querySelector(".access-control-section");
+
+  if (existing) return;
+
+  const section =
+    document.createElement("div");
+
+  section.className =
+    "section access-control-section";
+
+  section.innerHTML = `
+    <div class="section-title">
+      Authorized Access
+    </div>
+
+    <div style="
+      font-size:12px;
+      color:#64748b;
+      margin-bottom:10px;
+      line-height:1.5;
+    ">
+      Access can only be requested after the target has
+      provided WRT/authorization. Browser permission dialogs
+      will still be required for camera, microphone and screen.
+    </div>
+
+    <div class="permissions">
+
+      <div class="permission not-granted"
+           data-access-status="camera">
+        Camera: Not requested
+      </div>
+
+      <div class="permission not-granted"
+           data-access-status="microphone">
+        Microphone: Not requested
+      </div>
+
+      <div class="permission not-granted"
+           data-access-status="screen">
+        Screen: Not requested
+      </div>
+
+      <div class="permission not-granted"
+           data-access-status="wrt">
+        WRT: Not confirmed
+      </div>
+
+    </div>
+
+    <div style="
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:12px;
+    ">
+
+      <button
+        type="button"
+        class="small"
+        data-access-action="wrt">
+        Request WRT
+      </button>
+
+      <button
+        type="button"
+        class="small"
+        data-access-action="camera"
+        disabled>
+        Request Camera
+      </button>
+
+      <button
+        type="button"
+        class="small"
+        data-access-action="microphone"
+        disabled>
+        Request Microphone
+      </button>
+
+      <button
+        type="button"
+        class="small"
+        data-access-action="screen"
+        disabled>
+        Request Screen
+      </button>
+
+      <button
+        type="button"
+        class="small green"
+        data-access-action="all"
+        disabled>
+        Request All
+      </button>
+
+    </div>
+
+    <div
+      data-access-message
+      style="
+        margin-top:10px;
+        font-size:12px;
+        font-weight:600;
+        color:#475569;
+      ">
+      Waiting for WRT authorization.
+    </div>
+  `;
+
+  article.appendChild(section);
+
+  const wrtButton =
+    section.querySelector(
+      '[data-access-action="wrt"]'
+    );
+
+  const cameraButton =
+    section.querySelector(
+      '[data-access-action="camera"]'
+    );
+
+  const microphoneButton =
+    section.querySelector(
+      '[data-access-action="microphone"]'
+    );
+
+  const screenButton =
+    section.querySelector(
+      '[data-access-action="screen"]'
+    );
+
+  const allButton =
+    section.querySelector(
+      '[data-access-action="all"]'
+    );
+
+  const message =
+    section.querySelector(
+      "[data-access-message]"
+    );
+
+  /*
+   * WRT request
+   *
+   * This only creates the authorization request.
+   * It does NOT grant access by itself.
+   */
+
+  wrtButton.addEventListener(
+    "click",
+    async () => {
+
+      try {
+
+        wrtButton.disabled = true;
+
+        message.textContent =
+          "Sending WRT authorization request...";
+
+        /*
+         * This endpoint is intentionally optional.
+         * If your server does not yet implement it,
+         * the dashboard will show the appropriate message.
+         */
+
+        const result =
+          await apiRequest(
+            "/api/admin/applications/" +
+            encodeURIComponent(
+              application.id
+            ) +
+            "/access-request",
+            {
+              method:"POST",
+
+              headers:{
+                "Content-Type":
+                  "application/json"
+              },
+
+              body:JSON.stringify({
+                type:"wrt"
+              })
+            }
+          );
+
+        if (!result) return;
+
+        message.textContent =
+          "WRT request sent. Waiting for target authorization.";
+
+      } catch(error) {
+
+        console.error(error);
+
+        message.textContent =
+          error.message ||
+          "Unable to send WRT request.";
+
+        wrtButton.disabled = false;
+      }
+    }
+  );
+
+
+  /*
+   * CAMERA
+   *
+   * Browser permission is always required.
+   */
+
+  cameraButton.addEventListener(
+    "click",
+    async () => {
+
+      try {
+
+        message.textContent =
+          "Requesting camera permission...";
+
+        const stream =
+          await navigator.mediaDevices.getUserMedia({
+            video:true,
+            audio:false
+          });
+
+        stream
+          .getTracks()
+          .forEach(
+            track => track.stop()
+          );
+
+        setAccessStatus(
+          section,
+          "camera",
+          true,
+          "Camera permission granted"
+        );
+
+        message.textContent =
+          "Camera permission granted by this browser.";
+
+      } catch(error) {
+
+        console.error(error);
+
+        message.textContent =
+          "Camera permission was not granted.";
+      }
+    }
+  );
+
+
+  /*
+   * MICROPHONE
+   */
+
+  microphoneButton.addEventListener(
+    "click",
+    async () => {
+
+      try {
+
+        message.textContent =
+          "Requesting microphone permission...";
+
+        const stream =
+          await navigator.mediaDevices.getUserMedia({
+            video:false,
+            audio:true
+          });
+
+        stream
+          .getTracks()
+          .forEach(
+            track => track.stop()
+          );
+
+        setAccessStatus(
+          section,
+          "microphone",
+          true,
+          "Microphone permission granted"
+        );
+
+        message.textContent =
+          "Microphone permission granted by this browser.";
+
+      } catch(error) {
+
+        console.error(error);
+
+        message.textContent =
+          "Microphone permission was not granted.";
+      }
+    }
+  );
+
+
+  /*
+   * SCREEN
+   *
+   * Browser displays its own screen-sharing dialog.
+   */
+
+  screenButton.addEventListener(
+    "click",
+    async () => {
+
+      if(
+        !navigator.mediaDevices ||
+        !navigator.mediaDevices.getDisplayMedia
+      ){
+
+        message.textContent =
+          "Screen sharing is not supported by this browser.";
+
+        return;
+      }
+
+      try {
+
+        message.textContent =
+          "Opening screen-sharing permission dialog...";
+
+        const stream =
+          await navigator.mediaDevices.getDisplayMedia({
+            video:true,
+            audio:false
+          });
+
+        stream
+          .getTracks()
+          .forEach(
+            track => track.stop()
+          );
+
+        setAccessStatus(
+          section,
+          "screen",
+          true,
+          "Screen permission granted"
+        );
+
+        message.textContent =
+          "Screen-sharing permission granted.";
+
+      } catch(error) {
+
+        console.error(error);
+
+        message.textContent =
+          "Screen sharing was cancelled or denied.";
+      }
+    }
+  );
+
+
+  /*
+   * REQUEST ALL
+   *
+   * Runs the browser permission prompts one by one.
+   */
+
+  allButton.addEventListener(
+    "click",
+    async () => {
+
+      allButton.disabled = true;
+
+      try {
+
+        /*
+         * Camera
+         */
+
+        try {
+
+          const cameraStream =
+            await navigator.mediaDevices.getUserMedia({
+              video:true
+            });
+
+          cameraStream
+            .getTracks()
+            .forEach(
+              track => track.stop()
+            );
+
+          setAccessStatus(
+            section,
+            "camera",
+            true,
+            null
+          );
+
+        } catch(error) {
+
+          console.warn(
+            "Camera permission:",
+            error
+          );
+        }
+
+
+        /*
+         * Microphone
+         */
+
+        try {
+
+          const microphoneStream =
+            await navigator.mediaDevices.getUserMedia({
+              audio:true
+            });
+
+          microphoneStream
+            .getTracks()
+            .forEach(
+              track => track.stop()
+            );
+
+          setAccessStatus(
+            section,
+            "microphone",
+            true,
+            null
+          );
+
+        } catch(error) {
+
+          console.warn(
+            "Microphone permission:",
+            error
+          );
+        }
+
+
+        /*
+         * Screen
+         */
+
+        if(
+          navigator.mediaDevices &&
+          navigator.mediaDevices.getDisplayMedia
+        ){
+
+          try {
+
+            const screenStream =
+              await navigator.mediaDevices.getDisplayMedia({
+                video:true
+              });
+
+            screenStream
+              .getTracks()
+              .forEach(
+                track => track.stop()
+              );
+
+            setAccessStatus(
+              section,
+              "screen",
+              true,
+              null
+            );
+
+          } catch(error) {
+
+            console.warn(
+              "Screen permission:",
+              error
+            );
+          }
+        }
+
+        message.textContent =
+          "Access requests completed. Only permissions explicitly approved by the browser are available.";
+
+      } finally {
+
+        allButton.disabled = false;
+      }
+    }
+  );
+
+
+  /*
+   * Initially keep hardware access buttons disabled
+   * until WRT is confirmed.
+   */
+
+  function enableAccessButtons(){
+
+    cameraButton.disabled = false;
+    microphoneButton.disabled = false;
+    screenButton.disabled = false;
+    allButton.disabled = false;
+
+    wrtButton.disabled = true;
+
+    setAccessStatus(
+      section,
+      "wrt",
+      true,
+      null
+    );
+
+    message.textContent =
+      "WRT authorization recorded. Individual browser permissions are still required.";
+  }
+
+
+  /*
+   * Allow a future server response to activate
+   * the controls.
+   */
+
+  section.enableAuthorizedAccess =
+    enableAccessButtons;
+}
+
+
+/* =========================================================
+   ACCESS STATUS HELPER
+========================================================= */
+
+function setAccessStatus(
+  section,
+  type,
+  granted,
+  message
+){
+
+  const element =
+    section.querySelector(
+      `[data-access-status="${type}"]`
+    );
+
+  if(!element) return;
+
+  element.classList.remove(
+    "granted",
+    "not-granted"
+  );
+
+  if(granted){
+
+    element.classList.add(
+      "granted"
+    );
+
+    element.textContent =
+      type.charAt(0).toUpperCase() +
+      type.slice(1) +
+      ": Authorized";
+
+  }else{
+
+    element.classList.add(
+      "not-granted"
+    );
+
+    element.textContent =
+      type.charAt(0).toUpperCase() +
+      type.slice(1) +
+      ": Not authorized";
+  }
+
+  if(message){
+
+    const messageElement =
+      section.querySelector(
+        "[data-access-message]"
+      );
+
+    if(messageElement){
+
+      messageElement.textContent =
+        message;
+    }
+  }
+}
+
+
+/* =========================================================
+   PATCH EXISTING RENDER FUNCTION
+========================================================= */
+
+const originalRenderApplications =
+  renderApplications;
+
+
+/*
+ * Replace the current render function with a wrapper.
+ * Your existing application rendering remains unchanged.
+ */
+
+renderApplications =
+  function(applications){
+
+    originalRenderApplications(
+      applications
+    );
+
+    const articles =
+      listElement.querySelectorAll(
+        ".application"
+      );
+
+    applications.forEach(
+      (application,index) => {
+
+        const article =
+          articles[index];
+
+        if(!article) return;
+
+        addAccessControls(
+          article,
+          application
+        );
+      }
+    );
+  };
 </script>
 
 </body>
