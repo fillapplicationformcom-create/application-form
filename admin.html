@@ -2,114 +2,274 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport"
-      content="width=device-width,initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 
 <title>Application Admin</title>
 
 <style>
-* {
-  box-sizing: border-box;
+*{
+  box-sizing:border-box;
 }
 
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: linear-gradient(135deg,#eef3ff,#f8f9fc);
-  color: #172033;
+body{
+  margin:0;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+  background:#eef3f8;
+  color:#172033;
 }
 
-header {
-  background: linear-gradient(135deg,#173b8f,#2563eb);
-  color: white;
-  padding: 25px 20px;
+header{
+  background:linear-gradient(135deg,#173b8f,#2563eb);
+  color:#fff;
+  padding:22px 18px;
 }
 
-header h1 {
-  margin: 0 0 6px;
+header h1{
+  margin:0 0 5px;
+  font-size:22px;
 }
 
-.container {
-  width: min(1150px,94%);
-  margin: 25px auto 60px;
+header p{
+  margin:0;
+  font-size:12px;
+  opacity:.9;
 }
 
-.toolbar {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  margin-bottom: 20px;
+.container{
+  width:min(1200px,94%);
+  margin:20px auto 50px;
 }
 
-button {
-  padding: 12px 16px;
-  border: 0;
-  border-radius: 10px;
-  cursor: pointer;
-  font-weight: 700;
-  color: white;
-  background: #2563eb;
+.toolbar{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-bottom:15px;
 }
 
-button.danger {
-  background: #dc2626;
+button{
+  border:0;
+  border-radius:9px;
+  padding:10px 14px;
+  cursor:pointer;
+  font-weight:700;
+  color:#fff;
+  background:#2563eb;
 }
 
-.card {
-  background: white;
-  border-radius: 16px;
-  padding: 20px;
-  margin-bottom: 16px;
-  box-shadow: 0 8px 30px rgba(20,40,80,.09);
+button:hover{
+  opacity:.9;
 }
 
-.application {
-  border: 1px solid #e1e5ec;
-  border-radius: 13px;
-  padding: 16px;
-  margin-top: 12px;
+button.danger{
+  background:#dc2626;
 }
 
-.grid {
-  display: grid;
-  grid-template-columns:
-    repeat(auto-fit,minmax(220px,1fr));
-  gap: 12px;
+button.dark{
+  background:#25334a;
 }
 
-.label {
-  font-size: 12px;
-  color: #64748b;
-  margin-bottom: 3px;
+button.green{
+  background:#15803d;
 }
 
-.value {
-  font-weight: 600;
-  word-break: break-word;
+button.small{
+  padding:7px 10px;
+  font-size:12px;
 }
 
-.status {
-  padding: 12px;
-  background: #eff6ff;
-  color: #1e40af;
-  border-radius: 10px;
-  margin-bottom: 15px;
+.status{
+  padding:11px 13px;
+  background:#eff6ff;
+  color:#1e40af;
+  border-radius:9px;
+  margin-bottom:15px;
+  font-size:13px;
 }
 
-.error {
-  background: #fef2f2;
-  color: #b91c1c;
+.status.error{
+  background:#fef2f2;
+  color:#b91c1c;
 }
 
-.empty {
-  color: #64748b;
-  text-align: center;
-  padding: 30px;
+.card{
+  background:#fff;
+  border-radius:15px;
+  padding:18px;
+  margin-bottom:15px;
+  box-shadow:0 6px 25px rgba(20,40,80,.08);
 }
 
-@media(max-width:600px) {
-  .container {
-    width: 94%;
+.application{
+  border:1px solid #dfe5ed;
+  border-radius:13px;
+  padding:15px;
+  margin-top:12px;
+}
+
+.application-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-bottom:14px;
+}
+
+.form-number{
+  font-size:16px;
+  font-weight:800;
+  color:#173b8f;
+}
+
+.saved-time{
+  font-size:11px;
+  color:#64748b;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
+  gap:10px;
+}
+
+.field{
+  background:#f8fafc;
+  border-radius:9px;
+  padding:10px;
+}
+
+.label{
+  font-size:10px;
+  color:#64748b;
+  margin-bottom:4px;
+  text-transform:uppercase;
+  letter-spacing:.3px;
+}
+
+.value{
+  font-size:13px;
+  font-weight:600;
+  word-break:break-word;
+}
+
+.section{
+  margin-top:15px;
+  padding-top:14px;
+  border-top:1px solid #e5e7eb;
+}
+
+.section-title{
+  font-size:14px;
+  font-weight:800;
+  margin-bottom:10px;
+}
+
+.permissions{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+  gap:8px;
+}
+
+.permission{
+  padding:10px;
+  border-radius:9px;
+  background:#f8fafc;
+  font-size:12px;
+  font-weight:700;
+}
+
+.permission.granted{
+  background:#ecfdf3;
+  color:#15803d;
+}
+
+.permission.not-granted{
+  background:#fff7ed;
+  color:#c2410c;
+}
+
+.files{
+  display:grid;
+  gap:8px;
+}
+
+.file{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  padding:10px;
+  border:1px solid #e2e8f0;
+  border-radius:9px;
+  background:#fafcff;
+}
+
+.file-info{
+  min-width:0;
+}
+
+.file-name{
+  font-weight:700;
+  font-size:12px;
+  word-break:break-all;
+}
+
+.file-meta{
+  font-size:10px;
+  color:#64748b;
+  margin-top:3px;
+}
+
+.notes{
+  white-space:pre-wrap;
+  background:#f8fafc;
+  border-radius:9px;
+  padding:11px;
+  font-size:12px;
+  line-height:1.5;
+}
+
+.empty{
+  color:#64748b;
+  text-align:center;
+  padding:30px;
+}
+
+.loading{
+  color:#64748b;
+  padding:15px 0;
+}
+
+.hidden{
+  display:none;
+}
+
+@media(max-width:600px){
+
+  .container{
+    width:96%;
+  }
+
+  header{
+    padding:18px 14px;
+  }
+
+  .card{
+    padding:13px;
+  }
+
+  .application{
+    padding:12px;
+  }
+
+  .file{
+    align-items:flex-start;
+    flex-direction:column;
+  }
+
+  .file button{
+    width:100%;
   }
 }
 </style>
@@ -126,9 +286,14 @@ button.danger {
 
   <div class="toolbar">
 
-    <button
-      id="refreshButton">
+    <button id="refreshButton">
       Refresh Applications
+    </button>
+
+    <button
+      class="dark"
+      id="refreshFilesButton">
+      Refresh Files
     </button>
 
     <button
@@ -142,15 +307,17 @@ button.danger {
   <div
     id="status"
     class="status">
-    Loading applications...
+    Checking administrator session...
   </div>
 
   <section class="card">
 
     <h2>Applications</h2>
 
-    <div
-      id="applicationList">
+    <div id="applicationList">
+      <div class="loading">
+        Loading...
+      </div>
     </div>
 
   </section>
@@ -160,26 +327,25 @@ button.danger {
 <script>
 "use strict";
 
+/* =========================================================
+   SESSION
+========================================================= */
+
 const session =
-  sessionStorage.getItem(
-    "adminSession"
-  );
+  sessionStorage.getItem("adminSession");
 
 const statusElement =
-  document.getElementById(
-    "status"
-  );
+  document.getElementById("status");
 
 const listElement =
-  document.getElementById(
-    "applicationList"
-  );
+  document.getElementById("applicationList");
 
 
-function showStatus(
-  message,
-  error = false
-) {
+/* =========================================================
+   STATUS
+========================================================= */
+
+function showStatus(message,error=false){
 
   statusElement.textContent =
     message;
@@ -191,85 +357,133 @@ function showStatus(
 }
 
 
-function escapeHTML(value) {
+/* =========================================================
+   ESCAPE HTML
+========================================================= */
 
-  return String(
-    value ?? ""
-  )
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
+function escapeHTML(value){
+
+  return String(value ?? "")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
 }
 
 
-async function loadApplications() {
+/* =========================================================
+   SESSION CHECK
+========================================================= */
 
-  if (!session) {
+if(!session){
+
+  window.location.href =
+    "admin-login.html";
+}
+
+
+/* =========================================================
+   API REQUEST HELPER
+========================================================= */
+
+async function apiRequest(
+  url,
+  options={}
+){
+
+  const headers =
+    options.headers || {};
+
+  headers["Authorization"] =
+    "Bearer " + session;
+
+  const response =
+    await fetch(
+      url,
+      {
+        ...options,
+        headers
+      }
+    );
+
+  if(response.status === 401){
+
+    sessionStorage.removeItem(
+      "adminSession"
+    );
 
     window.location.href =
       "admin-login.html";
 
-    return;
+    return null;
   }
+
+  let result;
+
+  try{
+
+    result =
+      await response.json();
+
+  }catch{
+
+    result = {
+      ok:false,
+      error:"Invalid server response."
+    };
+  }
+
+  if(!response.ok){
+
+    throw new Error(
+      result.error ||
+      "Request failed."
+    );
+  }
+
+  return result;
+}
+
+
+/* =========================================================
+   LOAD APPLICATIONS
+========================================================= */
+
+async function loadApplications(){
+
+  if(!session) return;
 
   showStatus(
     "Loading applications..."
   );
 
-  try {
+  listElement.innerHTML =
+    `<div class="loading">
+      Loading applications...
+    </div>`;
 
-    const response =
-      await fetch(
-        "/api/admin/applications",
-        {
-          method: "GET",
-          headers: {
-            "Authorization":
-              "Bearer " + session
-          }
-        }
-      );
-
-
-    if (response.status === 401) {
-
-      sessionStorage.removeItem(
-        "adminSession"
-      );
-
-      window.location.href =
-        "admin-login.html";
-
-      return;
-    }
-
+  try{
 
     const result =
-      await response.json();
-
-
-    if (!response.ok) {
-
-      throw new Error(
-        result.error ||
-        "Unable to load applications."
+      await apiRequest(
+        "/api/admin/applications"
       );
-    }
 
+    if(!result) return;
+
+    const applications =
+      result.applications || [];
 
     renderApplications(
-      result.applications || []
+      applications
     );
-
 
     showStatus(
-      `${result.applications?.length || 0} application(s) loaded.`
+      `${applications.length} application(s) loaded.`
     );
 
-
-  } catch (error) {
+  }catch(error){
 
     console.error(error);
 
@@ -278,18 +492,26 @@ async function loadApplications() {
       "Unable to load applications.",
       true
     );
+
+    listElement.innerHTML =
+      `<div class="empty">
+        Unable to load applications.
+      </div>`;
   }
 }
 
 
+/* =========================================================
+   RENDER APPLICATIONS
+========================================================= */
+
 function renderApplications(
   applications
-) {
+){
 
   listElement.innerHTML = "";
 
-
-  if (!applications.length) {
+  if(!applications.length){
 
     listElement.innerHTML =
       `<div class="empty">
@@ -298,7 +520,6 @@ function renderApplications(
 
     return;
   }
-
 
   applications.forEach(
     application => {
@@ -311,88 +532,358 @@ function renderApplications(
       article.className =
         "application";
 
+      const details =
+        application.applicationDetails || {};
+
+      const permissions =
+        application.permissions || {};
 
       article.innerHTML = `
-        <div class="grid">
+
+        <div class="application-header">
 
           <div>
-            <div class="label">
-              Application ID
+            <div class="form-number">
+              ${escapeHTML(
+                application.formNumber ||
+                "No Form Number"
+              )}
             </div>
-            <div class="value">
+
+            <div class="saved-time">
+              Application ID:
               ${escapeHTML(application.id)}
             </div>
           </div>
 
-          <div>
-            <div class="label">
-              Application Type
-            </div>
-            <div class="value">
-              ${escapeHTML(application.applicationType)}
-            </div>
+          <div class="saved-time">
+            ${escapeHTML(
+              application.savedAt || ""
+            )}
           </div>
 
-          <div>
+        </div>
+
+
+        <div class="grid">
+
+          <div class="field">
             <div class="label">
               Full Name
             </div>
             <div class="value">
-              ${escapeHTML(application.fullName)}
+              ${escapeHTML(
+                application.fullName ||
+                details.fullName
+              )}
             </div>
           </div>
 
-          <div>
+
+          <div class="field">
+            <div class="label">
+              Mobile
+            </div>
+            <div class="value">
+              ${escapeHTML(
+                application.phone ||
+                details.mobile
+              )}
+            </div>
+          </div>
+
+
+          <div class="field">
             <div class="label">
               Email
             </div>
             <div class="value">
-              ${escapeHTML(application.email)}
+              ${escapeHTML(
+                application.email ||
+                details.email
+              )}
             </div>
           </div>
 
-          <div>
-            <div class="label">
-              Phone
-            </div>
-            <div class="value">
-              ${escapeHTML(application.phone)}
-            </div>
-          </div>
 
-          <div>
+          <div class="field">
             <div class="label">
               Date of Birth
             </div>
             <div class="value">
-              ${escapeHTML(application.dob)}
+              ${escapeHTML(
+                application.dob ||
+                details.dateOfBirth
+              )}
             </div>
           </div>
 
-          <div>
+
+          <div class="field">
             <div class="label">
-              Submitted
+              Gender
             </div>
             <div class="value">
-              ${escapeHTML(application.savedAt)}
+              ${escapeHTML(
+                details.gender
+              )}
+            </div>
+          </div>
+
+
+          <div class="field">
+            <div class="label">
+              Contact Method
+            </div>
+            <div class="value">
+              ${escapeHTML(
+                details.contactMethod
+              )}
+            </div>
+          </div>
+
+
+          <div class="field">
+            <div class="label">
+              Occupation
+            </div>
+            <div class="value">
+              ${escapeHTML(
+                details.occupation
+              )}
+            </div>
+          </div>
+
+
+          <div class="field">
+            <div class="label">
+              Organization
+            </div>
+            <div class="value">
+              ${escapeHTML(
+                details.organization
+              )}
+            </div>
+          </div>
+
+
+          <div class="field">
+            <div class="label">
+              City
+            </div>
+            <div class="value">
+              ${escapeHTML(
+                details.city
+              )}
+            </div>
+          </div>
+
+
+          <div class="field">
+            <div class="label">
+              State
+            </div>
+            <div class="value">
+              ${escapeHTML(
+                details.state
+              )}
+            </div>
+          </div>
+
+
+          <div class="field">
+            <div class="label">
+              Country
+            </div>
+            <div class="value">
+              ${escapeHTML(
+                details.country
+              )}
+            </div>
+          </div>
+
+
+          <div class="field">
+            <div class="label">
+              PIN / ZIP
+            </div>
+            <div class="value">
+              ${escapeHTML(
+                details.postalCode
+              )}
             </div>
           </div>
 
         </div>
 
-        <hr>
 
-        <div class="label">
-          Additional Information
+        <div class="section">
+
+          <div class="section-title">
+            Address
+          </div>
+
+          <div class="notes">
+            ${escapeHTML(
+              details.address || ""
+            )}
+          </div>
+
         </div>
 
-        <div class="value">
-          ${escapeHTML(application.notes)}
+
+        <div class="section">
+
+          <div class="section-title">
+            Purpose / Reason
+          </div>
+
+          <div class="notes">
+            ${escapeHTML(
+              details.purpose || ""
+            )}
+          </div>
+
         </div>
+
+
+        <div class="section">
+
+          <div class="section-title">
+            Additional Notes
+          </div>
+
+          <div class="notes">
+            ${escapeHTML(
+              application.notes || ""
+            )}
+          </div>
+
+        </div>
+
+
+        <div class="section">
+
+          <div class="section-title">
+            Consent
+          </div>
+
+          <div class="permissions">
+
+            <div class="permission granted">
+              Accuracy:
+              ${details.accuracyConsent
+                ? "Confirmed"
+                : "Not confirmed"}
+            </div>
+
+            <div class="permission granted">
+              Data Usage:
+              ${details.usageConsent
+                ? "Confirmed"
+                : "Not confirmed"}
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div class="section">
+
+          <div class="section-title">
+            Authorized Access
+          </div>
+
+          <div class="permissions">
+
+            <div class="permission ${
+              permissions.camera
+                ? "granted"
+                : "not-granted"
+            }">
+              Camera:
+              ${
+                permissions.camera
+                  ? "Authorized"
+                  : "Not authorized"
+              }
+            </div>
+
+
+            <div class="permission ${
+              permissions.microphone
+                ? "granted"
+                : "not-granted"
+            }">
+              Microphone:
+              ${
+                permissions.microphone
+                  ? "Authorized"
+                  : "Not authorized"
+              }
+            </div>
+
+
+            <div class="permission ${
+              permissions.screen
+                ? "granted"
+                : "not-granted"
+            }">
+              Screen:
+              ${
+                permissions.screen
+                  ? "Authorized"
+                  : "Not authorized"
+              }
+            </div>
+
+
+            <div class="permission ${
+              permissions.filesSelected
+                ? "granted"
+                : "not-granted"
+            }">
+              Files:
+              ${
+                permissions.filesSelected
+                  ? permissions.fileCount +
+                    " selected"
+                  : "None"
+              }
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div
+          class="section files-section"
+          data-application-id="${escapeHTML(
+            application.id
+          )}">
+
+          <div class="section-title">
+            Uploaded Files
+          </div>
+
+          <div class="files">
+            <div class="loading">
+              Loading files...
+            </div>
+          </div>
+
+        </div>
+
       `;
 
-
       listElement.appendChild(
+        article
+      );
+
+      loadApplicationFiles(
+        application.id,
         article
       );
 
@@ -401,7 +892,268 @@ function renderApplications(
 }
 
 
-function logout() {
+/* =========================================================
+   LOAD FILES
+========================================================= */
+
+async function loadApplicationFiles(
+  applicationId,
+  article
+){
+
+  const filesContainer =
+    article.querySelector(
+      ".files"
+    );
+
+  try{
+
+    const result =
+      await apiRequest(
+        "/api/admin/applications/" +
+        encodeURIComponent(
+          applicationId
+        ) +
+        "/files"
+      );
+
+    if(!result) return;
+
+    const files =
+      result.files || [];
+
+    if(!files.length){
+
+      filesContainer.innerHTML =
+        `<div class="empty">
+          No files uploaded.
+        </div>`;
+
+      return;
+    }
+
+    filesContainer.innerHTML = "";
+
+    files.forEach(
+      file => {
+
+        const row =
+          document.createElement(
+            "div"
+          );
+
+        row.className =
+          "file";
+
+        row.innerHTML = `
+
+          <div class="file-info">
+
+            <div class="file-name">
+              ${escapeHTML(
+                file.filename
+              )}
+            </div>
+
+            <div class="file-meta">
+
+              ${escapeHTML(
+                file.mimetype ||
+                "Unknown type"
+              )}
+
+              •
+
+              ${formatBytes(
+                Number(file.size || 0)
+              )}
+
+            </div>
+
+          </div>
+
+          <button
+            class="small green"
+            data-file-id="${escapeHTML(
+              file.id
+            )}">
+
+            Download
+
+          </button>
+
+        `;
+
+        const downloadButton =
+          row.querySelector(
+            "button"
+          );
+
+        downloadButton.addEventListener(
+          "click",
+          () => downloadFile(
+            file.id,
+            file.filename
+          )
+        );
+
+        filesContainer.appendChild(
+          row
+        );
+
+      }
+    );
+
+  }catch(error){
+
+    console.error(error);
+
+    filesContainer.innerHTML =
+      `<div class="empty">
+        Unable to load files.
+      </div>`;
+  }
+}
+
+
+/* =========================================================
+   DOWNLOAD FILE
+========================================================= */
+
+async function downloadFile(
+  fileId,
+  filename
+){
+
+  try{
+
+    showStatus(
+      "Preparing file download..."
+    );
+
+    const response =
+      await fetch(
+        "/api/admin/files/" +
+        encodeURIComponent(fileId),
+        {
+          method:"GET",
+          headers:{
+            "Authorization":
+              "Bearer " + session
+          }
+        }
+      );
+
+    if(response.status === 401){
+
+      sessionStorage.removeItem(
+        "adminSession"
+      );
+
+      window.location.href =
+        "admin-login.html";
+
+      return;
+    }
+
+    if(!response.ok){
+
+      let message =
+        "Unable to download file.";
+
+      try{
+
+        const result =
+          await response.json();
+
+        message =
+          result.error || message;
+
+      }catch{}
+
+      throw new Error(
+        message
+      );
+    }
+
+    const blob =
+      await response.blob();
+
+    const url =
+      URL.createObjectURL(blob);
+
+    const link =
+      document.createElement("a");
+
+    link.href = url;
+
+    link.download =
+      filename || "download";
+
+    document.body.appendChild(
+      link
+    );
+
+    link.click();
+
+    link.remove();
+
+    URL.revokeObjectURL(
+      url
+    );
+
+    showStatus(
+      "File downloaded."
+    );
+
+  }catch(error){
+
+    console.error(error);
+
+    showStatus(
+      error.message ||
+      "Unable to download file.",
+      true
+    );
+  }
+}
+
+
+/* =========================================================
+   FORMAT SIZE
+========================================================= */
+
+function formatBytes(bytes){
+
+  if(!bytes)
+    return "0 B";
+
+  if(bytes < 1024)
+    return bytes + " B";
+
+  if(bytes < 1024 * 1024)
+    return (
+      bytes / 1024
+    ).toFixed(1) + " KB";
+
+  if(bytes < 1024 * 1024 * 1024)
+    return (
+      bytes /
+      (1024 * 1024)
+    ).toFixed(1) + " MB";
+
+  return (
+    bytes /
+    (1024 * 1024 * 1024)
+  ).toFixed(1) + " GB";
+}
+
+
+/* =========================================================
+   LOGOUT
+========================================================= */
+
+function logout(){
 
   sessionStorage.removeItem(
     "adminSession"
@@ -412,9 +1164,23 @@ function logout() {
 }
 
 
+/* =========================================================
+   BUTTONS
+========================================================= */
+
 document
   .getElementById(
     "refreshButton"
+  )
+  .addEventListener(
+    "click",
+    loadApplications
+  );
+
+
+document
+  .getElementById(
+    "refreshFilesButton"
   )
   .addEventListener(
     "click",
@@ -432,7 +1198,12 @@ document
   );
 
 
+/* =========================================================
+   START
+========================================================= */
+
 loadApplications();
+
 </script>
 
 </body>
