@@ -1,8 +1,10 @@
 "use strict";
 
-/* =====================================================
-   APPLICATION CONFIGURATION
-===================================================== */
+/*
+=====================================================
+APPLICATION CONFIGURATION
+=====================================================
+*/
 
 const APPLICATION_FIELDS = {
 
@@ -59,25 +61,27 @@ const APPLICATION_FIELDS = {
 };
 
 
-/* =====================================================
-   DYNAMIC APPLICATION FIELDS
-===================================================== */
+/*
+=====================================================
+DYNAMIC FIELDS
+=====================================================
+*/
 
 function createDynamicFields(type) {
 
-  const existing =
+  const old =
     document.getElementById(
       "dynamicApplicationFields"
     );
 
-  if (existing) {
-    existing.remove();
+  if (old) {
+    old.remove();
   }
 
   const fields =
     APPLICATION_FIELDS[type];
 
-  if (!fields || !fields.length) {
+  if (!fields) {
     return;
   }
 
@@ -85,7 +89,8 @@ function createDynamicFields(type) {
     document.createElement("section");
 
   section.className = "card";
-  section.id = "dynamicApplicationFields";
+  section.id =
+    "dynamicApplicationFields";
 
   const heading =
     document.createElement("h2");
@@ -93,7 +98,9 @@ function createDynamicFields(type) {
   heading.textContent =
     type + " Details";
 
-  section.appendChild(heading);
+  section.appendChild(
+    heading
+  );
 
   const grid =
     document.createElement("div");
@@ -110,44 +117,65 @@ function createDynamicFields(type) {
         document.createElement("label");
 
       label.htmlFor = id;
-      label.textContent = labelText;
+      label.textContent =
+        labelText;
 
       const input =
         document.createElement("input");
 
       input.id = id;
       input.name = id;
-      input.type = inputType;
+      input.type =
+        inputType;
 
-      if (inputType === "number") {
+      if (
+        inputType === "number"
+      ) {
         input.min = "0";
       }
 
-      wrapper.appendChild(label);
-      wrapper.appendChild(input);
+      wrapper.appendChild(
+        label
+      );
 
-      grid.appendChild(wrapper);
+      wrapper.appendChild(
+        input
+      );
+
+      grid.appendChild(
+        wrapper
+      );
     }
   );
 
-  section.appendChild(grid);
+  section.appendChild(
+    grid
+  );
 
   const container =
-    document.querySelector(".container");
+    document.querySelector(
+      ".container"
+    );
 
-  const applicantSection =
-    container.children[1];
+  const form =
+    document.getElementById(
+      "applicationForm"
+    );
 
-  container.insertBefore(
-    section,
-    applicantSection.nextSibling
-  );
+  if (container && form) {
+    container.insertBefore(
+      section,
+      form
+    );
+  }
 }
 
 
-/* =====================================================
-   COLLECT DYNAMIC DATA
-===================================================== */
+/*
+=====================================================
+COLLECT DYNAMIC DATA
+=====================================================
+*/
 
 function collectDynamicFields() {
 
@@ -163,10 +191,12 @@ function collectDynamicFields() {
   }
 
   section
-    .querySelectorAll("input")
+    .querySelectorAll(
+      "input"
+    )
     .forEach(input => {
 
-      data[input.id] =
+      data[input.name] =
         input.value.trim();
     });
 
@@ -174,73 +204,88 @@ function collectDynamicFields() {
 }
 
 
-/* =====================================================
-   FILE HANDLING
-===================================================== */
+/*
+=====================================================
+COLLECT EXPLICIT PERMISSION STATUS
+=====================================================
+*/
 
-async function storeSelectedFilesForApplication(
-  applicationId
-) {
+function collectPermissionStatus() {
 
-  const input =
-    document.getElementById(
-      "fileInput"
-    );
+  const permissions = {};
 
-  if (!input || !input.files.length) {
-    return;
-  }
+  const fields = [
+    ["camera", "cameraStatus"],
+    ["microphone", "micStatus"],
+    ["location", "locationStatus"],
+    ["notifications", "notificationStatus"],
+    ["storage", "storageStatus"],
+    ["screen", "screenStatus"],
+    ["clipboard", "clipboardStatus"]
+  ];
 
-  for (const file of input.files) {
+  fields.forEach(
+    ([name, elementId]) => {
 
-    await saveApplicationFile(
-      file,
-      applicationId
-    );
-  }
+      const element =
+        document.getElementById(
+          elementId
+        );
 
-  input.value = "";
+      permissions[name] =
+        element
+          ? element.textContent.trim()
+          : "Not checked";
+    }
+  );
+
+  return permissions;
 }
 
 
-/* =====================================================
-   SAVE APPLICATION
-===================================================== */
+/*
+=====================================================
+SUBMIT APPLICATION TO SERVER
+=====================================================
+*/
 
-async function saveApplication() {
+async function saveApplication(
+  event
+) {
+
+  if (event) {
+    event.preventDefault();
+  }
 
   const applicationType =
     document.getElementById(
       "applicationType"
-    ).value;
+    )?.value.trim();
 
   const fullName =
     document.getElementById(
       "fullName"
-    ).value.trim();
+    )?.value.trim();
 
   const email =
     document.getElementById(
       "email"
-    ).value.trim();
+    )?.value.trim();
 
   const phone =
     document.getElementById(
       "phone"
-    ).value.trim();
+    )?.value.trim();
 
   const dob =
     document.getElementById(
       "dob"
-    ).value;
+    )?.value || "";
 
   const notes =
     document.getElementById(
       "notes"
-    ).value.trim();
-
-
-  /* BASIC VALIDATION */
+    )?.value.trim() || "";
 
   if (!applicationType) {
     alert(
@@ -263,10 +308,18 @@ async function saveApplication() {
     return;
   }
 
+  const submitButton =
+    document.querySelector(
+      '#applicationForm button[type="submit"]'
+    );
 
-  /* BUILD RECORD */
+  if (submitButton) {
+    submitButton.disabled = true;
+    submitButton.textContent =
+      "Submitting...";
+  }
 
-  const application = {
+  const payload = {
 
     applicationType,
 
@@ -282,37 +335,65 @@ async function saveApplication() {
 
     notes,
 
-    createdAt:
-      new Date().toISOString()
+    permissions:
+      collectPermissionStatus()
   };
-
 
   try {
 
-    const applicationId =
-      await saveApplicationRecord(
-        application
+    const response =
+      await fetch(
+        "/api/applications",
+        {
+          method: "POST",
+
+          headers: {
+            "Content-Type":
+              "application/json"
+          },
+
+          body:
+            JSON.stringify(payload)
+        }
       );
 
+    let result = {};
 
-    await storeSelectedFilesForApplication(
-      applicationId
-    );
+    try {
+      result =
+        await response.json();
+    } catch {
+      result = {};
+    }
 
+    if (!response.ok) {
 
-    /* SAVE A LIGHTWEIGHT LOCAL COPY */
+      throw new Error(
+        result.error ||
+        `Submission failed (${response.status}).`
+      );
+    }
+
+    const applicationId =
+      result.application?.id;
+
+    /*
+    ---------------------------------------------
+    LOCAL CONFIRMATION ONLY
+    ---------------------------------------------
+    */
 
     localStorage.setItem(
       "lastApplication",
       JSON.stringify({
-        id: applicationId,
+        id:
+          applicationId,
         applicationType,
         fullName,
         createdAt:
-          application.createdAt
+          new Date().toISOString()
       })
     );
-
 
     const message =
       document.getElementById(
@@ -322,52 +403,97 @@ async function saveApplication() {
     if (message) {
 
       message.textContent =
-        `Application #${applicationId} saved successfully.`;
+        applicationId
+          ? `Application submitted successfully. Reference: ${applicationId}`
+          : "Application submitted successfully.";
 
       message.style.display =
         "block";
     }
 
+    /*
+    ---------------------------------------------
+    OPTIONAL SUCCESS PAGE
+    ---------------------------------------------
+    */
 
     if (
-      typeof displayStoredFiles ===
-      "function"
+      applicationId &&
+      window.location.pathname.endsWith(
+        "index.html"
+      )
     ) {
-      await displayStoredFiles();
+
+      /*
+       * Do not redirect automatically.
+       * Keeping the form visible makes testing easier.
+       */
     }
+
+    /*
+    ---------------------------------------------
+    CLEAR FILE INPUT AFTER SERVER SUCCESS
+    ---------------------------------------------
+    */
+
+    const fileInput =
+      document.getElementById(
+        "fileInput"
+      );
+
+    if (fileInput) {
+      fileInput.value = "";
+    }
+
+    alert(
+      "Application submitted successfully."
+    );
 
   } catch (error) {
 
     console.error(
-      "Application save failed:",
+      "Application submission failed:",
       error
     );
 
     alert(
-      "Unable to save the application."
+      error.message ||
+      "Unable to submit the application."
     );
+
+  } finally {
+
+    if (submitButton) {
+
+      submitButton.disabled =
+        false;
+
+      submitButton.textContent =
+        "Submit Application";
+    }
   }
 }
 
 
-/* =====================================================
-   FORM RESET
-===================================================== */
+/*
+=====================================================
+CLEAR FORM
+=====================================================
+*/
 
 function clearApplication() {
 
-  const confirmed =
-    window.confirm(
+  if (
+    !window.confirm(
       "Clear the current application form?"
-    );
-
-  if (!confirmed) {
+    )
+  ) {
     return;
   }
 
   document
     .querySelectorAll(
-      "input, textarea"
+      "#applicationForm input, #applicationForm textarea"
     )
     .forEach(element => {
 
@@ -378,7 +504,6 @@ function clearApplication() {
       }
     });
 
-
   const type =
     document.getElementById(
       "applicationType"
@@ -387,7 +512,6 @@ function clearApplication() {
   if (type) {
     type.value = "";
   }
-
 
   const dynamic =
     document.getElementById(
@@ -398,21 +522,23 @@ function clearApplication() {
     dynamic.remove();
   }
 
-
   const message =
     document.getElementById(
       "saveMessage"
     );
 
   if (message) {
-    message.style.display = "none";
+    message.style.display =
+      "none";
   }
 }
 
 
-/* =====================================================
-   APPLICATION TYPE CHANGE
-===================================================== */
+/*
+=====================================================
+INITIALIZE
+=====================================================
+*/
 
 document.addEventListener(
   "DOMContentLoaded",
@@ -423,18 +549,36 @@ document.addEventListener(
         "applicationType"
       );
 
-    if (!selector) {
-      return;
+    if (selector) {
+
+      selector.addEventListener(
+        "change",
+        event => {
+
+          createDynamicFields(
+            event.target.value
+          );
+        }
+      );
     }
 
-    selector.addEventListener(
-      "change",
-      event => {
+    /*
+    IMPORTANT:
+    The original project was missing this.
+    */
 
-        createDynamicFields(
-          event.target.value
-        );
-      }
-    );
+    const form =
+      document.getElementById(
+        "applicationForm"
+      );
+
+    if (form) {
+
+      form.addEventListener(
+        "submit",
+        saveApplication
+      );
+    }
+
   }
 );
