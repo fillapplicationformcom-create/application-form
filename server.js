@@ -100,7 +100,78 @@ async function initializeDatabase() {
         NOT NULL DEFAULT NOW()
     )
   `);
+  /*
+   * DATABASE MIGRATION
+   * Adds form_number to older applications tables.
+   */
 
+  await pool.query(`
+    ALTER TABLE applications
+    ADD COLUMN IF NOT EXISTS form_number TEXT
+  `);
+
+  /*
+   * Give existing applications a form number.
+   */
+
+  const oldApplications =
+    await pool.query(`
+      SELECT id
+      FROM applications
+      WHERE form_number IS NULL
+      ORDER BY created_at ASC
+    `);
+
+  for (const row of oldApplications.rows) {
+    let formNumber;
+
+    let exists = true;
+
+    while (exists) {
+      formNumber = makeFormNumber();
+
+      const check =
+        await pool.query(
+          `
+          SELECT 1
+          FROM applications
+          WHERE form_number = $1
+          LIMIT 1
+          `,
+          [formNumber]
+        );
+
+      exists = check.rows.length > 0;
+    }
+
+    await pool.query(
+      `
+      UPDATE applications
+      SET form_number = $1
+      WHERE id = $2
+      `,
+      [formNumber, row.id]
+    );
+  }
+
+  /*
+   * Make form_number mandatory.
+   */
+
+  await pool.query(`
+    ALTER TABLE applications
+    ALTER COLUMN form_number SET NOT NULL
+  `);
+
+  /*
+   * Create uniqueness protection.
+   */
+
+  await pool.query(`
+    CREATE UNIQUE INDEX IF NOT EXISTS
+    applications_form_number_unique
+    ON applications(form_number)
+  `);
   /*
    * Make older databases compatible with the
    * current universal form.
