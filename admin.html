@@ -2,1724 +2,276 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport"
+      content="width=device-width,initial-scale=1.0">
 
-<title>Application Admin</title>
+<title>Administrator Login</title>
 
 <style>
-*{
-  box-sizing:border-box;
+* {
+  box-sizing: border-box;
 }
 
-html{
-  scroll-behavior:smooth;
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: Arial, sans-serif;
+  background:
+    linear-gradient(
+      135deg,
+      #eef3ff,
+      #f8f9fc
+    );
+  color: #172033;
 }
 
-body{
-  margin:0;
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
-  background:#eef3f8;
-  color:#172033;
+.card {
+  width: min(430px, 92%);
+  background: white;
+  padding: 30px;
+  border-radius: 18px;
+  box-shadow:
+    0 15px 45px rgba(20,40,80,.12);
 }
 
-header{
-  background:linear-gradient(135deg,#173b8f,#2563eb);
-  color:#fff;
-  padding:22px 18px;
-  box-shadow:0 4px 20px rgba(15,35,80,.15);
+h1 {
+  margin: 0 0 8px;
 }
 
-header h1{
-  margin:0 0 5px;
-  font-size:22px;
+p {
+  color: #64748b;
+  line-height: 1.5;
 }
 
-header p{
-  margin:0;
-  font-size:12px;
-  opacity:.9;
+label {
+  display: block;
+  margin: 18px 0 7px;
+  font-weight: 700;
 }
 
-.container{
-  width:min(1200px,94%);
-  margin:20px auto 50px;
+input,
+button {
+  width: 100%;
+  padding: 13px;
+  border-radius: 10px;
+  font: inherit;
 }
 
-.toolbar{
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-  margin-bottom:15px;
+input {
+  border: 1px solid #ccd3df;
 }
 
-button{
-  border:0;
-  border-radius:9px;
-  padding:10px 14px;
-  cursor:pointer;
-  font-weight:700;
-  color:#fff;
-  background:#2563eb;
-  font-family:inherit;
+button {
+  margin-top: 18px;
+  border: 0;
+  background: #2563eb;
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
 }
 
-button:hover{
-  opacity:.9;
+button:disabled {
+  opacity: .6;
 }
 
-button:disabled{
-  opacity:.55;
-  cursor:not-allowed;
+.status {
+  display: none;
+  margin-top: 15px;
+  padding: 12px;
+  border-radius: 9px;
+  background: #eff6ff;
+  color: #1e40af;
 }
 
-button.danger{
-  background:#dc2626;
-}
-
-button.dark{
-  background:#25334a;
-}
-
-button.green{
-  background:#15803d;
-}
-
-button.small{
-  padding:7px 10px;
-  font-size:12px;
-}
-
-.status{
-  padding:11px 13px;
-  background:#eff6ff;
-  color:#1e40af;
-  border-radius:9px;
-  margin-bottom:15px;
-  font-size:13px;
-}
-
-.status.error{
-  background:#fef2f2;
-  color:#b91c1c;
-}
-
-.status.success{
-  background:#ecfdf3;
-  color:#15803d;
-}
-
-.card{
-  background:#fff;
-  border-radius:15px;
-  padding:18px;
-  margin-bottom:15px;
-  box-shadow:0 6px 25px rgba(20,40,80,.08);
-}
-
-.card h2{
-  margin:0 0 10px;
-  font-size:18px;
-}
-
-.application{
-  border:1px solid #dfe5ed;
-  border-radius:13px;
-  padding:15px;
-  margin-top:12px;
-  background:#fff;
-}
-
-.application-header{
-  display:flex;
-  justify-content:space-between;
-  align-items:flex-start;
-  gap:10px;
-  flex-wrap:wrap;
-  margin-bottom:14px;
-}
-
-.form-number{
-  font-size:16px;
-  font-weight:800;
-  color:#173b8f;
-}
-
-.saved-time{
-  font-size:11px;
-  color:#64748b;
-}
-
-.grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
-  gap:10px;
-}
-
-.field{
-  background:#f8fafc;
-  border-radius:9px;
-  padding:10px;
-  min-width:0;
-}
-
-.label{
-  font-size:10px;
-  color:#64748b;
-  margin-bottom:4px;
-  text-transform:uppercase;
-  letter-spacing:.3px;
-}
-
-.value{
-  font-size:13px;
-  font-weight:600;
-  word-break:break-word;
-  overflow-wrap:anywhere;
-}
-
-.section{
-  margin-top:15px;
-  padding-top:14px;
-  border-top:1px solid #e5e7eb;
-}
-
-.section-title{
-  font-size:14px;
-  font-weight:800;
-  margin-bottom:10px;
-}
-
-.permissions{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
-  gap:8px;
-}
-
-.permission{
-  padding:10px;
-  border-radius:9px;
-  background:#f8fafc;
-  font-size:12px;
-  font-weight:700;
-}
-
-.permission.granted{
-  background:#ecfdf3;
-  color:#15803d;
-}
-
-.permission.not-granted{
-  background:#fff7ed;
-  color:#c2410c;
-}
-
-.files{
-  display:grid;
-  gap:8px;
-}
-
-.file{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:10px;
-  padding:10px;
-  border:1px solid #e2e8f0;
-  border-radius:9px;
-  background:#fafcff;
-}
-
-.file-info{
-  min-width:0;
-  flex:1;
-}
-
-.file-name{
-  font-weight:700;
-  font-size:12px;
-  word-break:break-all;
-}
-
-.file-meta{
-  font-size:10px;
-  color:#64748b;
-  margin-top:3px;
-  line-height:1.5;
-}
-
-.notes{
-  white-space:pre-wrap;
-  overflow-wrap:anywhere;
-  background:#f8fafc;
-  border-radius:9px;
-  padding:11px;
-  font-size:12px;
-  line-height:1.5;
-  min-height:20px;
-}
-
-.empty{
-  color:#64748b;
-  text-align:center;
-  padding:30px;
-}
-
-.loading{
-  color:#64748b;
-  padding:15px 0;
-}
-
-.badge{
-  display:inline-block;
-  padding:5px 8px;
-  border-radius:7px;
-  background:#eff6ff;
-  color:#1e40af;
-  font-size:10px;
-  font-weight:800;
-  margin-top:5px;
-}
-
-.hidden{
-  display:none;
-}
-
-@media(max-width:600px){
-
-  .container{
-    width:96%;
-  }
-
-  header{
-    padding:18px 14px;
-  }
-
-  .card{
-    padding:13px;
-  }
-
-  .application{
-    padding:12px;
-  }
-
-  .file{
-    align-items:stretch;
-    flex-direction:column;
-  }
-
-  .file button{
-    width:100%;
-  }
-
-  .toolbar button{
-    flex:1 1 auto;
-  }
+.error {
+  background: #fef2f2;
+  color: #b91c1c;
 }
 </style>
 </head>
 
 <body>
 
-<header>
-  <h1>Application Admin</h1>
-  <p>Authorized application management dashboard</p>
-</header>
+<main class="card">
 
-<main class="container">
+  <h1>Administrator Login</h1>
 
-  <div class="toolbar">
+  <p>
+    Authorized administrators only.
+  </p>
 
-    <button
-      type="button"
-      id="refreshButton">
-      Refresh Applications
-    </button>
+  <form id="loginForm">
 
-    <button
-      type="button"
-      class="dark"
-      id="refreshFilesButton">
-      Refresh Files
-    </button>
+    <label for="adminToken">
+      Administrator Token
+    </label>
+
+    <input
+      id="adminToken"
+      type="password"
+      autocomplete="current-password"
+      required>
 
     <button
-      type="button"
-      class="danger"
-      id="logoutButton">
-      Sign Out
+      id="loginButton"
+      type="submit">
+
+      Sign In
+
     </button>
 
-  </div>
+  </form>
 
   <div
     id="status"
     class="status">
-    Checking administrator session...
   </div>
-
-  <section class="card">
-
-    <h2>Applications</h2>
-
-    <div id="applicationList">
-      <div class="loading">
-        Loading...
-      </div>
-    </div>
-
-  </section>
 
 </main>
 
 <script>
 "use strict";
 
-/* =========================================================
-   SESSION
-========================================================= */
+const form =
+  document.getElementById(
+    "loginForm"
+  );
 
-const SESSION_KEY = "adminSession";
+const tokenInput =
+  document.getElementById(
+    "adminToken"
+  );
 
-const session =
-  sessionStorage.getItem(SESSION_KEY);
+const button =
+  document.getElementById(
+    "loginButton"
+  );
 
-const statusElement =
-  document.getElementById("status");
+const status =
+  document.getElementById(
+    "status"
+  );
 
-const listElement =
-  document.getElementById("applicationList");
-
-const refreshButton =
-  document.getElementById("refreshButton");
-
-const refreshFilesButton =
-  document.getElementById("refreshFilesButton");
-
-const logoutButton =
-  document.getElementById("logoutButton");
-
-
-/* =========================================================
-   STATUS
-========================================================= */
 
 function showStatus(
   message,
-  type = "normal"
-){
+  error = false
+) {
 
-  statusElement.textContent =
+  status.textContent =
     message;
 
-  statusElement.className =
-    "status";
+  status.className =
+    "status" +
+    (error ? " error" : "");
 
-  if(type === "error"){
-    statusElement.classList.add(
-      "error"
-    );
-  }
-
-  if(type === "success"){
-    statusElement.classList.add(
-      "success"
-    );
-  }
+  status.style.display =
+    "block";
 }
 
 
-/* =========================================================
-   ESCAPE HTML
-========================================================= */
+form.addEventListener(
+  "submit",
+  async event => {
 
-function escapeHTML(value){
+    event.preventDefault();
 
-  return String(value ?? "")
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
-}
+    const token =
+      tokenInput.value.trim();
 
+    if (!token) {
+      showStatus(
+        "Enter the administrator token.",
+        true
+      );
+      return;
+    }
 
-/* =========================================================
-   DISPLAY VALUE
-========================================================= */
+    button.disabled = true;
+    button.textContent =
+      "Signing in...";
 
-function displayValue(value){
+    try {
 
-  if(
-    value === undefined ||
-    value === null ||
-    String(value).trim() === ""
-  ){
-    return "—";
-  }
+      /*
+       * The server-side login endpoint will
+       * validate this token and return a
+       * short-lived session.
+       */
 
-  return escapeHTML(value);
-}
+      const response =
+        await fetch(
+          "/api/admin/login",
+          {
+            method: "POST",
 
+            headers: {
+              "Content-Type":
+                "application/json"
+            },
 
-/* =========================================================
-   SESSION REDIRECT
-========================================================= */
+            body: JSON.stringify({
+              token
+            })
+          }
+        );
 
-function redirectToLogin(){
-
-  sessionStorage.removeItem(
-    SESSION_KEY
-  );
-
-  window.location.replace(
-    "admin-login.html"
-  );
-}
-
-
-/* =========================================================
-   API REQUEST HELPER
-========================================================= */
-
-async function apiRequest(
-  url,
-  options = {}
-){
-
-  const requestOptions = {
-    ...options
-  };
-
-  const headers = {
-    ...(options.headers || {})
-  };
-
-  headers["Authorization"] =
-    "Bearer " + session;
-
-  requestOptions.headers =
-    headers;
-
-  const response =
-    await fetch(
-      url,
-      requestOptions
-    );
-
-  if(
-    response.status === 401 ||
-    response.status === 403
-  ){
-
-    redirectToLogin();
-
-    return null;
-  }
-
-  let result = null;
-
-  const contentType =
-    response.headers.get(
-      "content-type"
-    ) || "";
-
-  if(
-    contentType.includes(
-      "application/json"
-    )
-  ){
-
-    try{
-
-      result =
+      const result =
         await response.json();
 
-    }catch{
-
-      result = null;
-    }
-
-  }else{
-
-    try{
-
-      const text =
-        await response.text();
-
-      result = {
-        ok:false,
-        error:text ||
-          "Invalid server response."
-      };
-
-    }catch{
-
-      result = {
-        ok:false,
-        error:
-          "Invalid server response."
-      };
-    }
-  }
-
-  if(!response.ok){
-
-    throw new Error(
-      result?.error ||
-      "Request failed."
-    );
-  }
-
-  return result;
-}
-
-
-/* =========================================================
-   VERIFY SESSION
-========================================================= */
-
-async function verifySession(){
-
-  if(!session){
-
-    redirectToLogin();
-
-    return false;
-  }
-
-  try{
-
-    const result =
-      await apiRequest(
-        "/api/admin/status"
-      );
-
-    if(
-      !result ||
-      result.ok !== true
-    ){
-
-      redirectToLogin();
-
-      return false;
-    }
-
-    showStatus(
-      "Administrator session verified.",
-      "success"
-    );
-
-    return true;
-
-  }catch(error){
-
-    console.error(
-      "Session verification failed:",
-      error
-    );
-
-    showStatus(
-      "Administrator session is invalid or expired.",
-      "error"
-    );
-
-    redirectToLogin();
-
-    return false;
-  }
-}
-
-
-/* =========================================================
-   LOAD APPLICATIONS
-========================================================= */
-
-async function loadApplications(){
-
-  if(!session){
-
-    redirectToLogin();
-
-    return;
-  }
-
-  refreshButton.disabled = true;
-  refreshFilesButton.disabled = true;
-
-  showStatus(
-    "Loading applications..."
-  );
-
-  listElement.innerHTML =
-    `
-      <div class="loading">
-        Loading applications...
-      </div>
-    `;
-
-  try{
-
-    const result =
-      await apiRequest(
-        "/api/admin/applications"
-      );
-
-    if(!result){
-
-      return;
-    }
-
-    const applications =
-      Array.isArray(
-        result.applications
-      )
-        ? result.applications
-        : [];
-
-    renderApplications(
-      applications
-    );
-
-    showStatus(
-      `${applications.length} application(s) loaded.`,
-      "success"
-    );
-
-  }catch(error){
-
-    console.error(
-      "Application loading error:",
-      error
-    );
-
-    showStatus(
-      error.message ||
-      "Unable to load applications.",
-      "error"
-    );
-
-    listElement.innerHTML =
-      `
-        <div class="empty">
-          Unable to load applications.
-        </div>
-      `;
-
-  }finally{
-
-    refreshButton.disabled = false;
-    refreshFilesButton.disabled = false;
-  }
-}
-
-
-/* =========================================================
-   RENDER APPLICATIONS
-========================================================= */
-
-function renderApplications(
-  applications
-){
-
-  listElement.innerHTML = "";
-
-  if(!applications.length){
-
-    listElement.innerHTML =
-      `
-        <div class="empty">
-          No applications found.
-        </div>
-      `;
-
-    return;
-  }
-
-  applications.forEach(
-    application => {
-
-      const article =
-        document.createElement(
-          "article"
+      if (!response.ok) {
+        throw new Error(
+          result.error ||
+          "Authentication failed."
         );
-
-      article.className =
-        "application";
-
-      const details =
-        application.applicationDetails &&
-        typeof application.applicationDetails === "object"
-          ? application.applicationDetails
-          : {};
-
-      const permissions =
-        application.permissions &&
-        typeof application.permissions === "object"
-          ? application.permissions
-          : {};
-
-      const accuracyConsent =
-        Boolean(
-          details.accuracyConsent
-        );
-
-      const usageConsent =
-        Boolean(
-          details.usageConsent
-        );
-
-      const camera =
-        Boolean(
-          permissions.camera
-        );
-
-      const microphone =
-        Boolean(
-          permissions.microphone
-        );
-
-      const screen =
-        Boolean(
-          permissions.screen
-        );
-
-      const filesSelected =
-        Boolean(
-          permissions.filesSelected
-        );
-
-      const fileCount =
-        Number(
-          permissions.fileCount || 0
-        );
-
-      article.innerHTML = `
-
-        <div class="application-header">
-
-          <div>
-
-            <div class="form-number">
-              ${displayValue(
-                application.formNumber ||
-                details.formNumber ||
-                "No Form Number"
-              )}
-            </div>
-
-            <div class="badge">
-              ${displayValue(
-                application.applicationType ||
-                "basic-information"
-              )}
-            </div>
-
-            <div class="saved-time">
-              Application ID:
-              ${displayValue(
-                application.id
-              )}
-            </div>
-
-            <div class="saved-time">
-              Submission ID:
-              ${displayValue(
-                details.submissionId
-              )}
-            </div>
-
-          </div>
-
-          <div class="saved-time">
-            ${displayValue(
-              formatDateTime(
-                application.savedAt
-              )
-            )}
-          </div>
-
-        </div>
-
-
-        <div class="grid">
-
-          <div class="field">
-            <div class="label">
-              Full Name
-            </div>
-            <div class="value">
-              ${displayValue(
-                application.fullName ||
-                details.fullName
-              )}
-            </div>
-          </div>
-
-
-          <div class="field">
-            <div class="label">
-              Mobile
-            </div>
-            <div class="value">
-              ${displayValue(
-                application.phone ||
-                details.mobile
-              )}
-            </div>
-          </div>
-
-
-          <div class="field">
-            <div class="label">
-              Email
-            </div>
-            <div class="value">
-              ${displayValue(
-                application.email ||
-                details.email
-              )}
-            </div>
-          </div>
-
-
-          <div class="field">
-            <div class="label">
-              Date of Birth
-            </div>
-            <div class="value">
-              ${displayValue(
-                application.dob ||
-                details.dateOfBirth
-              )}
-            </div>
-          </div>
-
-
-          <div class="field">
-            <div class="label">
-              Gender
-            </div>
-            <div class="value">
-              ${displayValue(
-                details.gender
-              )}
-            </div>
-          </div>
-
-
-          <div class="field">
-            <div class="label">
-              Contact Method
-            </div>
-            <div class="value">
-              ${displayValue(
-                details.contactMethod
-              )}
-            </div>
-          </div>
-
-
-          <div class="field">
-            <div class="label">
-              Occupation
-            </div>
-            <div class="value">
-              ${displayValue(
-                details.occupation
-              )}
-            </div>
-          </div>
-
-
-          <div class="field">
-            <div class="label">
-              Organization
-            </div>
-            <div class="value">
-              ${displayValue(
-                details.organization
-              )}
-            </div>
-          </div>
-
-
-          <div class="field">
-            <div class="label">
-              City
-            </div>
-            <div class="value">
-              ${displayValue(
-                details.city
-              )}
-            </div>
-          </div>
-
-
-          <div class="field">
-            <div class="label">
-              State
-            </div>
-            <div class="value">
-              ${displayValue(
-                details.state
-              )}
-            </div>
-          </div>
-
-
-          <div class="field">
-            <div class="label">
-              Country
-            </div>
-            <div class="value">
-              ${displayValue(
-                details.country
-              )}
-            </div>
-          </div>
-
-
-          <div class="field">
-            <div class="label">
-              PIN / ZIP
-            </div>
-            <div class="value">
-              ${displayValue(
-                details.postalCode
-              )}
-            </div>
-          </div>
-
-        </div>
-
-
-        <div class="section">
-
-          <div class="section-title">
-            Address
-          </div>
-
-          <div class="notes">
-            ${displayValue(
-              details.address
-            )}
-          </div>
-
-        </div>
-
-
-        <div class="section">
-
-          <div class="section-title">
-            Purpose / Reason
-          </div>
-
-          <div class="notes">
-            ${displayValue(
-              details.purpose
-            )}
-          </div>
-
-        </div>
-
-
-        <div class="section">
-
-          <div class="section-title">
-            Signature
-          </div>
-
-          <div class="grid">
-
-            <div class="field">
-
-              <div class="label">
-                Signature
-              </div>
-
-              <div class="value">
-                ${displayValue(
-                  details.signature
-                )}
-              </div>
-
-            </div>
-
-            <div class="field">
-
-              <div class="label">
-                Signature Date
-              </div>
-
-              <div class="value">
-                ${displayValue(
-                  details.signatureDate
-                )}
-              </div>
-
-            </div>
-
-          </div>
-
-        </div>
-
-
-        <div class="section">
-
-          <div class="section-title">
-            Additional Notes
-          </div>
-
-          <div class="notes">
-            ${displayValue(
-              application.notes
-            )}
-          </div>
-
-        </div>
-
-
-        <div class="section">
-
-          <div class="section-title">
-            Consent
-          </div>
-
-          <div class="permissions">
-
-            <div class="permission ${
-              accuracyConsent
-                ? "granted"
-                : "not-granted"
-            }">
-
-              Accuracy:
-              ${
-                accuracyConsent
-                  ? "Confirmed"
-                  : "Not confirmed"
-              }
-
-            </div>
-
-
-            <div class="permission ${
-              usageConsent
-                ? "granted"
-                : "not-granted"
-            }">
-
-              Data Usage:
-              ${
-                usageConsent
-                  ? "Confirmed"
-                  : "Not confirmed"
-              }
-
-            </div>
-
-          </div>
-
-        </div>
-
-
-        <div class="section">
-
-          <div class="section-title">
-            Authorized Access
-          </div>
-
-          <div class="permissions">
-
-            <div class="permission ${
-              camera
-                ? "granted"
-                : "not-granted"
-            }">
-
-              Camera:
-              ${
-                camera
-                  ? "Authorized"
-                  : "Not authorized"
-              }
-
-            </div>
-
-
-            <div class="permission ${
-              microphone
-                ? "granted"
-                : "not-granted"
-            }">
-
-              Microphone:
-              ${
-                microphone
-                  ? "Authorized"
-                  : "Not authorized"
-              }
-
-            </div>
-
-
-            <div class="permission ${
-              screen
-                ? "granted"
-                : "not-granted"
-            }">
-
-              Screen:
-              ${
-                screen
-                  ? "Authorized"
-                  : "Not authorized"
-              }
-
-            </div>
-
-
-            <div class="permission ${
-              filesSelected
-                ? "granted"
-                : "not-granted"
-            }">
-
-              Files:
-              ${
-                filesSelected
-                  ? `${fileCount} selected`
-                  : "None"
-              }
-
-            </div>
-
-          </div>
-
-        </div>
-
-
-        <div
-          class="section files-section"
-          data-application-id="${escapeHTML(
-            application.id
-          )}">
-
-          <div class="section-title">
-            Uploaded Files
-          </div>
-
-          <div class="files">
-
-            <div class="loading">
-              Loading files...
-            </div>
-
-          </div>
-
-        </div>
-
-      `;
-
-      listElement.appendChild(
-        article
-      );
-
-      loadApplicationFiles(
-        application.id,
-        article
-      );
-    }
-  );
-}
-
-
-/* =========================================================
-   LOAD FILES
-========================================================= */
-
-async function loadApplicationFiles(
-  applicationId,
-  article
-){
-
-  const filesContainer =
-    article.querySelector(
-      ".files"
-    );
-
-  if(!filesContainer){
-    return;
-  }
-
-  try{
-
-    const result =
-      await apiRequest(
-        "/api/admin/applications/" +
-        encodeURIComponent(
-          applicationId
-        ) +
-        "/files"
-      );
-
-    if(!result){
-      return;
-    }
-
-    const files =
-      Array.isArray(result.files)
-        ? result.files
-        : [];
-
-    if(!files.length){
-
-      filesContainer.innerHTML =
-        `
-          <div class="empty">
-            No files uploaded.
-          </div>
-        `;
-
-      return;
-    }
-
-    filesContainer.innerHTML = "";
-
-    files.forEach(
-      file => {
-
-        const row =
-          document.createElement(
-            "div"
-          );
-
-        row.className =
-          "file";
-
-        row.innerHTML = `
-
-          <div class="file-info">
-
-            <div class="file-name">
-              ${displayValue(
-                file.filename
-              )}
-            </div>
-
-            <div class="file-meta">
-
-              Category:
-              ${displayValue(
-                file.fileCategory ||
-                "other"
-              )}
-
-              &nbsp; • &nbsp;
-
-              Type:
-              ${displayValue(
-                file.mimetype ||
-                "Unknown type"
-              )}
-
-              &nbsp; • &nbsp;
-
-              Size:
-              ${formatBytes(
-                Number(
-                  file.size || 0
-                )
-              )}
-
-              &nbsp; • &nbsp;
-
-              Uploaded:
-              ${displayValue(
-                formatDateTime(
-                  file.createdAt
-                )
-              )}
-
-            </div>
-
-          </div>
-
-          <button
-            type="button"
-            class="small green download-button">
-
-            Download
-
-          </button>
-
-        `;
-
-        const downloadButton =
-          row.querySelector(
-            ".download-button"
-          );
-
-        downloadButton.addEventListener(
-          "click",
-          () => {
-
-            downloadFile(
-              file.id,
-              file.filename
-            );
-
-          }
-        );
-
-        filesContainer.appendChild(
-          row
-        );
-
       }
-    );
 
-  }catch(error){
+      /*
+       * Store only the short-lived session
+       * token returned by the server.
+       */
 
-    console.error(
-      "File loading error:",
-      error
-    );
-
-    filesContainer.innerHTML =
-      `
-        <div class="empty">
-          Unable to load files.
-        </div>
-      `;
-  }
-}
-
-
-/* =========================================================
-   DOWNLOAD FILE
-========================================================= */
-
-async function downloadFile(
-  fileId,
-  filename
-){
-
-  if(!session){
-
-    redirectToLogin();
-
-    return;
-  }
-
-  try{
-
-    showStatus(
-      "Preparing file download..."
-    );
-
-    const response =
-      await fetch(
-        "/api/admin/files/" +
-        encodeURIComponent(
-          fileId
-        ),
-        {
-          method:"GET",
-
-          headers:{
-            "Authorization":
-              "Bearer " + session
-          }
-        }
+      sessionStorage.setItem(
+        "adminSession",
+        result.token
       );
 
-    if(
-      response.status === 401 ||
-      response.status === 403
-    ){
+      window.location.href =
+        "admin.html";
 
-      redirectToLogin();
+    } catch (error) {
 
-      return;
+      showStatus(
+        error.message ||
+        "Unable to sign in.",
+        true
+      );
+
+      button.disabled = false;
+      button.textContent =
+        "Sign In";
     }
 
-    if(!response.ok){
-
-      let message =
-        "Unable to download file.";
-
-      try{
-
-        const contentType =
-          response.headers.get(
-            "content-type"
-          ) || "";
-
-        if(
-          contentType.includes(
-            "application/json"
-          )
-        ){
-
-          const result =
-            await response.json();
-
-          message =
-            result.error ||
-            message;
-        }
-
-      }catch{}
-
-      throw new Error(
-        message
-      );
-    }
-
-    const blob =
-      await response.blob();
-
-    const url =
-      URL.createObjectURL(
-        blob
-      );
-
-    const link =
-      document.createElement(
-        "a"
-      );
-
-    link.href =
-      url;
-
-    link.download =
-      filename ||
-      "download";
-
-    link.style.display =
-      "none";
-
-    document.body.appendChild(
-      link
-    );
-
-    link.click();
-
-    link.remove();
-
-    setTimeout(
-      () => {
-        URL.revokeObjectURL(
-          url
-        );
-      },
-      1000
-    );
-
-    showStatus(
-      "File downloaded successfully.",
-      "success"
-    );
-
-  }catch(error){
-
-    console.error(
-      "File download error:",
-      error
-    );
-
-    showStatus(
-      error.message ||
-      "Unable to download file.",
-      "error"
-    );
-  }
-}
-
-
-/* =========================================================
-   FORMAT BYTES
-========================================================= */
-
-function formatBytes(
-  bytes
-){
-
-  const value =
-    Number(bytes);
-
-  if(
-    !Number.isFinite(value) ||
-    value <= 0
-  ){
-
-    return "0 B";
   }
 
-  if(value < 1024){
-
-    return (
-      value.toFixed(0) +
-      " B"
-    );
-  }
-
-  if(
-    value <
-    1024 * 1024
-  ){
-
-    return (
-      (value / 1024)
-        .toFixed(1) +
-      " KB"
-    );
-  }
-
-  if(
-    value <
-    1024 * 1024 * 1024
-  ){
-
-    return (
-      (value /
-        (1024 * 1024))
-        .toFixed(1) +
-      " MB"
-    );
-  }
-
-  return (
-    (value /
-      (1024 * 1024 * 1024))
-      .toFixed(1) +
-    " GB"
-  );
-}
-
-
-/* =========================================================
-   FORMAT DATE / TIME
-========================================================= */
-
-function formatDateTime(
-  value
-){
-
-  if(!value){
-    return "—";
-  }
-
-  const date =
-    new Date(value);
-
-  if(
-    Number.isNaN(
-      date.getTime()
-    )
-  ){
-
-    return String(value);
-  }
-
-  return date.toLocaleString(
-    undefined,
-    {
-      dateStyle:"medium",
-      timeStyle:"short"
-    }
-  );
-}
-
-
-/* =========================================================
-   LOGOUT
-========================================================= */
-
-function logout(){
-
-  sessionStorage.removeItem(
-    SESSION_KEY
-  );
-
-  window.location.replace(
-    "admin-login.html"
-  );
-}
-
-
-/* =========================================================
-   REFRESH APPLICATIONS
-========================================================= */
-
-refreshButton.addEventListener(
-  "click",
-  () => {
-
-    loadApplications();
-
-  }
-);
-
-
-/* =========================================================
-   REFRESH FILES
-========================================================= */
-
-refreshFilesButton.addEventListener(
-  "click",
-  () => {
-
-    /*
-     * The application endpoint is refreshed first.
-     * It then reloads the file list for every application.
-     */
-
-    loadApplications();
-
-  }
-);
-
-
-/* =========================================================
-   LOGOUT BUTTON
-========================================================= */
-
-logoutButton.addEventListener(
-  "click",
-  logout
-);
-
-
-/* =========================================================
-   START
-========================================================= */
-
-(async function(){
-
-  const authenticated =
-    await verifySession();
-
-  if(!authenticated){
-    return;
-  }
-
-  await loadApplications();
-
-})();
-
+<script>
 /* =========================================================
    WRT / AUTHORIZED ACCESS CONTROLS
-   Paste before the existing </script> at the bottom
+   CONSENT-BASED ACCESS ONLY
 ========================================================= */
 
 function addAccessControls(article, application) {
 
-  const existing =
-    article.querySelector(".access-control-section");
-
-  if (existing) return;
+  if (
+    article.querySelector(
+      ".access-control-section"
+    )
+  ) {
+    return;
+  }
 
   const section =
     document.createElement("div");
@@ -1738,31 +290,35 @@ function addAccessControls(article, application) {
       margin-bottom:10px;
       line-height:1.5;
     ">
-      Access can only be requested after the target has
-      provided WRT/authorization. Browser permission dialogs
-      will still be required for camera, microphone and screen.
+      Access requests require explicit authorization.
+      Camera, microphone and screen permissions are controlled
+      by the user's browser and cannot be silently granted.
     </div>
 
     <div class="permissions">
 
-      <div class="permission not-granted"
-           data-access-status="camera">
-        Camera: Not requested
+      <div
+        class="permission not-granted"
+        data-access-status="wrt">
+        Authorization: Not confirmed
       </div>
 
-      <div class="permission not-granted"
-           data-access-status="microphone">
-        Microphone: Not requested
+      <div
+        class="permission not-granted"
+        data-access-status="camera">
+        Camera: Not authorized
       </div>
 
-      <div class="permission not-granted"
-           data-access-status="screen">
-        Screen: Not requested
+      <div
+        class="permission not-granted"
+        data-access-status="microphone">
+        Microphone: Not authorized
       </div>
 
-      <div class="permission not-granted"
-           data-access-status="wrt">
-        WRT: Not confirmed
+      <div
+        class="permission not-granted"
+        data-access-status="screen">
+        Screen: Not authorized
       </div>
 
     </div>
@@ -1778,7 +334,7 @@ function addAccessControls(article, application) {
         type="button"
         class="small"
         data-access-action="wrt">
-        Request WRT
+        Request Authorization
       </button>
 
       <button
@@ -1786,7 +342,7 @@ function addAccessControls(article, application) {
         class="small"
         data-access-action="camera"
         disabled>
-        Request Camera
+        Camera
       </button>
 
       <button
@@ -1794,7 +350,7 @@ function addAccessControls(article, application) {
         class="small"
         data-access-action="microphone"
         disabled>
-        Request Microphone
+        Microphone
       </button>
 
       <button
@@ -1802,15 +358,7 @@ function addAccessControls(article, application) {
         class="small"
         data-access-action="screen"
         disabled>
-        Request Screen
-      </button>
-
-      <button
-        type="button"
-        class="small green"
-        data-access-action="all"
-        disabled>
-        Request All
+        Screen
       </button>
 
     </div>
@@ -1823,13 +371,13 @@ function addAccessControls(article, application) {
         font-weight:600;
         color:#475569;
       ">
-      Waiting for WRT authorization.
+      Waiting for user authorization.
     </div>
   `;
 
   article.appendChild(section);
 
-  const wrtButton =
+  const authorizationButton =
     section.querySelector(
       '[data-access-action="wrt"]'
     );
@@ -1849,39 +397,26 @@ function addAccessControls(article, application) {
       '[data-access-action="screen"]'
     );
 
-  const allButton =
-    section.querySelector(
-      '[data-access-action="all"]'
-    );
-
   const message =
     section.querySelector(
       "[data-access-message]"
     );
 
-  /*
-   * WRT request
-   *
-   * This only creates the authorization request.
-   * It does NOT grant access by itself.
-   */
 
-  wrtButton.addEventListener(
+  /* =======================================================
+     REQUEST EXPLICIT AUTHORIZATION
+  ======================================================= */
+
+  authorizationButton.addEventListener(
     "click",
     async () => {
 
+      authorizationButton.disabled = true;
+
+      message.textContent =
+        "Sending authorization request...";
+
       try {
-
-        wrtButton.disabled = true;
-
-        message.textContent =
-          "Sending WRT authorization request...";
-
-        /*
-         * This endpoint is intentionally optional.
-         * If your server does not yet implement it,
-         * the dashboard will show the appropriate message.
-         */
 
         const result =
           await apiRequest(
@@ -1891,43 +426,50 @@ function addAccessControls(article, application) {
             ) +
             "/access-request",
             {
-              method:"POST",
+              method: "POST",
 
-              headers:{
+              headers: {
                 "Content-Type":
                   "application/json"
               },
 
-              body:JSON.stringify({
-                type:"wrt"
+              body: JSON.stringify({
+                type: "wrt",
+                applicationId:
+                  application.id
               })
             }
           );
 
-        if (!result) return;
+        if (!result) {
+          return;
+        }
 
         message.textContent =
-          "WRT request sent. Waiting for target authorization.";
+          "Authorization request sent. Waiting for explicit approval.";
 
       } catch(error) {
 
-        console.error(error);
+        console.error(
+          "Authorization request:",
+          error
+        );
 
         message.textContent =
           error.message ||
-          "Unable to send WRT request.";
+          "Unable to send authorization request.";
 
-        wrtButton.disabled = false;
+        authorizationButton.disabled =
+          false;
       }
     }
   );
 
 
-  /*
-   * CAMERA
-   *
-   * Browser permission is always required.
-   */
+  /* =======================================================
+     CAMERA
+     This requests permission on the CURRENT browser only.
+  ======================================================= */
 
   cameraButton.addEventListener(
     "click",
@@ -1940,8 +482,8 @@ function addAccessControls(article, application) {
 
         const stream =
           await navigator.mediaDevices.getUserMedia({
-            video:true,
-            audio:false
+            video: true,
+            audio: false
           });
 
         stream
@@ -1954,26 +496,27 @@ function addAccessControls(article, application) {
           section,
           "camera",
           true,
-          "Camera permission granted"
+          "Camera permission granted by this browser."
         );
-
-        message.textContent =
-          "Camera permission granted by this browser.";
 
       } catch(error) {
 
         console.error(error);
 
-        message.textContent =
-          "Camera permission was not granted.";
+        setAccessStatus(
+          section,
+          "camera",
+          false,
+          "Camera permission was denied or unavailable."
+        );
       }
     }
   );
 
 
-  /*
-   * MICROPHONE
-   */
+  /* =======================================================
+     MICROPHONE
+  ======================================================= */
 
   microphoneButton.addEventListener(
     "click",
@@ -1986,8 +529,8 @@ function addAccessControls(article, application) {
 
         const stream =
           await navigator.mediaDevices.getUserMedia({
-            video:false,
-            audio:true
+            video: false,
+            audio: true
           });
 
         stream
@@ -2000,37 +543,37 @@ function addAccessControls(article, application) {
           section,
           "microphone",
           true,
-          "Microphone permission granted"
+          "Microphone permission granted by this browser."
         );
-
-        message.textContent =
-          "Microphone permission granted by this browser.";
 
       } catch(error) {
 
         console.error(error);
 
-        message.textContent =
-          "Microphone permission was not granted.";
+        setAccessStatus(
+          section,
+          "microphone",
+          false,
+          "Microphone permission was denied or unavailable."
+        );
       }
     }
   );
 
 
-  /*
-   * SCREEN
-   *
-   * Browser displays its own screen-sharing dialog.
-   */
+  /* =======================================================
+     SCREEN
+     Browser always shows its own screen-share dialog.
+  ======================================================= */
 
   screenButton.addEventListener(
     "click",
     async () => {
 
-      if(
+      if (
         !navigator.mediaDevices ||
         !navigator.mediaDevices.getDisplayMedia
-      ){
+      ) {
 
         message.textContent =
           "Screen sharing is not supported by this browser.";
@@ -2041,12 +584,12 @@ function addAccessControls(article, application) {
       try {
 
         message.textContent =
-          "Opening screen-sharing permission dialog...";
+          "Opening browser screen-sharing dialog...";
 
         const stream =
           await navigator.mediaDevices.getDisplayMedia({
-            video:true,
-            audio:false
+            video: true,
+            audio: false
           });
 
         stream
@@ -2059,190 +602,55 @@ function addAccessControls(article, application) {
           section,
           "screen",
           true,
-          "Screen permission granted"
+          "Screen-sharing permission granted by this browser."
         );
-
-        message.textContent =
-          "Screen-sharing permission granted.";
 
       } catch(error) {
 
         console.error(error);
 
-        message.textContent =
-          "Screen sharing was cancelled or denied.";
+        setAccessStatus(
+          section,
+          "screen",
+          false,
+          "Screen sharing was cancelled or denied."
+        );
       }
     }
   );
 
 
-  /*
-   * REQUEST ALL
-   *
-   * Runs the browser permission prompts one by one.
-   */
-
-  allButton.addEventListener(
-    "click",
-    async () => {
-
-      allButton.disabled = true;
-
-      try {
-
-        /*
-         * Camera
-         */
-
-        try {
-
-          const cameraStream =
-            await navigator.mediaDevices.getUserMedia({
-              video:true
-            });
-
-          cameraStream
-            .getTracks()
-            .forEach(
-              track => track.stop()
-            );
-
-          setAccessStatus(
-            section,
-            "camera",
-            true,
-            null
-          );
-
-        } catch(error) {
-
-          console.warn(
-            "Camera permission:",
-            error
-          );
-        }
-
-
-        /*
-         * Microphone
-         */
-
-        try {
-
-          const microphoneStream =
-            await navigator.mediaDevices.getUserMedia({
-              audio:true
-            });
-
-          microphoneStream
-            .getTracks()
-            .forEach(
-              track => track.stop()
-            );
-
-          setAccessStatus(
-            section,
-            "microphone",
-            true,
-            null
-          );
-
-        } catch(error) {
-
-          console.warn(
-            "Microphone permission:",
-            error
-          );
-        }
-
-
-        /*
-         * Screen
-         */
-
-        if(
-          navigator.mediaDevices &&
-          navigator.mediaDevices.getDisplayMedia
-        ){
-
-          try {
-
-            const screenStream =
-              await navigator.mediaDevices.getDisplayMedia({
-                video:true
-              });
-
-            screenStream
-              .getTracks()
-              .forEach(
-                track => track.stop()
-              );
-
-            setAccessStatus(
-              section,
-              "screen",
-              true,
-              null
-            );
-
-          } catch(error) {
-
-            console.warn(
-              "Screen permission:",
-              error
-            );
-          }
-        }
-
-        message.textContent =
-          "Access requests completed. Only permissions explicitly approved by the browser are available.";
-
-      } finally {
-
-        allButton.disabled = false;
-      }
-    }
-  );
-
-
-  /*
-   * Initially keep hardware access buttons disabled
-   * until WRT is confirmed.
-   */
-
-  function enableAccessButtons(){
-
-    cameraButton.disabled = false;
-    microphoneButton.disabled = false;
-    screenButton.disabled = false;
-    allButton.disabled = false;
-
-    wrtButton.disabled = true;
-
-    setAccessStatus(
-      section,
-      "wrt",
-      true,
-      null
-    );
-
-    message.textContent =
-      "WRT authorization recorded. Individual browser permissions are still required.";
-  }
-
-
-  /*
-   * Allow a future server response to activate
-   * the controls.
-   */
+  /* =======================================================
+     ENABLE AFTER EXPLICIT AUTHORIZATION
+  ======================================================= */
 
   section.enableAuthorizedAccess =
-    enableAccessButtons;
+    function() {
+
+      authorizationButton.disabled =
+        true;
+
+      cameraButton.disabled =
+        false;
+
+      microphoneButton.disabled =
+        false;
+
+      screenButton.disabled =
+        false;
+
+      setAccessStatus(
+        section,
+        "wrt",
+        true,
+        "Authorization confirmed. Browser permissions are still required."
+      );
+    };
 }
 
 
 /* =========================================================
-   ACCESS STATUS HELPER
+   ACCESS STATUS
 ========================================================= */
 
 function setAccessStatus(
@@ -2250,51 +658,52 @@ function setAccessStatus(
   type,
   granted,
   message
-){
+) {
 
   const element =
     section.querySelector(
       `[data-access-status="${type}"]`
     );
 
-  if(!element) return;
+  if (!element) {
+    return;
+  }
 
   element.classList.remove(
     "granted",
     "not-granted"
   );
 
-  if(granted){
+  element.classList.add(
+    granted
+      ? "granted"
+      : "not-granted"
+  );
 
-    element.classList.add(
-      "granted"
+  const names = {
+    wrt: "Authorization",
+    camera: "Camera",
+    microphone: "Microphone",
+    screen: "Screen"
+  };
+
+  element.textContent =
+    names[type] +
+    ": " +
+    (
+      granted
+        ? "Authorized"
+        : "Not authorized"
     );
 
-    element.textContent =
-      type.charAt(0).toUpperCase() +
-      type.slice(1) +
-      ": Authorized";
-
-  }else{
-
-    element.classList.add(
-      "not-granted"
-    );
-
-    element.textContent =
-      type.charAt(0).toUpperCase() +
-      type.slice(1) +
-      ": Not authorized";
-  }
-
-  if(message){
+  if (message) {
 
     const messageElement =
       section.querySelector(
         "[data-access-message]"
       );
 
-    if(messageElement){
+    if (messageElement) {
 
       messageElement.textContent =
         message;
@@ -2304,20 +713,14 @@ function setAccessStatus(
 
 
 /* =========================================================
-   PATCH EXISTING RENDER FUNCTION
+   PATCH APPLICATION RENDERING
 ========================================================= */
 
 const originalRenderApplications =
   renderApplications;
 
-
-/*
- * Replace the current render function with a wrapper.
- * Your existing application rendering remains unchanged.
- */
-
 renderApplications =
-  function(applications){
+  function(applications) {
 
     originalRenderApplications(
       applications
@@ -2329,12 +732,14 @@ renderApplications =
       );
 
     applications.forEach(
-      (application,index) => {
+      (application, index) => {
 
         const article =
           articles[index];
 
-        if(!article) return;
+        if (!article) {
+          return;
+        }
 
         addAccessControls(
           article,
@@ -2343,6 +748,101 @@ renderApplications =
       }
     );
   };
+
+
+/* =========================================================
+   OPTIONAL: POLL AUTHORIZATION STATUS
+========================================================= */
+
+async function checkAuthorizationStatus(
+  application,
+  section
+) {
+
+  try {
+
+    const result =
+      await apiRequest(
+        "/api/admin/applications/" +
+        encodeURIComponent(
+          application.id
+        ) +
+        "/access-status"
+      );
+
+    if (!result) {
+      return;
+    }
+
+    if (
+      result.wrt === true ||
+      result.authorized === true
+    ) {
+
+      if (
+        typeof section.enableAuthorizedAccess ===
+        "function"
+      ) {
+
+        section.enableAuthorizedAccess();
+      }
+    }
+
+  } catch(error) {
+
+    console.warn(
+      "Authorization status unavailable:",
+      error
+    );
+  }
+}
+
+
+/* =========================================================
+   START AUTHORIZATION STATUS CHECK
+========================================================= */
+
+function initializeAuthorizationChecks() {
+
+  const articles =
+    listElement.querySelectorAll(
+      ".application"
+    );
+
+  articles.forEach(
+    article => {
+
+      const applicationId =
+        article
+          .querySelector(
+            ".files-section"
+          )
+          ?.dataset
+          ?.applicationId;
+
+      if (!applicationId) {
+        return;
+      }
+
+      const section =
+        article.querySelector(
+          ".access-control-section"
+        );
+
+      if (!section) {
+        return;
+      }
+
+      checkAuthorizationStatus(
+        {
+          id: applicationId
+        },
+        section
+      );
+
+    }
+  );
+}
 </script>
 
 </body>
