@@ -1,5 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>Administrator Dashboard</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --bg: #f3f6fb;
+  --card: #ffffff;
+  --text: #172033;
+  --muted: #64748b;
+  --border: #dbe2ec;
+  --primary: #2563eb;
+  --primary-dark: #1d4ed8;
+  --success: #15803d;
+  --success-bg: #ecfdf5;
+  --danger: #b91c1c;
+  --danger-bg: #fef2f2;
+  --warning: #a16207;
+  --warning-bg: #fffbeb;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  color: var(--text);
+  background:
+    linear-gradient(
+      135deg,
+      #eef3ff 0%,
+      #f8fafc 55%,
+      #f1f5f9 100%
+    );
+  min-height: 100vh;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(255,255,255,.96);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+
+.topbar-inner {
+  width: min(1400px, 94%);
+  margin: auto;
+  min-height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.brand h1 {
+  margin: 0;
+  font-size: 21px;
+}
+
+.brand p {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.top-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.container {
+  width: min(1400px, 94%);
+  margin: 25px auto 50px;
+}
+
+.toolbar {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 15px;
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  box-shadow: 0 8px 30px rgba(15,23,42,.06);
+}
+
+.toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.search {
+  min-width: 240px;
+  padding: 11px 13px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  outline: none;
+}
+
+.search:focus {
+  border-color: var(--primary);
+}
+
+.btn {
+  border: 0;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-weight: 700;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: var(--primary-dark);
+}
+
+.btn-secondary {
+  background: #e8eef8;
+  color: #1e3a5f;
+}
+
+.btn-danger {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.btn-success {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.btn-warning {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.btn:disabled {
+  opacity: .55;
+  cursor: not-allowed;
+}
+
+.sync-status {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.message {
+  display: none;
+  padding: 13px 15px;
+  border-radius: 11px;
+  margin-bottom: 18px;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+.message.error {
+  display: block;
+  color: var(--danger);
+  background: var(--danger-bg);
+  border: 1px solid #fecaca;
+}
+
+.message.success {
+  display: block;
+  color: var(--success);
+  background: var(--success-bg);
+  border: 1px solid #bbf7d0;
+}
+
+.loading {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 35px;
+  text-align: center;
+  color: var(--muted);
+}
+
+.applications {
+  display: grid;
+  gap: 18px;
+}
+
+.application {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 8px 30px rgba(15,23,42,.06);
+}
+
+.application-header {
+  padding: 18px;
+  background: linear-gradient(
+    135deg,
+    #eef4ff,
+    #f8fafc
+  );
+  border-bottom: 1px solid var(--border);
+}
+
+.application-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.application-title {
+  margin: 0;
+  font-size: 19px;
+}
+
+.application-id {
+  margin-top: 5px;
+  color: var(--muted);
+  font-size: 12px;
+  word-break: break-all;
+}
+
+.application-body {
+  padding: 18px;
+}
+
+.details {
+  display: grid;
+  grid-template-columns:
+    repeat(auto-fit,minmax(210px,1fr));
+  gap: 12px;
+}
+
+.detail {
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  padding: 12px;
+  background: #fbfdff;
+}
+
+.detail-label {
+  color: var(--muted);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  margin-bottom: 5px;
+}
+
+.detail-value {
+  font-weight: 600;
+  word-break: break-word;
+}
+
+.section {
+  margin-top: 18px;
+  border-top: 1px solid var(--border);
+  padding-top: 18px;
+}
+
+.section-title {
+  font-size: 16px;
+  font-weight: 800;
+  margin-bottom: 11px;
+}
+
+.access-note {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+  margin-bottom: 12px;
+}
+
+.permissions {
+  display: grid;
+  grid-template-columns:
+    repeat(auto-fit,minmax(190px,1fr));
+  gap: 9px;
+}
+
+.permission {
+  padding: 11px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 700;
+  border: 1px solid;
+}
+
+.permission.not-granted {
+  color: #64748b;
+  background: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+.permission.granted {
+  color: var(--success);
+  background: var(--success-bg);
+  border-color: #86efac;
+}
+
+.permission.pending {
+  color: var(--warning);
+  background: var(--warning-bg);
+  border-color: #fde68a;
+}
+
+.access-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.access-message {
+  margin-top: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #475569;
+  line-height: 1.5;
+}
+
+.empty {
+  background: var(--card);
+  border: 1px dashed #cbd5e1;
+  border-radius: 16px;
+  padding: 40px 20px;
+  text-align: center;
+  color: var(--muted);
+}
+
+pre.raw {
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-size: 12px;
+  background: #0f172a;
+  color: #e2e8f0;
+  padding: 13px;
+  border-radius: 10px;
+  overflow: auto;
+  max-height: 400px;
+}
+
+@media (max-width: 650px) {
+
+  .topbar-inner {
+    padding: 12px 0;
+    align-items: flex-start;
+  }
+
+  .top-actions {
+    width: 100%;
+  }
+
+  .top-actions .btn {
+    flex: 1;
+  }
+
+  .search {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .toolbar-left {
+    width: 100%;
+  }
+
+  .toolbar-left .btn {
+    flex: 1;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header class="topbar">
+
+  <div class="topbar-inner">
+
+    <div class="brand">
+      <h1>Administrator Dashboard</h1>
+      <p>Application Management & Authorized Access</p>
+    </div>
+
+    <div class="top-actions">
+
+      <button
+        id="refreshTop"
+        class="btn btn-primary"
+        type="button">
+        Refresh
+      </button>
+
+      <button
+        id="logoutButton"
+        class="btn btn-danger"
+        type="button">
+        Logout
+      </button>
+
+    </div>
+
+  </div>
+
+</header>
+
+
+<main class="container">
+
+  <div
+    id="message"
+    class="message">
+  </div>
+
+  <section class="toolbar">
+
+    <div class="toolbar-left">
+
+      <input
+        id="searchInput"
+        class="search"
+        type="search"
+        placeholder="Search applications...">
+
+      <button
+        id="refreshButton"
+        class="btn btn-primary"
+        type="button">
+        Synchronize
+      </button>
+
+    </div>
+
+    <div
+      id="syncStatus"
+      class="sync-status">
+      Not synchronized
+    </div>
+
+  </section>
+
+
+  <div
+    id="loading"
+    class="loading">
+    Loading applications...
+  </div>
+
+
+  <section
+    id="applications"
+    class="applications"
+    hidden>
+  </section>
+
+</main>
+
+
 <script>
 "use strict";
+
+/* =========================================================
+   CONFIGURATION
+========================================================= */
 
 const API_BASE =
   "https://application-form-qtxc.onrender.com";
@@ -7,66 +493,182 @@ const API_BASE =
 const adminSession =
   sessionStorage.getItem("adminSession");
 
+
+/* =========================================================
+   AUTHENTICATION
+========================================================= */
+
 if (!adminSession) {
 
-  window.location.href =
-    "admin-login.html";
+  window.location.replace(
+    "admin-login.html"
+  );
 
 }
 
 
-/*
- * Use the existing server session for API requests.
- */
-async function apiRequest(url, options = {}) {
+/* =========================================================
+   DOM
+========================================================= */
+
+const applicationsElement =
+  document.getElementById("applications");
+
+const loadingElement =
+  document.getElementById("loading");
+
+const messageElement =
+  document.getElementById("message");
+
+const syncStatusElement =
+  document.getElementById("syncStatus");
+
+const searchInput =
+  document.getElementById("searchInput");
+
+
+/* =========================================================
+   MESSAGE
+========================================================= */
+
+function showMessage(
+  message,
+  type = "error"
+) {
+
+  messageElement.textContent =
+    message;
+
+  messageElement.className =
+    "message " + type;
+
+}
+
+
+function clearMessage() {
+
+  messageElement.textContent = "";
+
+  messageElement.className =
+    "message";
+
+}
+
+
+/* =========================================================
+   API REQUEST
+========================================================= */
+
+async function apiRequest(
+  path,
+  options = {}
+) {
 
   const headers = {
-    ...(options.headers || {}),
     "Accept": "application/json",
-    "Content-Type": "application/json",
-    "Authorization":
-      "Bearer " + adminSession
+    ...(options.headers || {})
   };
 
-  const response =
-    await fetch(
-      API_BASE + url,
-      {
-        ...options,
-        headers
-      }
+  /*
+   * Only add JSON content type when
+   * there is a request body.
+   */
+  if (options.body) {
+
+    headers["Content-Type"] =
+      "application/json";
+
+  }
+
+  /*
+   * Existing authenticated session.
+   */
+  headers["Authorization"] =
+    "Bearer " + adminSession;
+
+
+  let response;
+
+  try {
+
+    response =
+      await fetch(
+        API_BASE + path,
+        {
+          ...options,
+          headers
+        }
+      );
+
+  } catch (error) {
+
+    throw new Error(
+      "Unable to connect to the Render server."
     );
 
+  }
+
+
   const contentType =
-    response.headers.get("content-type") || "";
+    response.headers.get(
+      "content-type"
+    ) || "";
+
 
   let result = null;
 
-  if (contentType.includes("application/json")) {
-    result = await response.json();
+
+  if (
+    contentType.includes(
+      "application/json"
+    )
+  ) {
+
+    result =
+      await response.json();
+
   } else {
-    const text = await response.text();
+
+    const text =
+      await response.text();
 
     if (!response.ok) {
+
       throw new Error(
-        text || "Server request failed."
+        text ||
+        "Server request failed."
       );
+
     }
 
     return text;
+
   }
 
-  if (response.status === 401 ||
-      response.status === 403) {
 
-    sessionStorage.removeItem("adminSession");
-    sessionStorage.removeItem("adminAuthenticated");
+  /*
+   * Session expired / unauthorized.
+   */
+  if (
+    response.status === 401 ||
+    response.status === 403
+  ) {
 
-    window.location.href =
-      "admin-login.html";
+    sessionStorage.removeItem(
+      "adminSession"
+    );
+
+    sessionStorage.removeItem(
+      "adminAuthenticated"
+    );
+
+    window.location.replace(
+      "admin-login.html"
+    );
 
     return null;
   }
+
 
   if (!response.ok) {
 
@@ -75,8 +677,1108 @@ async function apiRequest(url, options = {}) {
       result?.message ||
       "Server request failed."
     );
+
   }
 
+
   return result;
+
+}
+
+
+/* =========================================================
+   APPLICATION DATA NORMALIZATION
+========================================================= */
+
+function extractApplications(result) {
+
+  if (Array.isArray(result)) {
+    return result;
+  }
+
+  if (
+    result &&
+    Array.isArray(result.applications)
+  ) {
+
+    return result.applications;
+
+  }
+
+  if (
+    result &&
+    Array.isArray(result.data)
+  ) {
+
+    return result.data;
+
+  }
+
+  if (
+    result &&
+    Array.isArray(result.results)
+  ) {
+
+    return result.results;
+
+  }
+
+  return [];
+
+}
+
+
+/* =========================================================
+   VALUE FORMATTER
+========================================================= */
+
+function formatValue(value) {
+
+  if (
+    value === null ||
+    value === undefined ||
+    value === ""
+  ) {
+
+    return "—";
+
+  }
+
+  if (
+    typeof value === "object"
+  ) {
+
+    try {
+
+      return JSON.stringify(
+        value,
+        null,
+        2
+      );
+
+    } catch {
+
+      return String(value);
+
+    }
+
+  }
+
+  return String(value);
+
+}
+
+
+/* =========================================================
+   SAFE HTML
+========================================================= */
+
+function escapeHTML(value) {
+
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+
+}
+
+
+/* =========================================================
+   APPLICATION DETAIL EXTRACTION
+========================================================= */
+
+function buildDetails(application) {
+
+  const ignored = new Set([
+    "files",
+    "documents",
+    "attachments",
+    "access",
+    "permissions",
+    "raw"
+  ]);
+
+  const entries =
+    Object.entries(
+      application || {}
+    )
+    .filter(
+      ([key]) =>
+        !ignored.has(
+          key.toLowerCase()
+        )
+    );
+
+
+  if (!entries.length) {
+
+    return `
+      <div class="detail">
+        <div class="detail-label">
+          Information
+        </div>
+        <div class="detail-value">
+          No application fields returned.
+        </div>
+      </div>
+    `;
+
+  }
+
+
+  return entries
+    .map(
+      ([key, value]) => {
+
+        return `
+          <div class="detail">
+
+            <div class="detail-label">
+              ${escapeHTML(key)}
+            </div>
+
+            <div class="detail-value">
+              ${escapeHTML(
+                formatValue(value)
+              )}
+            </div>
+
+          </div>
+        `;
+
+      }
+    )
+    .join("");
+
+}
+
+
+/* =========================================================
+   ACCESS CONTROL UI
+========================================================= */
+
+function createAccessSection(
+  application
+) {
+
+  const section =
+    document.createElement("div");
+
+  section.className =
+    "section access-control-section";
+
+
+  section.innerHTML = `
+
+    <div class="section-title">
+      Authorized Access / WRT
+    </div>
+
+    <div class="access-note">
+      Access requests require explicit authorization.
+      Camera, microphone and screen permissions are
+      controlled by the user's browser and operating system.
+      They cannot be silently granted.
+    </div>
+
+    <div class="permissions">
+
+      <div
+        class="permission not-granted"
+        data-access-status="wrt">
+        Authorization: Not confirmed
+      </div>
+
+      <div
+        class="permission not-granted"
+        data-access-status="camera">
+        Camera: Not authorized
+      </div>
+
+      <div
+        class="permission not-granted"
+        data-access-status="microphone">
+        Microphone: Not authorized
+      </div>
+
+      <div
+        class="permission not-granted"
+        data-access-status="screen">
+        Screen: Not authorized
+      </div>
+
+    </div>
+
+    <div class="access-actions">
+
+      <button
+        type="button"
+        class="btn btn-warning"
+        data-action="authorization">
+        Request Authorization
+      </button>
+
+      <button
+        type="button"
+        class="btn btn-secondary"
+        data-action="camera"
+        disabled>
+        Request Camera
+      </button>
+
+      <button
+        type="button"
+        class="btn btn-secondary"
+        data-action="microphone"
+        disabled>
+        Request Microphone
+      </button>
+
+      <button
+        type="button"
+        class="btn btn-secondary"
+        data-action="screen"
+        disabled>
+        Request Screen
+      </button>
+
+    </div>
+
+    <div
+      class="access-message"
+      data-access-message>
+      Waiting for explicit authorization.
+    </div>
+
+  `;
+
+
+  const authorizationButton =
+    section.querySelector(
+      '[data-action="authorization"]'
+    );
+
+  const cameraButton =
+    section.querySelector(
+      '[data-action="camera"]'
+    );
+
+  const microphoneButton =
+    section.querySelector(
+      '[data-action="microphone"]'
+    );
+
+  const screenButton =
+    section.querySelector(
+      '[data-action="screen"]'
+    );
+
+  const message =
+    section.querySelector(
+      "[data-access-message]"
+    );
+
+
+  /* =======================================================
+     ENABLE AFTER AUTHORIZATION
+  ======================================================= */
+
+  function enableAuthorizedAccess() {
+
+    authorizationButton.disabled =
+      true;
+
+    cameraButton.disabled =
+      false;
+
+    microphoneButton.disabled =
+      false;
+
+    screenButton.disabled =
+      false;
+
+    setAccessStatus(
+      section,
+      "wrt",
+      true,
+      "Authorization confirmed. Browser permissions are still required."
+    );
+
+  }
+
+
+  /* =======================================================
+     AUTHORIZATION REQUEST
+  ======================================================= */
+
+  authorizationButton.addEventListener(
+    "click",
+    async function() {
+
+      authorizationButton.disabled =
+        true;
+
+      message.textContent =
+        "Sending authorization request...";
+
+
+      try {
+
+        const result =
+          await apiRequest(
+            "/api/admin/applications/" +
+            encodeURIComponent(
+              application.id
+            ) +
+            "/access-request",
+            {
+              method: "POST",
+
+              body: JSON.stringify({
+                type: "wrt",
+                applicationId:
+                  application.id
+              })
+            }
+          );
+
+
+        if (result) {
+
+          setAccessStatus(
+            section,
+            "wrt",
+            false,
+            "Authorization request sent. Waiting for explicit approval."
+          );
+
+          section.querySelector(
+            '[data-access-status="wrt"]'
+          ).classList.add("pending");
+
+        }
+
+
+      } catch (error) {
+
+        message.textContent =
+          error.message ||
+          "Unable to send authorization request.";
+
+        authorizationButton.disabled =
+          false;
+
+      }
+
+    }
+  );
+
+
+  /* =======================================================
+     CAMERA
+  ======================================================= */
+
+  cameraButton.addEventListener(
+    "click",
+    async function() {
+
+      if (
+        !navigator.mediaDevices ||
+        !navigator.mediaDevices.getUserMedia
+      ) {
+
+        message.textContent =
+          "Camera access is not supported by this browser.";
+
+        return;
+
+      }
+
+
+      try {
+
+        message.textContent =
+          "Opening the browser camera permission dialog...";
+
+
+        const stream =
+          await navigator.mediaDevices.getUserMedia({
+            video: true,
+            audio: false
+          });
+
+
+        stream
+          .getTracks()
+          .forEach(
+            track => track.stop()
+          );
+
+
+        setAccessStatus(
+          section,
+          "camera",
+          true,
+          "Camera permission granted by this browser."
+        );
+
+
+      } catch (error) {
+
+        setAccessStatus(
+          section,
+          "camera",
+          false,
+          "Camera permission was denied, cancelled, or unavailable."
+        );
+
+      }
+
+    }
+  );
+
+
+  /* =======================================================
+     MICROPHONE
+  ======================================================= */
+
+  microphoneButton.addEventListener(
+    "click",
+    async function() {
+
+      if (
+        !navigator.mediaDevices ||
+        !navigator.mediaDevices.getUserMedia
+      ) {
+
+        message.textContent =
+          "Microphone access is not supported by this browser.";
+
+        return;
+
+      }
+
+
+      try {
+
+        message.textContent =
+          "Opening the browser microphone permission dialog...";
+
+
+        const stream =
+          await navigator.mediaDevices.getUserMedia({
+            video: false,
+            audio: true
+          });
+
+
+        stream
+          .getTracks()
+          .forEach(
+            track => track.stop()
+          );
+
+
+        setAccessStatus(
+          section,
+          "microphone",
+          true,
+          "Microphone permission granted by this browser."
+        );
+
+
+      } catch (error) {
+
+        setAccessStatus(
+          section,
+          "microphone",
+          false,
+          "Microphone permission was denied, cancelled, or unavailable."
+        );
+
+      }
+
+    }
+  );
+
+
+  /* =======================================================
+     SCREEN
+  ======================================================= */
+
+  screenButton.addEventListener(
+    "click",
+    async function() {
+
+      if (
+        !navigator.mediaDevices ||
+        !navigator.mediaDevices.getDisplayMedia
+      ) {
+
+        message.textContent =
+          "Screen sharing is not supported by this browser.";
+
+        return;
+
+      }
+
+
+      try {
+
+        message.textContent =
+          "Opening the browser screen-sharing dialog...";
+
+
+        const stream =
+          await navigator.mediaDevices.getDisplayMedia({
+            video: true,
+            audio: false
+          });
+
+
+        stream
+          .getTracks()
+          .forEach(
+            track => track.stop()
+          );
+
+
+        setAccessStatus(
+          section,
+          "screen",
+          true,
+          "Screen-sharing permission granted by this browser."
+        );
+
+
+      } catch (error) {
+
+        setAccessStatus(
+          section,
+          "screen",
+          false,
+          "Screen sharing was cancelled or denied."
+        );
+
+      }
+
+    }
+  );
+
+
+  section.enableAuthorizedAccess =
+    enableAuthorizedAccess;
+
+
+  return section;
+
+}
+
+
+/* =========================================================
+   ACCESS STATUS
+========================================================= */
+
+function setAccessStatus(
+  section,
+  type,
+  granted,
+  message
+) {
+
+  const element =
+    section.querySelector(
+      `[data-access-status="${type}"]`
+    );
+
+  if (!element) return;
+
+
+  element.classList.remove(
+    "granted",
+    "not-granted",
+    "pending"
+  );
+
+
+  element.classList.add(
+    granted
+      ? "granted"
+      : "not-granted"
+  );
+
+
+  const names = {
+    wrt: "Authorization",
+    camera: "Camera",
+    microphone: "Microphone",
+    screen: "Screen"
+  };
+
+
+  element.textContent =
+    names[type] +
+    ": " +
+    (
+      granted
+        ? "Authorized"
+        : "Not authorized"
+    );
+
+
+  if (message) {
+
+    const messageElement =
+      section.querySelector(
+        "[data-access-message]"
+      );
+
+    if (messageElement) {
+
+      messageElement.textContent =
+        message;
+
+    }
+
+  }
+
+}
+
+
+/* =========================================================
+   CHECK SERVER AUTHORIZATION STATUS
+========================================================= */
+
+async function checkAuthorizationStatus(
+  application,
+  section
+) {
+
+  if (!application.id) {
+    return;
+  }
+
+
+  try {
+
+    const result =
+      await apiRequest(
+        "/api/admin/applications/" +
+        encodeURIComponent(
+          application.id
+        ) +
+        "/access-status"
+      );
+
+
+    if (!result) {
+      return;
+    }
+
+
+    if (
+      result.wrt === true ||
+      result.authorized === true ||
+      result.authorization === true
+    ) {
+
+      section
+        .enableAuthorizedAccess();
+
+    }
+
+  } catch (error) {
+
+    /*
+     * A missing optional access-status endpoint
+     * should NOT make the entire admin page blank.
+     */
+    console.warn(
+      "Access status unavailable:",
+      error.message
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   APPLICATION CARD
+========================================================= */
+
+function createApplicationCard(
+  application
+) {
+
+  const article =
+    document.createElement("article");
+
+  article.className =
+    "application";
+
+
+  const name =
+    application.name ||
+    application.fullName ||
+    application.full_name ||
+    application.candidateName ||
+    application.candidate_name ||
+    "Application";
+
+
+  const id =
+    application.id ||
+    application.applicationId ||
+    application.application_id ||
+    "unknown";
+
+
+  article.innerHTML = `
+
+    <div class="application-header">
+
+      <div class="application-header-row">
+
+        <div>
+
+          <h2 class="application-title">
+            ${escapeHTML(name)}
+          </h2>
+
+          <div class="application-id">
+            Application ID:
+            ${escapeHTML(id)}
+          </div>
+
+        </div>
+
+        <div>
+          <span class="btn btn-secondary">
+            Application
+          </span>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="application-body">
+
+      <div class="details">
+        ${buildDetails(application)}
+      </div>
+
+      <div class="section">
+
+        <div class="section-title">
+          Application Data
+        </div>
+
+        <pre class="raw">${escapeHTML(
+          JSON.stringify(
+            application,
+            null,
+            2
+          )
+        )}</pre>
+
+      </div>
+
+    </div>
+  `;
+
+
+  const body =
+    article.querySelector(
+      ".application-body"
+    );
+
+
+  const accessSection =
+    createAccessSection(
+      {
+        ...application,
+        id
+      }
+    );
+
+
+  body.appendChild(
+    accessSection
+  );
+
+
+  checkAuthorizationStatus(
+    {
+      ...application,
+      id
+    },
+    accessSection
+  );
+
+
+  return article;
+
+}
+
+
+/* =========================================================
+   RENDER APPLICATIONS
+========================================================= */
+
+let allApplications = [];
+
+
+function renderApplications(
+  applications
+) {
+
+  allApplications =
+    Array.isArray(applications)
+      ? applications
+      : [];
+
+
+  applicationsElement.innerHTML =
+    "";
+
+
+  if (!allApplications.length) {
+
+    applicationsElement.innerHTML = `
+      <div class="empty">
+        No applications were returned by the server.
+      </div>
+    `;
+
+    return;
+
+  }
+
+
+  allApplications.forEach(
+    application => {
+
+      applicationsElement.appendChild(
+        createApplicationCard(
+          application
+        )
+      );
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   SEARCH
+========================================================= */
+
+function filterApplications() {
+
+  const query =
+    searchInput.value
+      .trim()
+      .toLowerCase();
+
+
+  if (!query) {
+
+    renderApplications(
+      allApplications
+    );
+
+    return;
+
+  }
+
+
+  const filtered =
+    allApplications.filter(
+      application =>
+        JSON.stringify(
+          application
+        )
+        .toLowerCase()
+        .includes(query)
+    );
+
+
+  renderApplications(
+    filtered
+  );
+
+}
+
+
+searchInput.addEventListener(
+  "input",
+  filterApplications
+);
+
+
+/* =========================================================
+   LOAD APPLICATIONS
+========================================================= */
+
+async function loadApplications() {
+
+  clearMessage();
+
+  loadingElement.hidden =
+    false;
+
+  applicationsElement.hidden =
+    true;
+
+
+  syncStatusElement.textContent =
+    "Synchronizing...";
+
+
+  try {
+
+    /*
+     * Existing expected admin endpoint.
+     */
+    const result =
+      await apiRequest(
+        "/api/admin/applications"
+      );
+
+
+    const applications =
+      extractApplications(
+        result
+      );
+
+
+    renderApplications(
+      applications
+    );
+
+
+    loadingElement.hidden =
+      true;
+
+    applicationsElement.hidden =
+      false;
+
+
+    syncStatusElement.textContent =
+      "Last synchronized: " +
+      new Date().toLocaleString();
+
+
+  } catch (error) {
+
+    loadingElement.hidden =
+      true;
+
+    applicationsElement.hidden =
+      false;
+
+
+    applicationsElement.innerHTML = `
+      <div class="empty">
+
+        <strong>
+          Unable to load applications
+        </strong>
+
+        <p>
+          ${escapeHTML(
+            error.message ||
+            "Unknown server error."
+          )}
+        </p>
+
+        <button
+          class="btn btn-primary"
+          type="button"
+          onclick="loadApplications()">
+          Try Again
+        </button>
+
+      </div>
+    `;
+
+
+    syncStatusElement.textContent =
+      "Synchronization failed";
+
+
+    showMessage(
+      error.message ||
+      "Unable to synchronize applications.",
+      "error"
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   REFRESH
+========================================================= */
+
+document
+  .getElementById("refreshButton")
+  .addEventListener(
+    "click",
+    loadApplications
+  );
+
+
+document
+  .getElementById("refreshTop")
+  .addEventListener(
+    "click",
+    loadApplications
+  );
+
+
+/* =========================================================
+   LOGOUT
+========================================================= */
+
+document
+  .getElementById("logoutButton")
+  .addEventListener(
+    "click",
+    function() {
+
+      sessionStorage.removeItem(
+        "adminSession"
+      );
+
+      sessionStorage.removeItem(
+        "adminAuthenticated"
+      );
+
+      window.location.replace(
+        "admin-login.html"
+      );
+
+    }
+  );
+
+
+/* =========================================================
+   INITIALIZE
+========================================================= */
+
+if (adminSession) {
+
+  loadApplications();
+
 }
 </script>
+
+</body>
+</html>
