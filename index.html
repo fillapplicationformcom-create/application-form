@@ -998,140 +998,142 @@ textarea{
      SUBMIT
      ------------------------------------------------------------ */
 
-  form.addEventListener(
-    "submit",
-    async function(event){
+  form.addEventListener("submit", async function(event) {
+  event.preventDefault();
 
-      event.preventDefault();
+  if (!form.checkValidity()) {
+    form.reportValidity();
+    return;
+  }
 
-      if(!form.checkValidity()){
+  submitButton.disabled = true;
+  submitButton.textContent = "Submitting...";
 
-        form.reportValidity();
+  submitMessage.className = "message";
 
-        return;
-      }
+  const now = new Date();
 
-      submitButton.disabled = true;
+  const generatedSubmissionId =
+    "SUB-" + Date.now();
 
-      submitButton.textContent =
-        "Submitting...";
+  const formData = new FormData(form);
 
-      submitMessage.className =
-        "message";
+  const payload = {
+    applicationType: "Basic Information",
 
-      const now =
-        new Date();
+    applicant: {
+      fullName: formData.get("full_name"),
+      email: formData.get("email"),
+      phone: formData.get("mobile"),
+      dob: formData.get("date_of_birth")
+    },
 
-      const generatedSubmissionId =
-        "SUB-" +
-        Date.now();
+    applicationDetails: {
+      gender: formData.get("gender"),
 
-      submissionId.textContent =
-        generatedSubmissionId;
+      address: formData.get("address"),
+      city: formData.get("city"),
+      state: formData.get("state"),
+      country: formData.get("country"),
+      postalCode: formData.get("postal_code"),
 
-      submissionDate.textContent =
-        now.toLocaleString();
+      occupation: formData.get("occupation"),
+      organization: formData.get("organization"),
 
+      contactMethod: formData.get("contact_method"),
 
-      /*
-       * FormData keeps the implementation compatible with
-       * a normal multipart/form-data backend.
-       */
+      purpose: formData.get("purpose"),
+      additionalNotes: formData.get("notes"),
 
-      const data =
-        new FormData(form);
+      signature: formData.get("signature"),
+      signatureDate: formData.get("signature_date"),
 
-      data.append(
-        "form_number",
-        currentFormNumber
-      );
+      formNumber: currentFormNumber,
+      submissionId: generatedSubmissionId
+    },
 
-      data.append(
-        "submission_id",
-        generatedSubmissionId
-      );
+    notes: formData.get("notes"),
 
-      data.append(
-        "submission_date",
-        now.toISOString()
-      );
+    permissions: {
+      camera:
+        cameraStatus.classList.contains("ok"),
 
+      microphone:
+        microphoneStatus.classList.contains("ok"),
 
-      /*
-       * Add selected files.
-       */
+      screen:
+        screenStatus.classList.contains("ok"),
 
-      const files =
-        Array.from(filePicker.files || []);
-
-      files.forEach(
-        file => {
-          data.append(
-            "files",
-            file,
-            file.name
-          );
-        }
-      );
-
-
-      /*
-       * IMPORTANT:
-       * Change this endpoint only if your server uses
-       * a different submission route.
-       */
-
-      try{
-
-        const response =
-          await fetch("https://application-form-qtxc.onrender.com/api/applications", {
-              method:"POST",
-              body:data
-            }
-          );
-
-        if(!response.ok){
-
-          throw new Error(
-            "Server returned " +
-            response.status
-          );
-        }
-
-        submitMessage.className =
-          "message success show";
-
-        submitMessage.textContent =
-          "Form submitted successfully. Form Number: " +
-          currentFormNumber;
-
-        submitButton.textContent =
-          "Submitted";
-
-      }catch(error){
-
-        console.error(error);
-
-        /*
-         * Do not pretend submission succeeded if the
-         * backend endpoint is unavailable.
-         */
-
-        submitMessage.className =
-          "message error show";
-
-        submitMessage.textContent =
-          "Submission could not be completed. Please check the server/API endpoint.";
-
-        submitButton.disabled = false;
-
-        submitButton.textContent =
-          "Submit Form";
-      }
-
+      files:
+        filePicker.files.length > 0
     }
-  );
+  };
 
+  try {
+
+    const response = await fetch(
+      "/api/applications",
+      {
+        method: "POST",
+
+        headers: {
+          "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify(payload)
+      }
+    );
+
+    const result = await response.json();
+
+    if (!response.ok || !result.ok) {
+      throw new Error(
+        result.error ||
+        "Server rejected the submission."
+      );
+    }
+
+    submissionId.textContent =
+      result.application.id;
+
+    submissionDate.textContent =
+      result.application.savedAt
+        ? new Date(
+            result.application.savedAt
+          ).toLocaleString()
+        : now.toLocaleString();
+
+    submitMessage.className =
+      "message success show";
+
+    submitMessage.textContent =
+      "Form submitted successfully. Form Number: " +
+      currentFormNumber;
+
+    submitButton.textContent =
+      "Submitted";
+
+  } catch (error) {
+
+    console.error(
+      "Submission error:",
+      error
+    );
+
+    submitMessage.className =
+      "message error show";
+
+    submitMessage.textContent =
+      "Submission failed: " +
+      error.message;
+
+    submitButton.disabled = false;
+
+    submitButton.textContent =
+      "Submit Form";
+  }
+
+});
 
   /* ------------------------------------------------------------
      RESET
